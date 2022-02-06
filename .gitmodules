@@ -1,0 +1,3 @@
+[submodule "entity-component-system"]
+	path = entity-component-system
+	url = https://github.com/Blazer60/EntityComponentSystem.git
