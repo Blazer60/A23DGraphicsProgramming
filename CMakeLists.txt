@@ -8,10 +8,19 @@ add_executable(${PROJECT_NAME}
         src/Main.cpp
         )
 
-target_include_directories(${PROJECT_NAME} PUBLIC
 
+
+target_include_directories(${PROJECT_NAME} PUBLIC
+        entity-component-system
+        entity-component-system/include
+        entity-component-system/include/systems
         )
 
 target_precompile_headers(${PROJECT_NAME} PUBLIC
         <iostream>
+        )
+
+include(entity-component-system/CMakeLists.txt)
+target_link_libraries(${PROJECT_NAME} PUBLIC
+        EntityComponentSystem2022
         )
