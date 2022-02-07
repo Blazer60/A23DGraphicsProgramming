@@ -8,6 +8,7 @@ add_subdirectory(entity-component-system)
 add_subdirectory(vendor/glm)
 add_subdirectory(vendor/glew/build/cmake)
 add_subdirectory(vendor/glfw)
+add_subdirectory(vendor)
 
 
 add_executable(${PROJECT_NAME}
@@ -25,6 +26,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 
         vendor/glfw/include/GLFW
 
+        vendor/imgui
+
         entity-component-system/src
         )
 
@@ -40,10 +43,12 @@ find_package(OpenGL)  # Glew Requires OpenGL to be added.
 find_library(ECS EntityComponentSystem2022 cmake-build-debug/entity-component-system REQUIRED)
 find_library(GLEW libglew32d cmake-build-debug/lib REQUIRED)
 find_library(GLFW glfw3 cmake-build-debug/vendor/glfw/src)
+find_library(IMGUI imgui cmake-build-debug/vendor)
 
 message(STATUS ${ECS})
 message(STATUS ${GLEW})
 message(STATUS ${GLFW})
+message(STATUS ${IMGUI})
 target_link_libraries(${PROJECT_NAME}
-        ${ECS} ${GLEW} OpenGL::GL ${GLFW}
+        ${ECS} ${GLEW} OpenGL::GL ${GLFW} ${IMGUI}
         )

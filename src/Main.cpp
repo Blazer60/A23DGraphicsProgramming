@@ -8,6 +8,9 @@
 #include "glm.hpp"
 #include "glew.h"
 #include "glfw3.h"
+#include "imgui.h"
+#include "backends/imgui_impl_glfw.h"
+#include "backends/imgui_impl_opengl3.h"
 
 int main()
 {
@@ -35,6 +38,10 @@ int main()
         // No context yet.
         return 3;
     }
+    
+    ImGui::CreateContext();
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init();
     
     
     ecs::create<glm::vec2>(ecs::TypeDefault);
