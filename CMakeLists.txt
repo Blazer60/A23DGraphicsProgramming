@@ -33,7 +33,10 @@ target_include_directories(${PROJECT_NAME} PUBLIC
         )
 
 target_precompile_headers(${PROJECT_NAME} PUBLIC
-        <iostream>
+        <iostream>  <vector>        <unordered_map>
+        <string>    <string_view>   <algorithm>
+        <memory>    <numeric>       <cstdint>
+        <glm.hpp>
         )
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC
