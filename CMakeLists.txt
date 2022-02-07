@@ -4,6 +4,10 @@ set(PROJECT_NAME A23DGraphicsProgramming)
 project(${PROJECT_NAME})
 set(CMAKE_CXX_STANDARD 17)
 
+message(STATUS "Using Cmake:    " ${CMAKE_VERSION})
+message(STATUS "Compiling with: " ${CMAKE_CXX_COMPILER_ID})
+message(STATUS "CXX Standard:   " ${CMAKE_CXX_STANDARD})
+
 add_subdirectory(entity-component-system)
 add_subdirectory(vendor/glm)
 add_subdirectory(vendor/glew/build/cmake)
@@ -16,19 +20,16 @@ add_executable(${PROJECT_NAME}
         )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
-        entity-component-system
-        entity-component-system/include
-        entity-component-system/include/systems
+# Project Includes
+        include
 
-        vendor/glm/glm
+# ECS Includes
+        entity-component-system                     entity-component-system/include
+        entity-component-system/include/systems     entity-component-system/src
 
-        vendor/glew/include/GL
-
-        vendor/glfw/include/GLFW
-
-        vendor/imgui
-
-        entity-component-system/src
+# Vendor Includes
+        vendor/glm/glm                              vendor/glew/include/GL
+        vendor/glfw/include/GLFW                    vendor/imgui
         )
 
 target_precompile_headers(${PROJECT_NAME} PUBLIC
@@ -39,16 +40,15 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC
         GLEW_STATIC
         )
 
-find_package(OpenGL)  # Glew Requires OpenGL to be added.
-find_library(ECS EntityComponentSystem2022 cmake-build-debug/entity-component-system REQUIRED)
-find_library(GLEW libglew32d cmake-build-debug/lib REQUIRED)
-find_library(GLFW glfw3 cmake-build-debug/vendor/glfw/src)
-find_library(IMGUI imgui cmake-build-debug/vendor)
 
-message(STATUS ${ECS})
-message(STATUS ${GLEW})
-message(STATUS ${GLFW})
-message(STATUS ${IMGUI})
+find_package(OpenGL)  # Glew Requires OpenGL to be added.
+find_library(ECS   NAMES EntityComponentSystem2022 PATHS ${CMAKE_CURRENT_BINARY_DIR}/entity-component-system REQUIRED)
+find_library(GLEW  NAMES libglew32d                PATHS ${CMAKE_CURRENT_BINARY_DIR}/lib                     REQUIRED)
+find_library(GLFW  NAMES glfw3                     PATHS ${CMAKE_CURRENT_BINARY_DIR}/vendor/glfw/src         REQUIRED)
+find_library(IMGUI NAMES imgui                     PATHS ${CMAKE_CURRENT_BINARY_DIR}/vendor                  REQUIRED)
+
 target_link_libraries(${PROJECT_NAME}
-        ${ECS} ${GLEW} OpenGL::GL ${GLFW} ${IMGUI}
+        ${ECS}  ${GLEW}
+        ${GLFW} ${IMGUI}
+        OpenGL::GL
         )
