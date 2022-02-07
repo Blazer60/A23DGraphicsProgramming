@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 add_subdirectory(entity-component-system)
 add_subdirectory(vendor/glm)
+add_subdirectory(vendor/glew/build/cmake)
 
 
 add_executable(${PROJECT_NAME}
@@ -19,6 +20,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 
         vendor/glm/glm
 
+        vendor/glew/include/GL
+
         entity-component-system/src
         )
 
@@ -26,10 +29,16 @@ target_precompile_headers(${PROJECT_NAME} PUBLIC
         <iostream>
         )
 
+target_compile_definitions(${PROJECT_NAME} PUBLIC
+        GLEW_STATIC
+        )
 
-find_library(ECS EntityComponentSystem2022 cmake-build-debug/entity-component-system)
+find_package(OpenGL)  # Glew Requires OpenGL to be added.
+find_library(ECS EntityComponentSystem2022 cmake-build-debug/entity-component-system REQUIRED)
+find_library(GLEW libglew32d cmake-build-debug/lib REQUIRED)
 
 message(STATUS ${ECS})
+message(STATUS ${GLEW})
 target_link_libraries(${PROJECT_NAME}
-        ${ECS}
+        ${ECS} ${GLEW} OpenGL::GL
         )

@@ -6,11 +6,17 @@
 
 #include "Ecs.h"
 #include "glm.hpp"
-
+#include "glew.h"
 
 int main()
 {
     ecs::init();
+    if (glewInit() != GLEW_OK)
+    {
+        // No context yet.
+        return 3;
+    }
+    
     
     ecs::create<glm::vec2>(ecs::TypeDefault);
     
