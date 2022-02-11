@@ -9,4 +9,5 @@
 int main()
 {
     Core core(glm::ivec2(1920, 1080));
+    core.run();
 }

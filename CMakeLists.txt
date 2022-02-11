@@ -16,13 +16,15 @@ add_subdirectory(vendor)
 
 
 add_executable(${PROJECT_NAME}
-        src/Main.cpp        src/core/Core.cpp   src/core/Core.h
-        src/core/Scene.cpp  src/core/Scene.h
+        src/Main.cpp                src/core/Core.cpp       src/core/Core.h
+        src/core/Scene.cpp          src/core/Scene.h        include/core/DebugLogger.h
+        src/core/DebugLogger.cpp
         )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
 # Project Includes
         include
+        include/core
 
 # ECS Includes
         entity-component-system                     entity-component-system/include
@@ -37,7 +39,7 @@ target_precompile_headers(${PROJECT_NAME} PUBLIC
         <iostream>  <vector>        <unordered_map>
         <string>    <string_view>   <algorithm>
         <memory>    <numeric>       <cstdint>
-        <glm.hpp>
+        <glm.hpp>   [["DebugLogger.h"]]
         )
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC

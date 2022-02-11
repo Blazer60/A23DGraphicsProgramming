@@ -6,3 +6,13 @@
 
 
 #include "Scene.h"
+
+void Scene::onUpdate()
+{
+
+}
+
+void Scene::onImguiUpdate()
+{
+
+}

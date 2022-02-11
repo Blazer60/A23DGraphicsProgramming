@@ -22,24 +22,24 @@ public:
     explicit Core(const glm::ivec2 &resolution);
     ~Core();
     
+    void run();
+protected:
     bool initGlfw();
     bool initOpenGl();
     bool initImGui();
-    //
-    // void run();
-    //
-    // void updateScenes();
-    // void updateImgui();
+
+    void updateScene();
+    void updateImgui();
 
 protected:
     // Order of declaration matters here.
-    const glm::ivec2         mResolution    { 1920, 1080 };
-    const std::string_view   mWindowTitle   { "3D Graphics Pipeline" };
-    GLFWwindow              *mWindow        { nullptr };  // Must be declared after resolution and title.
+    const glm::ivec2         mResolution  { 1920, 1080 };
+    const std::string_view   mWindowTitle { "3D Graphics Pipeline" };
+    GLFWwindow              *mWindow      { nullptr };  // Must be declared after resolution and title.
     
     std::unique_ptr<Scene>   mScene;
     
-    bool                     mIsRunning     { true };
+    bool                     mIsRunning   { true };
 };
 
 

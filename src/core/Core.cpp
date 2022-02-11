@@ -18,6 +18,7 @@ Core::Core(const glm::ivec2 &resolution)
     if (!(initGlfw() && initOpenGl() && initImGui()))
     {
         mIsRunning = false;
+        debug::log("Unable to initialise everything.", debug::severity::Warning);
         return;
     }
     
@@ -31,6 +32,20 @@ Core::~Core()
     glfwTerminate();
     ImGui_ImplGlfw_Shutdown();
     ImGui_ImplOpenGL3_Shutdown();
+}
+
+void Core::run()
+{
+    while (mIsRunning)
+    {
+        updateScene();
+        updateImgui();
+        
+        glfwSwapBuffers(mWindow);
+        
+        glfwPollEvents();
+        mIsRunning = !glfwWindowShouldClose(mWindow);
+    }
 }
 
 bool Core::initGlfw()
@@ -60,9 +75,9 @@ bool Core::initOpenGl()
     // Debug Messaging.
     glEnable(GL_DEBUG_OUTPUT);
     glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-    // glDebugMessageCallback(debug::openglCallBack, nullptr);
-    //
-    // debug::log(glGetString(GL_VERSION), debug::severity::Notification);
+    glDebugMessageCallback(debug::openglCallBack, nullptr);
+
+    debug::log(glGetString(GL_VERSION), debug::severity::Notification);
     
     int flags;
     glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
@@ -91,4 +106,21 @@ bool Core::initImGui()
     ImGui::StyleColorsDark();
     
     return true;
+}
+
+void Core::updateScene()
+{
+    mScene->onUpdate();
+}
+
+void Core::updateImgui()
+{
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+    
+    mScene->onImguiUpdate();
+    
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
