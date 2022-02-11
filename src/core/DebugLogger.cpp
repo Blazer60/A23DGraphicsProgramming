@@ -14,6 +14,8 @@
 namespace debug
 {
     static severity throwLevel = severity::Major;
+    static unsigned char outputSources = static_cast<unsigned char>(sources::File)
+                                       | static_cast<unsigned char>(sources::IoStream);
 
     static std::unordered_map<severity, std::string_view> severityStringMap {
             { severity::Notification,   "Notification" },
@@ -56,36 +58,44 @@ namespace debug
 
     static std::deque<std::string> logQueue;
     static uint64_t logQueueSizeMax { 20ull };
-
+    
+    void setSources(unsigned char sourcesFlag)
+    {
+    
+    }
     // Throw level getters and setters.
     void setThrowLevel(severity level) { throwLevel = level; }
+    
     severity getThrowLevel() { return throwLevel; }
-
+    
     void logFile(std::string_view msg)
     {
-#ifdef LOG_TO_FILE
+        if (!(outputSources & static_cast<unsigned char>(sources::File)))
+            return;
+        
         std::ofstream file(fileName.data(), std::ios_base::app);
         file << msg;
         file.close();
-#endif // LOG_TO_FILE
     }
-
+    
     void logConsole(std::string_view msg)
     {
-#ifdef LOG_TO_CONSOLE
+        if (!(outputSources & static_cast<unsigned char>(sources::IoStream)))
+            return;
+        
         std::cout << msg;
-#endif // LOG_TO_CONSOLE
     }
     
     void logToQueue(std::string_view msg)
     {
-#ifdef LOG_TO_QUEUE
+        if (!(outputSources & static_cast<unsigned char>(sources::Queue)))
+            return;
+        
         if (logQueue.size() >= logQueueSizeMax)
             logQueue.pop_front();
         logQueue.emplace_back(msg);
-#endif  // LOG_TO_QUEUE
     }
-
+    
     void logToSources(const std::stringstream &ss)
     {
         std::string output = ss.str();
@@ -94,7 +104,7 @@ namespace debug
         logConsole(output);
         logToQueue(output);
     }
-
+    
     void log(std::string_view message, severity level)
     {
         std::stringstream ss;
@@ -106,7 +116,7 @@ namespace debug
         logToSources(ss);
         if (level >= throwLevel) { throw LogException(); }
     }
-
+    
     void log(const unsigned char *message, severity level)
     {
         std::stringstream ss;
@@ -118,7 +128,7 @@ namespace debug
         logToSources(ss);
         if (level >= throwLevel) { throw LogException(); }
     }
-
+    
     void openglCallBack(GLenum source, GLenum type, GLuint id,
                         GLenum severity, GLsizei length,
                         const GLchar *message, const void *userParam)
@@ -139,7 +149,7 @@ namespace debug
         logToSources(ss);
         if (level >= throwLevel) { throw LogException(); }
     }
-
+    
     void clearLogs()
     {
         std::ofstream file(fileName.data(), std::ios_base::out | std::ios_base::trunc);

@@ -33,6 +33,10 @@ namespace debug
      * @enum Unknown - An incoming message has no known type attached to it.
      */
     enum class severity : unsigned char { Notification, Warning, Minor, Major, Fatal, Unknown };
+    
+    enum class sources : unsigned char { File=0b001, IoStream=0b010, Queue=0b100 };
+    
+    void setSources(unsigned char sourcesFlag);
 
     /** Sets the severity level in which the program will crash. */
     void setThrowLevel(severity level);
