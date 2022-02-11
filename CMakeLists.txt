@@ -16,7 +16,8 @@ add_subdirectory(vendor)
 
 
 add_executable(${PROJECT_NAME}
-        src/Main.cpp
+        src/Main.cpp        src/core/Core.cpp   src/core/Core.h
+        src/core/Scene.cpp  src/core/Scene.h
         )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
