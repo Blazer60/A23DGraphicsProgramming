@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include "Components.h"
 
 /**
  * An abstraction to differentiate from core functionality and ECS Systems
@@ -16,12 +17,15 @@
 class Scene
 {
 public:
-    Scene() = default;
+    Scene();
     ~Scene() = default;
     
     void onUpdate();
     
     void onImguiUpdate();
+
+protected:
+    std::shared_ptr<BasicMesh> mCube;
 };
 
 

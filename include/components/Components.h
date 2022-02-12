@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <utility>
 #include <vector>
 #include "glm.hpp"
 
@@ -31,20 +32,21 @@ struct Fbo
     unsigned int id;
 };
 
-struct Vertex {};
+// struct Vertex {};
 
 struct BasicVertex
-        : Vertex
+        // : Vertex
 {
     glm::vec3 position  { 0.f };
     glm::vec3 colour    { 0.f };
 };
 
-struct Mesh {};
-
 struct BasicMesh
-        : Mesh
 {
+    BasicMesh() = default;
+    BasicMesh(std::vector<BasicVertex> v, std::vector<unsigned int> i)
+        : vertices(std::move(v)), indices(std::move(i)) {}
+    
     std::vector<BasicVertex>    vertices;
     std::vector<unsigned int>   indices;
 };

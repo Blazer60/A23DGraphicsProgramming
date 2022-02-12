@@ -29,7 +29,7 @@ public:
  * @date 12/02/2022
  */
 class BasicVaoBinderSystem
-        : ecs::BaseSystem<Vao, Vbo, Ebo>
+        : public ecs::BaseSystem<Vao, Vbo, Ebo>
 {
     void onUpdate() override;
 };

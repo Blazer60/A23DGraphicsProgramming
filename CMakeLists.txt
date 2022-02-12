@@ -19,13 +19,14 @@ add_executable(${PROJECT_NAME}
         src/Main.cpp                            src/core/Core.cpp                   src/core/Core.h
         src/core/Scene.cpp                      src/core/Scene.h                    include/core/DebugLogger.h
         src/core/DebugLogger.cpp                include/components/Components.h     src/systems/BasicBinderSystems.cpp
-        include/systems/BasicBinderSystems.h
+        include/systems/BasicBinderSystems.h    src/helpers/Primitives.cpp          include/helpers/Primitives.h
         )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
 # Project Includes
         include                                     include/core
         include/systems                             include/components
+        include/helpers
 
 # ECS Includes
         entity-component-system                     entity-component-system/include
