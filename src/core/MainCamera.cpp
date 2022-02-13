@@ -53,7 +53,14 @@ void MainCamera::move()
     glfwSetCursorPos(mWindow, 0.0, 0.0);
     
     // mRotation = glm::rotate(mRotation, static_cast<float>(glm::radians(mouseOffset.x)), glm::vec3(0.f, 1.f, 0.f));
-    mRotation = mRotation * glm::quat(glm::vec3(0.f, -glm::radians(mouseOffset.x), 0.f));
+    mPanAngles -= glm::radians(mouseOffset) * mMouseSpeed;
+    
+    const glm::vec3 up    = glm::vec3(0.f, 1.f, 0.f);
+    const glm::vec3 right = glm::vec3(1.f, 0.f, 0.f);
+    
+    mRotation = glm::angleAxis(static_cast<float>(mPanAngles.x), up)
+              * glm::angleAxis(static_cast<float>(mPanAngles.y), right);
+
     
     glm::vec3 input(0.f);
     if (glfwGetKey(mWindow, GLFW_KEY_W))

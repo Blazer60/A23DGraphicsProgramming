@@ -32,9 +32,11 @@ protected:
     glm::mat4       mProjectionMatrix   { 1.f };
     
     glm::vec3       mPosition           { 0.f, 0.f, 3.f };
-    glm::quat       mRotation           { glm::vec3(0.f, 0.f, 0.f) };
+    glm::quat       mRotation           { glm::vec3(0.f) };
+    glm::dvec2      mPanAngles          { 0.f };
     
     float           mSpeed              { 1.f };
+    double          mMouseSpeed         { 0.5f };
     
     float           mFovY               { glm::radians(45.f) };
     float           mNearClip           { 0.001f };
