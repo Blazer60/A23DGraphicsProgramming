@@ -10,6 +10,7 @@
 #include "Ecs.h"
 #include "Components.h"
 #include "Shader.h"
+#include "MainCamera.h"
 
 /**
  * Renders basic items using the specified shader.
@@ -20,12 +21,13 @@ class BasicShaderSystem
         : public ecs::BaseSystem<Vao, Fbo, EboCount>
 {
 public:
-    BasicShaderSystem();
+    explicit BasicShaderSystem(std::shared_ptr<MainCamera> camera);
     
     void onUpdate() override;
 
 protected:
     Shader mShader { "../res/shaders/basic/Basic.vert", "../res/shaders/basic/Basic.frag" };
+    std::shared_ptr<MainCamera> mCamera;
 };
 
 

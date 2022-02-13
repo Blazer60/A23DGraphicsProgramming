@@ -13,7 +13,9 @@
 #include "gtc/type_ptr.hpp"
 
 Scene::Scene()
-    : mCube(primitives::basicCube()), mTri(primitives::basicTriangle())
+    : mCube(primitives::basicCube()),
+      mTri(primitives::basicTriangle()),
+      mMainCamera(std::make_shared<MainCamera>())
 {
     ecs::Component basicVao = ecs::create<Vao>();
     ecs::create<Vbo>(ecs::TypeDefault);
@@ -36,7 +38,7 @@ Scene::Scene()
     ecs::createSystem<BasicVaoBinderSystem>(basicVaoBinderSystemType);
     
     ecs::UType basicShaderSystemType { basicVao, ecs::getComponentIdOf<Fbo>(), ecs::getComponentIdOf<EboCount>() };
-    ecs::createSystem<BasicShaderSystem>(basicShaderSystemType);
+    ecs::createSystem<BasicShaderSystem>(basicShaderSystemType, mMainCamera);
     
     ecs::start();
 }
@@ -47,6 +49,10 @@ void Scene::onUpdate()
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     const glm::vec4 bgColour { 0.f, 0.f, 0.2f, 1.f };
     glClearNamedFramebufferfv(0, GL_COLOR, 0, glm::value_ptr(bgColour));
+    const float depth { 1.f };
+    glClearNamedFramebufferfv(0, GL_DEPTH, 0, &depth);
+    
+    mMainCamera->update();
     ecs::update();
 }
 
