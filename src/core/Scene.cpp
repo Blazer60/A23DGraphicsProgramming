@@ -28,6 +28,8 @@ Scene::Scene()
     
     ecs::UType basicVaoBinderSystemType { basicVao, ecs::getComponentIdOf<Vbo>(), ecs::getComponentIdOf<Ebo>() };
     ecs::createSystem<BasicVaoBinderSystem>(basicVaoBinderSystemType);
+    
+    ecs::start();
 }
 
 void Scene::onUpdate()

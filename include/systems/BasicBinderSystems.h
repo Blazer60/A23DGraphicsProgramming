@@ -19,6 +19,7 @@ class BasicMeshBinderSystem
         : public ecs::BaseSystem<std::shared_ptr<BasicMesh>, Vbo, Ebo>
 {
 public:
+    void onStart() override;
     void onUpdate() override;
 };
 
@@ -31,6 +32,8 @@ public:
 class BasicVaoBinderSystem
         : public ecs::BaseSystem<Vao, Vbo, Ebo>
 {
+public:
+    void onStart() override;
     void onUpdate() override;
 };
 

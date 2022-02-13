@@ -9,11 +9,8 @@
 
 #include <glew.h>
 
-void BasicMeshBinderSystem::onUpdate()
+void BasicMeshBinderSystem::onStart()
 {
-    // todo: Make an on start method and get the difference between onEach in onStart and onUpdate.
-    // todo: Make onUpdate set forEach to nothing.
-    // todo: You could have another function that only runs once before update.
     std::cout << "Generating Vbo and Ebo\n";
     mEntities.forEach([](const std::shared_ptr<BasicMesh> &mesh, Vbo &vbo, Ebo &ebo) {
         glCreateBuffers(1, &vbo.id);
@@ -23,11 +20,18 @@ void BasicMeshBinderSystem::onUpdate()
     });
 }
 
+void BasicMeshBinderSystem::onUpdate()
+{
+    mEntities.forEach([](const std::shared_ptr<BasicMesh> &mesh, Vbo &vbo, Ebo &ebo) {
+    
+    });
+}
 
-void BasicVaoBinderSystem::onUpdate()
+
+void BasicVaoBinderSystem::onStart()
 {
     std::cout << "Generating Vao\n";
-    mEntities.forEach([](Vao &vao, Vbo &vbo, Ebo &ebo){
+    mEntities.forEach([](Vao &vao, Vbo &vbo, Ebo &ebo) {
         glCreateVertexArrays(1, &vao.id);
         
         const int bindingIndex = 0;
@@ -45,5 +49,12 @@ void BasicVaoBinderSystem::onUpdate()
         
         glVertexArrayVertexBuffer(vao.id, bindingIndex, vbo.id, offSet, stride);
         glVertexArrayElementBuffer(vao.id, ebo.id);
+    });
+}
+
+void BasicVaoBinderSystem::onUpdate()
+{
+    mEntities.forEach([](Vao &vao, Vbo &vbo, Ebo &ebo) {
+    
     });
 }
