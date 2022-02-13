@@ -9,6 +9,7 @@
 #include "Primitives.h"
 #include "Ecs.h"
 #include "BasicBinderSystems.h"
+#include "Shader.h"
 
 Scene::Scene()
     : mCube(primitives::basicCube())
@@ -30,6 +31,8 @@ Scene::Scene()
     ecs::createSystem<BasicVaoBinderSystem>(basicVaoBinderSystemType);
     
     ecs::start();
+    
+    Shader shader("../res/shaders/basic/Basic.vert", "../res/shaders/basic/Basic.frag");
 }
 
 void Scene::onUpdate()

@@ -20,6 +20,7 @@ add_executable(${PROJECT_NAME}
         src/core/Scene.cpp                      src/core/Scene.h                    include/core/DebugLogger.h
         src/core/DebugLogger.cpp                include/components/Components.h     src/systems/BasicBinderSystems.cpp
         include/systems/BasicBinderSystems.h    src/helpers/Primitives.cpp          include/helpers/Primitives.h
+        src/core/Shader.cpp include/core/Shader.h
         )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
