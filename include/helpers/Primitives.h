@@ -12,4 +12,5 @@
 namespace primitives
 {
     [[nodiscard]] std::shared_ptr<BasicMesh> basicCube();
+    [[nodiscard]] std::shared_ptr<BasicMesh> basicTriangle();
 }

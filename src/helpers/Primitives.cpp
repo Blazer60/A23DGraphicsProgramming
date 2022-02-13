@@ -40,3 +40,16 @@ std::shared_ptr<BasicMesh> primitives::basicCube()
     
     return std::make_shared<BasicMesh>(vertices, indices);
 }
+
+std::shared_ptr<BasicMesh> primitives::basicTriangle()
+{
+    const auto red = glm::vec3(1.f, 0.f, 0.f);
+    std::vector<BasicVertex> vertices {
+            BasicVertex { glm::vec3( 0.0f,   0.5f,  0.0f), red },
+            BasicVertex { glm::vec3(-0.5f,  -0.5f,  0.0f), red },
+            BasicVertex { glm::vec3( 0.5f,  -0.5f,  0.0f), red },
+    };
+    
+    std::vector<unsigned int> indices { 0, 2, 1, 0, 1, 2 };
+    return std::make_shared<BasicMesh>(vertices, indices);
+}

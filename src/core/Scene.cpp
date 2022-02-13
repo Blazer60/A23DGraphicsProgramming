@@ -11,9 +11,31 @@
 #include "BasicBinderSystems.h"
 #include "BasicShaderSystem.h"
 #include "Shader.h"
+#include "gtc/type_ptr.hpp"
+
+// GLfloat vertices[] =
+//         {
+//                 -0.5f, -0.5f , 0.0f,  1.f, 0.f, 0.f,
+//                 -0.5f,  0.5f , 0.0f,  1.f, 0.f, 0.f,
+//                 0.5f,  0.5f , 0.0f,   1.f, 0.f, 0.f,
+//                 0.5f, -0.5f , 0.0f, 1.f, 0.f, 0.f,
+//         };
+
+std::vector<BasicVertex> vertices = {
+    BasicVertex{ glm::vec3(-0.5f, -0.5f , 0.0f), glm::vec3(1.f, 0.f, 1.f) },
+    BasicVertex{ glm::vec3(-0.5f,  0.5f , 0.0f), glm::vec3(1.f, 0.f, 1.f) },
+    BasicVertex{ glm::vec3(0.5f,  0.5f , 0.0f), glm::vec3(1.f, 0.f, 1.f) },
+    BasicVertex{ glm::vec3(0.5f, -0.5f , 0.0f), glm::vec3(1.f, 0.f, 1.f) },
+};
+
+std::vector<unsigned int> indices =
+        {
+                0, 2, 1,
+                0, 3, 2
+        };
 
 Scene::Scene()
-    : mCube(primitives::basicCube())
+    : mCube(primitives::basicCube()), mTri(primitives::basicTriangle())
 {
     ecs::Component basicVao = ecs::create<Vao>();
     ecs::create<Vbo>(ecs::TypeDefault);
@@ -39,8 +61,6 @@ Scene::Scene()
     ecs::createSystem<BasicShaderSystem>(basicShaderSystemType);
     
     ecs::start();
-    
-    Shader shader("../res/shaders/basic/Basic.vert", "../res/shaders/basic/Basic.frag");
 }
 
 void Scene::onUpdate()

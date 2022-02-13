@@ -35,18 +35,18 @@ void BasicVaoBinderSystem::onStart()
     mEntities.forEach([](Vao &vao, Vbo &vbo, Ebo &ebo) {
         glCreateVertexArrays(1, &vao.id);
         
-        const int bindingIndex = 0;
-        const int offSet = 0;
-        const int stride = sizeof(BasicVertex);
+        const unsigned int bindingIndex = 0;
+        const unsigned int offSet = 0;
+        const unsigned int stride = sizeof(BasicVertex);
         
         glEnableVertexArrayAttrib(vao.id, 0);
-        glVertexArrayAttribBinding(vao.id, 0, bindingIndex);
         // vao, attrib index, count, type, normalized, offset
         glVertexArrayAttribFormat(vao.id, 0, 3, GL_FLOAT, GL_FALSE, offsetof(BasicVertex, position));
+        glVertexArrayAttribBinding(vao.id, 0, bindingIndex);
         
         glEnableVertexArrayAttrib(vao.id, 1);
-        glVertexArrayAttribBinding(vao.id, 1, bindingIndex);
         glVertexArrayAttribFormat(vao.id, 1, 3, GL_FLOAT, GL_FALSE, offsetof(BasicVertex, colour));
+        glVertexArrayAttribBinding(vao.id, 1, bindingIndex);
         
         glVertexArrayVertexBuffer(vao.id, bindingIndex, vbo.id, offSet, stride);
         glVertexArrayElementBuffer(vao.id, ebo.id);

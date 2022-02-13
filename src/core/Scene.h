@@ -8,6 +8,7 @@
 #pragma once
 
 #include "Components.h"
+#include "Shader.h"
 
 /**
  * An abstraction to differentiate from core functionality and ECS Systems
@@ -26,6 +27,10 @@ public:
 
 protected:
     std::shared_ptr<BasicMesh> mCube;
+    std::shared_ptr<BasicMesh> mTri;
+    
+    GLuint VAO, VBO, EBO;
+    Shader shader { "../res/shaders/basic/Basic.vert", "../res/shaders/basic/Basic.frag" };
 };
 
 

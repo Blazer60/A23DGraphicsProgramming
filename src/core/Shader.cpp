@@ -17,7 +17,7 @@ Shader::Shader(std::string_view vertexPath, std::string_view fragmentPath)
     unsigned int fs = compile(GL_FRAGMENT_SHADER, fragmentPath);
     
     glAttachShader(mId, vs);
-    glAttachShader(mId, vs);
+    glAttachShader(mId, fs);
     glLinkProgram(mId);
     glValidateProgram(mId);
     
@@ -51,7 +51,7 @@ unsigned int Shader::compile(unsigned int type, std::string_view path)
     
     int result;
     glGetShaderiv(id, GL_COMPILE_STATUS, &result);  // OpenGL fails silently, so we need to check it ourselves.
-    if (GL_FALSE != result)
+    if (GL_TRUE == result)
         return id;
     
     const std::unordered_map<unsigned int, std::string> shaderTypes {
