@@ -18,15 +18,20 @@ std::shared_ptr<BasicMesh> primitives::basicCube()
     const auto lbf = glm::vec3(-0.5f, -0.5f, -0.5f);
     const auto rbf = glm::vec3( 0.5f, -0.5f, -0.5f);
     
-    const auto red = glm::vec3(1.f, 0.f, 0.f);
+    const auto white  = glm::vec3(1.f, 1.f, 1.f);
+    const auto green  = glm::vec3(0.f, 0.59f, 0.27f);
+    const auto red    = glm::vec3(0.72f, 0.04f, 0.19f);
+    const auto blue   = glm::vec3(0.f, 0.27f, 0.68f);
+    const auto orange = glm::vec3(1.f, 0.34f, 0.f);
+    const auto yellow = glm::vec3(1.f, 0.84f, 0.f);
     
     std::vector<BasicVertex> vertices {
-            BasicVertex{ ltb, red }, BasicVertex{ rtb, red }, BasicVertex{ rtf, red }, BasicVertex{ ltf, red },  // Top Face
-            BasicVertex{ rbb, red }, BasicVertex{ rtb, red }, BasicVertex{ ltb, red }, BasicVertex{ lbb, red },  // Back Face
+            BasicVertex{ ltb, white }, BasicVertex{ rtb, white }, BasicVertex{ rtf, white }, BasicVertex{ ltf, white },  // Top Face
+            BasicVertex{ rbb, green }, BasicVertex{ rtb, green }, BasicVertex{ ltb, green }, BasicVertex{ lbb, green },  // Back Face
             BasicVertex{ rtf, red }, BasicVertex{ rtb, red }, BasicVertex{ rbb, red }, BasicVertex{ rbf, red },  // Right Face
-            BasicVertex{ ltf, red }, BasicVertex{ lbf, red }, BasicVertex{ lbb, red }, BasicVertex{ ltb, red },  // Left Face
-            BasicVertex{ rbf, red }, BasicVertex{ lbf, red }, BasicVertex{ ltf, red }, BasicVertex{ rtf, red },  // Front Face
-            BasicVertex{ lbb, red }, BasicVertex{ lbf, red }, BasicVertex{ rbf, red }, BasicVertex{ rbb, red },  // Bottom Face
+            BasicVertex{ ltf, blue }, BasicVertex{ lbf, blue }, BasicVertex{ lbb, blue }, BasicVertex{ ltb, blue },  // Left Face
+            BasicVertex{ rbf, orange }, BasicVertex{ lbf, orange }, BasicVertex{ ltf, orange }, BasicVertex{ rtf, orange },  // Front Face
+            BasicVertex{ lbb, yellow }, BasicVertex{ lbf, yellow }, BasicVertex{ rbf, yellow }, BasicVertex{ rbb, yellow },  // Bottom Face
     };
     
     std::vector<unsigned int> indices {
