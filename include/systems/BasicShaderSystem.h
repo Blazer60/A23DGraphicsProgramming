@@ -20,6 +20,8 @@ class BasicShaderSystem
         : public ecs::BaseSystem<Vao, Fbo, EboCount>
 {
 public:
+    BasicShaderSystem();
+    
     void onUpdate() override;
 
 protected:

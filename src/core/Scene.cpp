@@ -10,29 +10,7 @@
 #include "Ecs.h"
 #include "BasicBinderSystems.h"
 #include "BasicShaderSystem.h"
-#include "Shader.h"
 #include "gtc/type_ptr.hpp"
-
-// GLfloat vertices[] =
-//         {
-//                 -0.5f, -0.5f , 0.0f,  1.f, 0.f, 0.f,
-//                 -0.5f,  0.5f , 0.0f,  1.f, 0.f, 0.f,
-//                 0.5f,  0.5f , 0.0f,   1.f, 0.f, 0.f,
-//                 0.5f, -0.5f , 0.0f, 1.f, 0.f, 0.f,
-//         };
-
-std::vector<BasicVertex> vertices = {
-    BasicVertex{ glm::vec3(-0.5f, -0.5f , 0.0f), glm::vec3(1.f, 0.f, 1.f) },
-    BasicVertex{ glm::vec3(-0.5f,  0.5f , 0.0f), glm::vec3(1.f, 0.f, 1.f) },
-    BasicVertex{ glm::vec3(0.5f,  0.5f , 0.0f), glm::vec3(1.f, 0.f, 1.f) },
-    BasicVertex{ glm::vec3(0.5f, -0.5f , 0.0f), glm::vec3(1.f, 0.f, 1.f) },
-};
-
-std::vector<unsigned int> indices =
-        {
-                0, 2, 1,
-                0, 3, 2
-        };
 
 Scene::Scene()
     : mCube(primitives::basicCube()), mTri(primitives::basicTriangle())
@@ -65,6 +43,10 @@ Scene::Scene()
 
 void Scene::onUpdate()
 {
+    // This needs to be in its own class.
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    const glm::vec4 bgColour { 0.f, 0.f, 0.2f, 1.f };
+    glClearNamedFramebufferfv(0, GL_COLOR, 0, glm::value_ptr(bgColour));
     ecs::update();
 }
 
