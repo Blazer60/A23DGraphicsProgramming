@@ -16,7 +16,7 @@
  * @date 12/02/2022
  */
 class BasicMeshBinderSystem
-        : public ecs::BaseSystem<std::shared_ptr<BasicMesh>, Vbo, Ebo>
+        : public ecs::BaseSystem<std::shared_ptr<BasicMesh>, Vbo, Ebo, EboCount>
 {
 public:
     void onStart() override;

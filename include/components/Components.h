@@ -24,12 +24,16 @@ struct Vbo
 struct Ebo
 {
     unsigned int id;
-    unsigned int count;
+};
+
+struct EboCount
+{
+    int count;
 };
 
 struct Fbo
 {
-    unsigned int id;
+    unsigned int id { 0 };
 };
 
 // struct Vertex {};

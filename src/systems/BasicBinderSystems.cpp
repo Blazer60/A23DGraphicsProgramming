@@ -12,17 +12,18 @@
 void BasicMeshBinderSystem::onStart()
 {
     std::cout << "Generating Vbo and Ebo\n";
-    mEntities.forEach([](const std::shared_ptr<BasicMesh> &mesh, Vbo &vbo, Ebo &ebo) {
+    mEntities.forEach([](const std::shared_ptr<BasicMesh> &mesh, Vbo &vbo, Ebo &ebo, EboCount &eboCount) {
         glCreateBuffers(1, &vbo.id);
         glCreateBuffers(1, &ebo.id);
         glNamedBufferData(vbo.id, mesh->vertices.size() * sizeof(BasicVertex), &mesh->vertices[0], GL_STATIC_DRAW);
         glNamedBufferData(ebo.id, mesh->indices.size() * sizeof(unsigned int), &mesh->indices[0], GL_STATIC_DRAW);
+        eboCount.count = mesh->indices.size();
     });
 }
 
 void BasicMeshBinderSystem::onUpdate()
 {
-    mEntities.forEach([](const std::shared_ptr<BasicMesh> &mesh, Vbo &vbo, Ebo &ebo) {
+    mEntities.forEach([](const std::shared_ptr<BasicMesh> &mesh, Vbo &vbo, Ebo &ebo, EboCount &eboCount) {
     
     });
 }
