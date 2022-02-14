@@ -7,6 +7,7 @@
 
 #include "MainCamera.h"
 #include "glfw3.h"
+#include "Timers.h"
 
 MainCamera::MainCamera()
     : mWindow(glfwGetCurrentContext())
@@ -46,7 +47,7 @@ void MainCamera::move()
         return;
     
     // const float timeStep = static_cast<float>(glfwGetTime());
-    const float timeStep = 0.001f;
+    const auto timeStep = timers::deltaTime<float>();
     
     glm::dvec2 mouseOffset;
     glfwGetCursorPos(mWindow, &mouseOffset.x, &mouseOffset.y);

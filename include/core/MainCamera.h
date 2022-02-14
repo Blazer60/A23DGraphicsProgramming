@@ -35,7 +35,7 @@ protected:
     glm::quat       mRotation           { glm::vec3(0.f) };
     glm::dvec2      mPanAngles          { 0.f };
     
-    float           mSpeed              { 1.f };
+    float           mSpeed              { 10.f };
     double          mMouseSpeed         { 0.5f };
     
     float           mFovY               { glm::radians(45.f) };

@@ -12,6 +12,7 @@
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 #include "glfw3.h"
+#include "Timers.h"
 
 Core::Core(const glm::ivec2 &resolution)
 {
@@ -45,6 +46,7 @@ void Core::run()
         
         glfwPollEvents();
         mIsRunning = !glfwWindowShouldClose(mWindow);
+        timers::update();
     }
 }
 
