@@ -18,10 +18,12 @@
  * @date 13/02/2022
  */
 class BasicShaderSystem
-        : public ecs::BaseSystem<Vao, Fbo, EboCount>
+        : public ecs::BaseSystem<Vao, Fbo, EboCount, BasicUniforms>
 {
 public:
     explicit BasicShaderSystem(std::shared_ptr<MainCamera> camera);
+    
+    void onStart() override;
     
     void onUpdate() override;
 

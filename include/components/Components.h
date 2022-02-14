@@ -10,6 +10,7 @@
 #include <utility>
 #include <vector>
 #include "glm.hpp"
+#include "detail/type_quat.hpp"
 
 struct Vao
 {
@@ -34,6 +35,18 @@ struct EboCount
 struct Fbo
 {
     unsigned int id { 0 };
+};
+
+struct Transform
+{
+    glm::vec3 position { 0.f };
+    glm::quat rotation { glm::vec3(0.f) };
+    glm::vec3 scale    { 1.f };
+};
+
+struct BasicUniforms
+{
+    glm::mat4 modelMat { 1.f };
 };
 
 // struct Vertex {};

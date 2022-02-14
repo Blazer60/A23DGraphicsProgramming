@@ -22,7 +22,7 @@ add_executable(${PROJECT_NAME}
         include/systems/BasicBinderSystems.h    src/helpers/Primitives.cpp         include/helpers/Primitives.h
         src/core/Shader.cpp                     include/core/Shader.h              src/systems/BasicShaderSystem.cpp
         include/systems/BasicShaderSystem.h     src/core/MainCamera.cpp            include/core/MainCamera.h
-        )
+        src/systems/BasicUniformUpdaterSystem.cpp include/systems/BasicUniformUpdaterSystem.h)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
 # Project Includes
