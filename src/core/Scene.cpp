@@ -22,10 +22,12 @@ Scene::Scene()
     ecs::create<Vbo>(ecs::TypeDefault);
     ecs::create<Ebo>(ecs::TypeDefault);
     ecs::create<EboCount>(ecs::TypeDefault);
-    ecs::create<Fbo>(ecs::TypeDefault);
     ecs::create<std::shared_ptr<BasicMesh>>(ecs::TypeDefault);
+    ecs::create<Fbo>(ecs::TypeDefault);
     ecs::create<Transform>(ecs::TypeDefault);
-    ecs::create<BasicUniforms>(ecs::TypeDefault);
+    ecs::create<std::shared_ptr<BasicUniforms>>(ecs::TypeDefault);
+    
+    ecs::create<ecs::Entity>(ecs::TypeDefault);
     
     const int count = 3;
     for (int x = 0; x < count; ++x)
@@ -34,15 +36,7 @@ Scene::Scene()
         {
             for (int z = 0; z < count; ++z)
             {
-                ecs::Entity entity = ecs::create();
-                ecs::add(entity, mCube);
-                ecs::add(entity, basicVao, Vao());
-                ecs::add(entity, Vbo());
-                ecs::add(entity, Ebo());
-                ecs::add(entity, Fbo());
-                ecs::add(entity, EboCount());
-                ecs::add(entity, Transform { { x * 4.f, y * 4.f, z * 4.f } });
-                ecs::add(entity, BasicUniforms());
+                createChildThingAt(basicVao, glm::vec3(x, y, z) * 4.f);
             }
         }
     }
@@ -50,16 +44,44 @@ Scene::Scene()
     ecs::createSystem<BasicMeshBinderSystem>();
     ecs::createSystem<BasicUniformUpdaterSystem>();
     
-    ecs::UType basicVaoBinderSystemType { basicVao, ecs::getComponentIdOf<Vbo>(), ecs::getComponentIdOf<Ebo>() };
+    ecs::UType basicVaoBinderSystemType { basicVao, ecs::get<Vbo>(), ecs::get<Ebo>() };
     ecs::createSystem<BasicVaoBinderSystem>(basicVaoBinderSystemType);
     
     ecs::UType basicShaderSystemType {
-        basicVao, ecs::getComponentIdOf<Fbo>(),
-        ecs::getComponentIdOf<EboCount>(), ecs::getComponentIdOf<BasicUniforms>()
+        basicVao, ecs::get<Fbo>(),
+        ecs::get<EboCount>(), ecs::get<std::shared_ptr<BasicUniforms>>()
     };
     ecs::createSystem<BasicShaderSystem>(basicShaderSystemType, mMainCamera);
     
     ecs::start();
+}
+
+void Scene::createChildThingAt(ecs::Component vao, glm::vec3 position)
+{
+    ecs::Entity parent = ecs::create();
+    ecs::Entity childA = ecs::create();
+    ecs::Entity childB = ecs::create();
+    
+    ecs::add(parent, childA);
+    auto uniforms = std::make_shared<BasicUniforms>();
+    ecs::add(parent, uniforms);
+    ecs::add(parent, Transform { position });
+    
+    ecs::add(childA, mCube);
+    ecs::add(childA, vao, Vao());
+    ecs::add(childA, Vbo());
+    ecs::add(childA, Ebo());
+    ecs::add(childA, Fbo());
+    ecs::add(childA, EboCount());
+    ecs::add(childA, uniforms);
+    
+    ecs::add(childB, mTri);
+    ecs::add(childB, vao, Vao());
+    ecs::add(childB, Vbo());
+    ecs::add(childB, Ebo());
+    ecs::add(childB, Fbo());
+    ecs::add(childB, EboCount());
+    ecs::add(childB, uniforms);
 }
 
 void Scene::onUpdate()
