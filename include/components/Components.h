@@ -12,6 +12,14 @@
 #include "glm.hpp"
 #include "detail/type_quat.hpp"
 
+struct RenderCoreElements
+{
+    unsigned int    vao      { 0 };
+    unsigned int    fbo      { 0 };
+    int             eboCount { 0 };
+    // Matrix Uniforms are not included since they need to be updated every frame.
+};
+
 struct Vao
 {
     unsigned int id;

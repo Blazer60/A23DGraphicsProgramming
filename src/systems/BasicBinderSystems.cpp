@@ -9,53 +9,40 @@
 
 #include <glew.h>
 
-void BasicMeshBinderSystem::onStart()
+
+void BasicBinderSystem::onStart()
 {
-    std::cout << "Generating Vbo and Ebo\n";
-    mEntities.forEach([](const std::shared_ptr<BasicMesh> &mesh, Vbo &vbo, Ebo &ebo, EboCount &eboCount) {
+    std::cout << "Generating Vao\n";
+    mEntities.forEach([](RenderCoreElements &coreElements, Vbo &vbo, Ebo &ebo, const std::shared_ptr<BasicMesh> &mesh) {
         glCreateBuffers(1, &vbo.id);
         glCreateBuffers(1, &ebo.id);
         glNamedBufferData(vbo.id, mesh->vertices.size() * sizeof(BasicVertex), &mesh->vertices[0], GL_STATIC_DRAW);
         glNamedBufferData(ebo.id, mesh->indices.size() * sizeof(unsigned int), &mesh->indices[0], GL_STATIC_DRAW);
-        eboCount.count = mesh->indices.size();
-    });
-}
-
-void BasicMeshBinderSystem::onUpdate()
-{
-    mEntities.forEach([](const std::shared_ptr<BasicMesh> &mesh, Vbo &vbo, Ebo &ebo, EboCount &eboCount) {
-    
-    });
-}
-
-
-void BasicVaoBinderSystem::onStart()
-{
-    std::cout << "Generating Vao\n";
-    mEntities.forEach([](Vao &vao, Vbo &vbo, Ebo &ebo) {
-        glCreateVertexArrays(1, &vao.id);
+        coreElements.eboCount = mesh->indices.size();
+        
+        glCreateVertexArrays(1, &coreElements.vao);
         
         const unsigned int bindingIndex = 0;
         const unsigned int offSet = 0;
         const unsigned int stride = sizeof(BasicVertex);
         
-        glEnableVertexArrayAttrib(vao.id, 0);
+        glEnableVertexArrayAttrib(coreElements.vao, 0);
         // vao, attrib index, count, type, normalized, offset
-        glVertexArrayAttribFormat(vao.id, 0, 3, GL_FLOAT, GL_FALSE, offsetof(BasicVertex, position));
-        glVertexArrayAttribBinding(vao.id, 0, bindingIndex);
+        glVertexArrayAttribFormat(coreElements.vao, 0, 3, GL_FLOAT, GL_FALSE, offsetof(BasicVertex, position));
+        glVertexArrayAttribBinding(coreElements.vao, 0, bindingIndex);
         
-        glEnableVertexArrayAttrib(vao.id, 1);
-        glVertexArrayAttribFormat(vao.id, 1, 3, GL_FLOAT, GL_FALSE, offsetof(BasicVertex, colour));
-        glVertexArrayAttribBinding(vao.id, 1, bindingIndex);
+        glEnableVertexArrayAttrib(coreElements.vao, 1);
+        glVertexArrayAttribFormat(coreElements.vao, 1, 3, GL_FLOAT, GL_FALSE, offsetof(BasicVertex, colour));
+        glVertexArrayAttribBinding(coreElements.vao, 1, bindingIndex);
         
-        glVertexArrayVertexBuffer(vao.id, bindingIndex, vbo.id, offSet, stride);
-        glVertexArrayElementBuffer(vao.id, ebo.id);
+        glVertexArrayVertexBuffer(coreElements.vao, bindingIndex, vbo.id, offSet, stride);
+        glVertexArrayElementBuffer(coreElements.vao, ebo.id);
     });
 }
 
-void BasicVaoBinderSystem::onUpdate()
+void BasicBinderSystem::onUpdate()
 {
-    mEntities.forEach([](Vao &vao, Vbo &vbo, Ebo &ebo) {
+    mEntities.forEach([](RenderCoreElements &_, Vbo &vbo, Ebo &ebo, const std::shared_ptr<BasicMesh> &mesh) {
     
     });
 }

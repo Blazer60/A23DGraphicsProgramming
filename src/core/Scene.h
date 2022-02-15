@@ -35,7 +35,7 @@ protected:
     
     std::shared_ptr<MainCamera> mMainCamera;
     
-    void createChildThingAt(ecs::Component vao, glm::vec3 position);
+    void createChildThingAt(ecs::Component basicCore, glm::vec3 position);
 };
 
 

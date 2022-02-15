@@ -18,7 +18,7 @@
  * @date 13/02/2022
  */
 class BasicShaderSystem
-        : public ecs::BaseSystem<Vao, Fbo, EboCount, std::shared_ptr<BasicUniforms>>
+        : public ecs::BaseSystem<RenderCoreElements, std::shared_ptr<BasicUniforms>>
 {
 public:
     explicit BasicShaderSystem(std::shared_ptr<MainCamera> camera);

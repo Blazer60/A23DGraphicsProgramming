@@ -19,12 +19,11 @@ Scene::Scene()
       mTri(primitives::basicTriangle()),
       mMainCamera(std::make_shared<MainCamera>())
 {
-    ecs::Component basicVao = ecs::create<Vao>();
+    ecs::Component basicCore = ecs::create<RenderCoreElements>();
+    
     ecs::create<Vbo>(ecs::TypeDefault);
     ecs::create<Ebo>(ecs::TypeDefault);
-    ecs::create<EboCount>(ecs::TypeDefault);
     ecs::create<std::shared_ptr<BasicMesh>>(ecs::TypeDefault);
-    ecs::create<Fbo>(ecs::TypeDefault);
     ecs::create<Transform>(ecs::TypeDefault);
     ecs::create<std::shared_ptr<BasicUniforms>>(ecs::TypeDefault);
     ecs::create<Rotator>(ecs::TypeDefault);
@@ -38,28 +37,24 @@ Scene::Scene()
         {
             for (int z = 0; z < count; ++z)
             {
-                createChildThingAt(basicVao, glm::vec3(x, y, z) * 4.f);
+                createChildThingAt(basicCore, glm::vec3(x, y, z) * 4.f);
             }
         }
     }
     
-    ecs::createSystem<BasicMeshBinderSystem>();
     ecs::createSystem<BasicUniformUpdaterSystem>();
     ecs::createSystem<RotatorSystem>();
     
-    ecs::UType basicVaoBinderSystemType { basicVao, ecs::get<Vbo>(), ecs::get<Ebo>() };
-    ecs::createSystem<BasicVaoBinderSystem>(basicVaoBinderSystemType);
+    ecs::UType basicBinderSystemType { basicCore, ecs::get<Vbo>(), ecs::get<Ebo>(), ecs::get<std::shared_ptr<BasicMesh>>() };
+    ecs::createSystem<BasicBinderSystem>(basicBinderSystemType);
     
-    ecs::UType basicShaderSystemType {
-        basicVao, ecs::get<Fbo>(),
-        ecs::get<EboCount>(), ecs::get<std::shared_ptr<BasicUniforms>>()
-    };
+    ecs::UType basicShaderSystemType { basicCore, ecs::get<std::shared_ptr<BasicUniforms>>() };
     ecs::createSystem<BasicShaderSystem>(basicShaderSystemType, mMainCamera);
     
     ecs::start();
 }
 
-void Scene::createChildThingAt(ecs::Component vao, glm::vec3 position)
+void Scene::createChildThingAt(ecs::Component basicCore, glm::vec3 position)
 {
     ecs::Entity parent = ecs::create();
     ecs::Entity childA = ecs::create();
@@ -72,19 +67,15 @@ void Scene::createChildThingAt(ecs::Component vao, glm::vec3 position)
     ecs::add(parent, Rotator { 0.f, 1.f });
     
     ecs::add(childA, mCube);
-    ecs::add(childA, vao, Vao());
+    ecs::add(childA, basicCore, RenderCoreElements());
     ecs::add(childA, Vbo());
     ecs::add(childA, Ebo());
-    ecs::add(childA, Fbo());
-    ecs::add(childA, EboCount());
     ecs::add(childA, uniforms);
     
     ecs::add(childB, mTri);
-    ecs::add(childB, vao, Vao());
+    ecs::add(childB, basicCore, RenderCoreElements());
     ecs::add(childB, Vbo());
     ecs::add(childB, Ebo());
-    ecs::add(childB, Fbo());
-    ecs::add(childB, EboCount());
     ecs::add(childB, uniforms);
 }
 

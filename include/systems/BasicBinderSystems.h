@@ -11,26 +11,12 @@
 #include "Components.h"
 
 /**
- * Bind a basic mesh to a Vbo and Ebo.
+ * Bind a Vao to the Vbo and Ebo using the Basic Vertex specification given the specified mesh.
  * @author Ryan Purse
  * @date 12/02/2022
  */
-class BasicMeshBinderSystem
-        : public ecs::BaseSystem<std::shared_ptr<BasicMesh>, Vbo, Ebo, EboCount>
-{
-public:
-    void onStart() override;
-    void onUpdate() override;
-};
-
-
-/**
- * Bind a Vao to the Vbo and Ebo using the Basic Vertex specification.
- * @author Ryan Purse
- * @date 12/02/2022
- */
-class BasicVaoBinderSystem
-        : public ecs::BaseSystem<Vao, Vbo, Ebo>
+class BasicBinderSystem
+        : public ecs::BaseSystem<RenderCoreElements, Vbo, Ebo, std::shared_ptr<BasicMesh>>
 {
 public:
     void onStart() override;

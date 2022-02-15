@@ -15,13 +15,13 @@ BasicShaderSystem::BasicShaderSystem(std::shared_ptr<MainCamera> camera)
     : mCamera(std::move(camera))
 {
     // Never changes, so it can be defined in the constructor.
-    mEntities.forEach([this](const Vao &vao, const Fbo &fbo, const EboCount &eboCount, const std::shared_ptr<BasicUniforms> &uniforms) {
-        glBindFramebuffer(GL_FRAMEBUFFER, fbo.id);
-        glBindVertexArray(vao.id);
+    mEntities.forEach([this](const RenderCoreElements &renderCoreElements, const std::shared_ptr<BasicUniforms> &uniforms) {
+        glBindFramebuffer(GL_FRAMEBUFFER, renderCoreElements.fbo);
+        glBindVertexArray(renderCoreElements.vao);
         
         mShader.set("u_mvp", mCamera->getVpMatrix() * uniforms->modelMat);
         
-        glDrawElements(GL_TRIANGLES, eboCount.count, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, renderCoreElements.eboCount, GL_UNSIGNED_INT, 0);
     });
 }
 
