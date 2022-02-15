@@ -33,8 +33,12 @@ struct BasicUniforms;
 /** A basic vertex */
 struct BasicVertex;
 
-/** A basic mesh made of basic vertices */
-struct BasicMesh;
+/** A vertex that stores UV information */
+struct UvVertex;
+
+/** A mesh that holds a specific type of vertex */
+template<typename Vertex>
+struct Mesh;
 
 struct RenderCoreElements
 {
@@ -79,12 +83,22 @@ struct BasicVertex
     glm::vec3 colour    { 0.f };
 };
 
-struct BasicMesh
+struct UvVertex
 {
-    BasicMesh() = default;
-    BasicMesh(std::vector<BasicVertex> v, std::vector<unsigned int> i)
+    glm::vec3 position  { 0.f };
+    glm::vec2 uv        { 0.f };
+};
+
+template<typename Vertex>
+struct Mesh
+{
+    Mesh() = default;
+    Mesh(std::vector<Vertex> v, std::vector<unsigned int> i)
         : vertices(std::move(v)), indices(std::move(i)) {}
     
-    std::vector<BasicVertex>    vertices;
+    std::vector<Vertex>         vertices;
     std::vector<unsigned int>   indices;
 };
+
+typedef std::shared_ptr<Mesh<BasicVertex>>  BasicSharedMesh;
+typedef std::shared_ptr<Mesh<UvVertex>>     UvSharedMesh;

@@ -30,10 +30,15 @@ public:
     void onImguiUpdate();
 
 protected:
-    std::shared_ptr<BasicMesh> mCube;
-    std::shared_ptr<BasicMesh> mTri;
+    BasicSharedMesh mCube;
+    BasicSharedMesh mTri;
+    UvSharedMesh mUvCube;
     
     std::shared_ptr<MainCamera> mMainCamera;
+    
+    ecs::Component mUvRrComponent;
+    
+    ecs::Entity createUvCubeEntity() const;
     
     void createChildThingAt(ecs::Component basicCore, glm::vec3 position);
 };

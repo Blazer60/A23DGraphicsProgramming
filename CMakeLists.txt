@@ -24,7 +24,7 @@ add_executable(${PROJECT_NAME}
         include/systems/BasicShaderSystem.h         src/core/MainCamera.cpp                     include/core/MainCamera.h
         src/systems/BasicUniformUpdaterSystem.cpp   include/systems/BasicUniformUpdaterSystem.h src/helpers/Timers.cpp
         include/helpers/Timers.h                    src/systems/RotatorSystem.cpp               include/systems/RotatorSystem.h
-        )
+        src/systems/UvBinderSystem.cpp              include/systems/UvBinderSystem.h)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
 # Project Includes

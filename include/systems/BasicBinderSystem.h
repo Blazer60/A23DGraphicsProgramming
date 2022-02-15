@@ -16,7 +16,7 @@
  * @date 12/02/2022
  */
 class BasicBinderSystem
-        : public ecs::BaseSystem<RenderCoreElements, Vbo, Ebo, std::shared_ptr<BasicMesh>>
+        : public ecs::BaseSystem<RenderCoreElements, Vbo, Ebo, BasicSharedMesh>
 {
 public:
     void onStart() override;

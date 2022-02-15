@@ -12,18 +12,22 @@
 #include "BasicShaderSystem.h"
 #include "BasicUniformUpdaterSystem.h"
 #include "RotatorSystem.h"
+#include "UvBinderSystem.h"
 #include "gtc/type_ptr.hpp"
 
 Scene::Scene()
     : mCube(primitives::basicCube()),
       mTri(primitives::basicTriangle()),
-      mMainCamera(std::make_shared<MainCamera>())
+      mUvCube(primitives::uvCube()),
+      mMainCamera(std::make_shared<MainCamera>()),
+      mUvRrComponent(ecs::create<RenderCoreElements>())
 {
     ecs::Component basicCore = ecs::create<RenderCoreElements>();
     
     ecs::create<Vbo>(ecs::TypeDefault);
     ecs::create<Ebo>(ecs::TypeDefault);
-    ecs::create<std::shared_ptr<BasicMesh>>(ecs::TypeDefault);
+    ecs::create<BasicSharedMesh>(ecs::TypeDefault);
+    ecs::create<UvSharedMesh>(ecs::TypeDefault);
     ecs::create<Transform>(ecs::TypeDefault);
     ecs::create<std::shared_ptr<BasicUniforms>>(ecs::TypeDefault);
     ecs::create<Rotator>(ecs::TypeDefault);
@@ -42,16 +46,32 @@ Scene::Scene()
         }
     }
     
+    createUvCubeEntity();
+    
     ecs::createSystem<BasicUniformUpdaterSystem>();
     ecs::createSystem<RotatorSystem>();
     
-    ecs::UType basicBinderSystemType { basicCore, ecs::get<Vbo>(), ecs::get<Ebo>(), ecs::get<std::shared_ptr<BasicMesh>>() };
+    ecs::UType basicBinderSystemType { basicCore, ecs::get<Vbo>(), ecs::get<Ebo>(), ecs::get<BasicSharedMesh>() };
     ecs::createSystem<BasicBinderSystem>(basicBinderSystemType);
+    
+    ecs::UType uvBinderSystemType { mUvRrComponent, ecs::get<Vbo>(), ecs::get<Ebo>(), ecs::get<UvSharedMesh>() };
+    ecs::createSystem<UvBinderSystem>(uvBinderSystemType);
     
     ecs::UType basicShaderSystemType { basicCore, ecs::get<std::shared_ptr<BasicUniforms>>() };
     ecs::createSystem<BasicShaderSystem>(basicShaderSystemType, mMainCamera);
     
     ecs::start();
+}
+
+ecs::Entity Scene::createUvCubeEntity() const
+{
+    ecs::Entity eUvCube = ecs::create();
+    ecs::add(eUvCube, mUvRrComponent, RenderCoreElements());
+    ecs::add(eUvCube, Vbo());
+    ecs::add(eUvCube, Ebo());
+    ecs::add(eUvCube, std::make_shared<BasicUniforms>());
+    ecs::add(eUvCube, Transform());
+    return eUvCube;
 }
 
 void Scene::createChildThingAt(ecs::Component basicCore, glm::vec3 position)
