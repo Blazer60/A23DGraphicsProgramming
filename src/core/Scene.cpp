@@ -8,7 +8,7 @@
 #include "Scene.h"
 #include "Primitives.h"
 #include "Ecs.h"
-#include "BasicBinderSystems.h"
+#include "BasicBinderSystem.h"
 #include "BasicShaderSystem.h"
 #include "BasicUniformUpdaterSystem.h"
 #include "RotatorSystem.h"
