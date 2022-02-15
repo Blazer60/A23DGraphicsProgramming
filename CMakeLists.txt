@@ -18,13 +18,14 @@ add_subdirectory(vendor)
 add_executable(${PROJECT_NAME}
         src/Main.cpp                                src/core/Core.cpp                           src/core/Core.h
         src/core/Scene.cpp                          src/core/Scene.h                            include/core/DebugLogger.h
-        src/core/DebugLogger.cpp                    include/components/Components.h src/systems/BasicBinderSystem.cpp
-        include/systems/BasicBinderSystem.h src/helpers/Primitives.cpp                  include/helpers/Primitives.h
+        src/core/DebugLogger.cpp                    include/components/Components.h             src/systems/BasicBinderSystem.cpp
+        include/systems/BasicBinderSystem.h         src/helpers/Primitives.cpp                  include/helpers/Primitives.h
         src/core/Shader.cpp                         include/core/Shader.h                       src/systems/BasicShaderSystem.cpp
         include/systems/BasicShaderSystem.h         src/core/MainCamera.cpp                     include/core/MainCamera.h
         src/systems/BasicUniformUpdaterSystem.cpp   include/systems/BasicUniformUpdaterSystem.h src/helpers/Timers.cpp
         include/helpers/Timers.h                    src/systems/RotatorSystem.cpp               include/systems/RotatorSystem.h
-        src/systems/UvBinderSystem.cpp              include/systems/UvBinderSystem.h)
+        src/systems/UvBinderSystem.cpp              include/systems/UvBinderSystem.h            src/systems/UvShaderSystem.cpp
+        include/systems/UvShaderSystem.h)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
 # Project Includes

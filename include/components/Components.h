@@ -77,6 +77,11 @@ struct BasicUniforms
     glm::mat4 modelMat { 1.f };
 };
 
+struct UvUniforms
+{
+    glm::vec3 colour { 1.f };
+};
+
 struct BasicVertex
 {
     glm::vec3 position  { 0.f };

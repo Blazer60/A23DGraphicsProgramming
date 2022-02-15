@@ -113,15 +113,15 @@ void Shader::set(const std::string &uniformName, const glm::mat4 &value)
 
 void Shader::set(const std::string &uniformName, const glm::vec4 &value)
 {
-    glUniform4fv(getLocation(uniformName), 4, glm::value_ptr(value));
+    glUniform4fv(getLocation(uniformName), 1, glm::value_ptr(value));
 }
 
 void Shader::set(const std::string &uniformName, const glm::vec3 &value)
 {
-    glUniform3fv(getLocation(uniformName), 3, glm::value_ptr(value));
+    glUniform3fv(getLocation(uniformName), 1, glm::value_ptr(value));
 }
 
 void Shader::set(const std::string &uniformName, const glm::vec2 &value)
 {
-    glUniform2fv(getLocation(uniformName), 2, glm::value_ptr(value));
+    glUniform2fv(getLocation(uniformName), 1, glm::value_ptr(value));
 }

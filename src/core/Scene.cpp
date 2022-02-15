@@ -11,6 +11,7 @@
 #include "BasicBinderSystem.h"
 #include "BasicShaderSystem.h"
 #include "BasicUniformUpdaterSystem.h"
+#include "UvShaderSystem.h"
 #include "RotatorSystem.h"
 #include "UvBinderSystem.h"
 #include "gtc/type_ptr.hpp"
@@ -31,6 +32,7 @@ Scene::Scene()
     ecs::create<Transform>(ecs::TypeDefault);
     ecs::create<std::shared_ptr<BasicUniforms>>(ecs::TypeDefault);
     ecs::create<Rotator>(ecs::TypeDefault);
+    ecs::create<UvUniforms>(ecs::TypeDefault);
     
     ecs::create<ecs::Entity>(ecs::TypeDefault);
     
@@ -60,6 +62,9 @@ Scene::Scene()
     ecs::UType basicShaderSystemType { basicCore, ecs::get<std::shared_ptr<BasicUniforms>>() };
     ecs::createSystem<BasicShaderSystem>(basicShaderSystemType, mMainCamera);
     
+    ecs::UType uVShaderSystemType { mUvRrComponent, ecs::get<std::shared_ptr<BasicUniforms>>(), ecs::get<UvUniforms>() };
+    ecs::createSystem<UvShaderSystem>(uVShaderSystemType, mMainCamera);
+    
     ecs::start();
 }
 
@@ -67,10 +72,12 @@ ecs::Entity Scene::createUvCubeEntity() const
 {
     ecs::Entity eUvCube = ecs::create();
     ecs::add(eUvCube, mUvRrComponent, RenderCoreElements());
+    ecs::add(eUvCube, mUvCube);
     ecs::add(eUvCube, Vbo());
     ecs::add(eUvCube, Ebo());
     ecs::add(eUvCube, std::make_shared<BasicUniforms>());
     ecs::add(eUvCube, Transform());
+    ecs::add(eUvCube, UvUniforms{ glm::vec3(1.f, 0.f, 1.f) });
     return eUvCube;
 }
 

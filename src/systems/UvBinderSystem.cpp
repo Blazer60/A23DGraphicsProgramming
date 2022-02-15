@@ -11,7 +11,7 @@
 
 void UvBinderSystem::onStart()
 {
-    std::cout << "Generating Uv Core Elements\n";
+    std::cout << "Generating Uv Core Elements for UV Vertex\n";
     mEntities.forEach([](RenderCoreElements &coreElements, Vbo &vbo, Ebo &ebo, const UvSharedMesh &mesh) {
         using VertexSpecification = UvVertex;
         
