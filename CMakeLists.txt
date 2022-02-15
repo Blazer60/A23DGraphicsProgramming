@@ -40,6 +40,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 # Vendor Includes
         vendor/glm/glm                              vendor/glew/include/GL
         vendor/glfw/include/GLFW                    vendor/imgui
+        vendor/stb/include
         )
 
 target_precompile_headers(${PROJECT_NAME} PUBLIC
@@ -50,7 +51,7 @@ target_precompile_headers(${PROJECT_NAME} PUBLIC
         )
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC
-        GLEW_STATIC
+        GLEW_STATIC STB_IMAGE_IMPLEMENTATION
         )
 
 
