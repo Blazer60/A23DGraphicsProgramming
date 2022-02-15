@@ -11,6 +11,7 @@
 #include "BasicBinderSystems.h"
 #include "BasicShaderSystem.h"
 #include "BasicUniformUpdaterSystem.h"
+#include "RotatorSystem.h"
 #include "gtc/type_ptr.hpp"
 
 Scene::Scene()
@@ -26,6 +27,7 @@ Scene::Scene()
     ecs::create<Fbo>(ecs::TypeDefault);
     ecs::create<Transform>(ecs::TypeDefault);
     ecs::create<std::shared_ptr<BasicUniforms>>(ecs::TypeDefault);
+    ecs::create<Rotator>(ecs::TypeDefault);
     
     ecs::create<ecs::Entity>(ecs::TypeDefault);
     
@@ -43,6 +45,7 @@ Scene::Scene()
     
     ecs::createSystem<BasicMeshBinderSystem>();
     ecs::createSystem<BasicUniformUpdaterSystem>();
+    ecs::createSystem<RotatorSystem>();
     
     ecs::UType basicVaoBinderSystemType { basicVao, ecs::get<Vbo>(), ecs::get<Ebo>() };
     ecs::createSystem<BasicVaoBinderSystem>(basicVaoBinderSystemType);
@@ -66,6 +69,7 @@ void Scene::createChildThingAt(ecs::Component vao, glm::vec3 position)
     auto uniforms = std::make_shared<BasicUniforms>();
     ecs::add(parent, uniforms);
     ecs::add(parent, Transform { position });
+    ecs::add(parent, Rotator { 0.f, 1.f });
     
     ecs::add(childA, mCube);
     ecs::add(childA, vao, Vao());

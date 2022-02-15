@@ -44,6 +44,13 @@ struct Transform
     glm::vec3 scale    { 1.f };
 };
 
+struct Rotator
+{
+    float time { 0.f };
+    float height { 0.f };
+    glm::vec3 originalHeight { 0.f };
+};
+
 struct BasicUniforms
 {
     glm::mat4 modelMat { 1.f };
