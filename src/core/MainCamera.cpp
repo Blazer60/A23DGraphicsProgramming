@@ -19,17 +19,17 @@ MainCamera::MainCamera()
     
     mProjectionMatrix = glm::perspective(mFovY, fSize.x / fSize.y, mNearClip, mFarClip);
     
-    glfwSetMouseButtonCallback(mWindow, [](GLFWwindow *window, int button, int action, int mods){
-        if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
-        {
-            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-            glfwSetCursorPos(window, 0.0, 0.0);
-        }
-        else if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE)
-        {
-            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-        }
-    });
+    // glfwSetMouseButtonCallback(mWindow, [](GLFWwindow *window, int button, int action, int mods){
+    //     if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
+    //     {
+    //         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    //         glfwSetCursorPos(window, 0.0, 0.0);
+    //     }
+    //     else if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE)
+    //     {
+    //         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    //     }
+    // });
 }
 
 void MainCamera::update()

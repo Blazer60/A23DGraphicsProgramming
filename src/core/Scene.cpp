@@ -16,6 +16,7 @@
 #include "UvBinderSystem.h"
 #include "TextureBinderSystem.h"
 #include "gtc/type_ptr.hpp"
+#include "imgui.h"
 
 Scene::Scene()
     : mCube(primitives::basicCube()),
@@ -128,5 +129,5 @@ void Scene::onUpdate()
 
 void Scene::onImguiUpdate()
 {
-
+    ImGui::ShowDemoWindow();
 }
