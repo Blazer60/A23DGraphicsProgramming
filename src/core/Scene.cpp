@@ -14,6 +14,7 @@
 #include "UvShaderSystem.h"
 #include "RotatorSystem.h"
 #include "UvBinderSystem.h"
+#include "TextureBinderSystem.h"
 #include "gtc/type_ptr.hpp"
 
 Scene::Scene()
@@ -33,6 +34,8 @@ Scene::Scene()
     ecs::create<std::shared_ptr<BasicUniforms>>(ecs::TypeDefault);
     ecs::create<Rotator>(ecs::TypeDefault);
     ecs::create<UvUniforms>(ecs::TypeDefault);
+    ecs::create<Texture>(ecs::TypeDefault);
+    ecs::create<TexturePath>(ecs::TypeDefault);
     
     ecs::create<ecs::Entity>(ecs::TypeDefault);
     
@@ -49,6 +52,8 @@ Scene::Scene()
     }
     
     createUvCubeEntity();
+    
+    ecs::createSystem<TextureBinderSystem>();
     
     ecs::createSystem<BasicUniformUpdaterSystem>();
     ecs::createSystem<RotatorSystem>();
@@ -78,6 +83,8 @@ ecs::Entity Scene::createUvCubeEntity() const
     ecs::add(eUvCube, std::make_shared<BasicUniforms>());
     ecs::add(eUvCube, Transform());
     ecs::add(eUvCube, UvUniforms{ glm::vec3(1.f, 0.f, 1.f) });
+    ecs::add(eUvCube, Texture());
+    ecs::add(eUvCube, TexturePath(path::textures() + "HaSquare.png"));
     return eUvCube;
 }
 

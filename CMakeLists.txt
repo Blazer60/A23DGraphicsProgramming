@@ -30,7 +30,9 @@ add_executable(${PROJECT_NAME}
         src/systems/BasicUniformUpdaterSystem.cpp   include/systems/BasicUniformUpdaterSystem.h src/helpers/Timers.cpp
         include/helpers/Timers.h                    src/systems/RotatorSystem.cpp               include/systems/RotatorSystem.h
         src/systems/UvBinderSystem.cpp              include/systems/UvBinderSystem.h            src/systems/UvShaderSystem.cpp
-        include/systems/UvShaderSystem.h src/helpers/FilePaths.cpp include/helpers/FilePaths.h)
+        include/systems/UvShaderSystem.h            src/helpers/FilePaths.cpp                   include/helpers/FilePaths.h
+        src/systems/TextureBinderSystem.cpp         include/systems/TextureBinderSystem.h
+        )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
 # Project Includes

@@ -11,6 +11,7 @@
 #include <vector>
 #include "glm.hpp"
 #include "detail/type_quat.hpp"
+#include <filesystem>
 
 /** Core elements used for rendering an item to the screen by OpenGL. ONLY items that never change each frame. E.g.: No uniforms */
 struct RenderCoreElements;
@@ -81,6 +82,20 @@ struct UvUniforms
 {
     glm::vec3 colour { 1.f };
 };
+
+struct Texture
+{
+    unsigned int id;
+};
+
+struct TexturePath
+{
+    explicit TexturePath(std::filesystem::path filePath)
+        : path(std::move(filePath)) { }
+        
+    std::filesystem::path path;
+};
+
 
 struct BasicVertex
 {
