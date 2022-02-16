@@ -111,13 +111,25 @@ bool Core::initImGui()
 {
     ImGui::CreateContext();
     
+    mGuiIo = &ImGui::GetIO();
+    (void)mGuiIo;
+    mGuiIo->ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+    mGuiIo->ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+    mGuiIo->ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+    
+    ImGui::StyleColorsDark();
+    ImGuiStyle &style = ImGui::GetStyle();
+    if (mGuiIo->ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+    {
+        style.WindowRounding = 0.f;
+        style.Colors[ImGuiCol_WindowBg].w = 1.f;
+    }
+    
     if (!ImGui_ImplGlfw_InitForOpenGL(mWindow, true))
         return false;
     
     if (!ImGui_ImplOpenGL3_Init())
         return false;
-    
-    ImGui::StyleColorsDark();
     
     return true;
 }
@@ -136,6 +148,16 @@ void Core::updateImgui()
     mScene->onImguiUpdate();
     
     ImGui::Render();
-    ImGui::EndFrame();
+    int display_w, display_h;
+    glfwGetFramebufferSize(mWindow, &display_w, &display_h);
+    
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    
+    if (mGuiIo->ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+    {
+        GLFWwindow* backup_current_context = glfwGetCurrentContext();
+        ImGui::UpdatePlatformWindows();
+        ImGui::RenderPlatformWindowsDefault();
+        glfwMakeContextCurrent(backup_current_context);
+    }
 }

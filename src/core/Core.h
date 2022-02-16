@@ -8,6 +8,7 @@
 #pragma once
 
 #include "glfw3.h"
+#include "imgui.h"
 
 class Scene;
 
@@ -38,6 +39,8 @@ protected:
     GLFWwindow              *mWindow      { nullptr };  // Must be declared after resolution and title.
     
     std::unique_ptr<Scene>   mScene;
+    
+    ImGuiIO                 *mGuiIo;
     
     bool                     mIsRunning   { true };
 };
