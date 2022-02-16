@@ -67,7 +67,7 @@ Scene::Scene()
     ecs::UType basicShaderSystemType { basicCore, ecs::get<std::shared_ptr<BasicUniforms>>() };
     ecs::createSystem<BasicShaderSystem>(basicShaderSystemType, mMainCamera);
     
-    ecs::UType uVShaderSystemType { mUvRrComponent, ecs::get<std::shared_ptr<BasicUniforms>>(), ecs::get<UvUniforms>() };
+    ecs::UType uVShaderSystemType { mUvRrComponent, ecs::get<std::shared_ptr<BasicUniforms>>(), ecs::get<UvUniforms>(), ecs::get<Texture>() };
     ecs::createSystem<UvShaderSystem>(uVShaderSystemType, mMainCamera);
     
     ecs::start();
