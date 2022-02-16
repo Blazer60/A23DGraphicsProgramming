@@ -11,6 +11,7 @@
 #include "Components.h"
 #include "Shader.h"
 #include "MainCamera.h"
+#include "FilePaths.h"
 
 /**
  * Renders basic items using the specified shader.
@@ -28,7 +29,7 @@ public:
     void onUpdate() override;
 
 protected:
-    Shader mShader { "../res/shaders/basic/Basic.vert", "../res/shaders/basic/Basic.frag" };
+    Shader mShader { path::shaders() + "basic/Basic.vert", path::shaders() + "basic/Basic.frag" };
     std::shared_ptr<MainCamera> mCamera;
 };
 

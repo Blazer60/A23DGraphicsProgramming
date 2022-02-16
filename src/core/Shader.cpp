@@ -10,11 +10,11 @@
 #include <fstream>
 #include <sstream>
 
-Shader::Shader(std::string_view vertexPath, std::string_view fragmentPath)
+Shader::Shader(const std::filesystem::path &vertexPath, const std::filesystem::path &fragmentPath)
 {
     mId = glCreateProgram();
-    unsigned int vs = compile(GL_VERTEX_SHADER, vertexPath);
-    unsigned int fs = compile(GL_FRAGMENT_SHADER, fragmentPath);
+    unsigned int vs = compile(GL_VERTEX_SHADER, vertexPath.string());
+    unsigned int fs = compile(GL_FRAGMENT_SHADER, fragmentPath.string());
     
     glAttachShader(mId, vs);
     glAttachShader(mId, fs);
@@ -24,6 +24,21 @@ Shader::Shader(std::string_view vertexPath, std::string_view fragmentPath)
     glDeleteShader(vs);
     glDeleteShader(fs);
 }
+
+// Shader::Shader(std::string_view vertexPath, std::string_view fragmentPath)
+// {
+//     mId = glCreateProgram();
+//     unsigned int vs = compile(GL_VERTEX_SHADER, vertexPath);
+//     unsigned int fs = compile(GL_FRAGMENT_SHADER, fragmentPath);
+//
+//     glAttachShader(mId, vs);
+//     glAttachShader(mId, fs);
+//     glLinkProgram(mId);
+//     glValidateProgram(mId);
+//
+//     glDeleteShader(vs);
+//     glDeleteShader(fs);
+// }
 
 Shader::~Shader()
 {

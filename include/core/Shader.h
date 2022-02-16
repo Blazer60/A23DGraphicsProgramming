@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <filesystem>
 
 /**
  * Holds and compiles the shader program for OpenGL.
@@ -16,7 +17,7 @@
 class Shader
 {
 public:
-    Shader(std::string_view vertexPath, std::string_view fragmentPath);
+    Shader(const std::filesystem::path &vertexPath, const std::filesystem::path &fragmentPath);
     ~Shader();
     
     void bind() const;

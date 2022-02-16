@@ -11,6 +11,7 @@
 #include "Components.h"
 #include "Shader.h"
 #include "MainCamera.h"
+#include "FilePaths.h"
 
 /**
  * Renders Uv Meshes to the specified Vbo
@@ -28,7 +29,7 @@ public:
     void onUpdate() override;
 
 protected:
-    Shader mShader { "../res/shaders/uv/Uv.vert", "../res/shaders/uv/Uv.frag" };
+    Shader mShader { path::shaders() + "/uv/Uv.vert", path::shaders() + "/uv/Uv.frag" };
     std::shared_ptr<MainCamera> mCamera;
 };
 

@@ -4,6 +4,11 @@ set(PROJECT_NAME A23DGraphicsProgramming)
 project(${PROJECT_NAME})
 set(CMAKE_CXX_STANDARD 17)
 
+set(BINARY_TO_ROOT  "..")
+set(RESOURCE_PATH   "res/")
+set(SHADER_PATH     "res/shaders")
+set(TEXTURE_PATH    "res/textures")
+
 message(STATUS "Using Cmake:    " ${CMAKE_VERSION})
 message(STATUS "Compiling with: " ${CMAKE_CXX_COMPILER_ID})
 message(STATUS "CXX Standard:   " ${CMAKE_CXX_STANDARD})
@@ -25,7 +30,7 @@ add_executable(${PROJECT_NAME}
         src/systems/BasicUniformUpdaterSystem.cpp   include/systems/BasicUniformUpdaterSystem.h src/helpers/Timers.cpp
         include/helpers/Timers.h                    src/systems/RotatorSystem.cpp               include/systems/RotatorSystem.h
         src/systems/UvBinderSystem.cpp              include/systems/UvBinderSystem.h            src/systems/UvShaderSystem.cpp
-        include/systems/UvShaderSystem.h)
+        include/systems/UvShaderSystem.h src/helpers/FilePaths.cpp include/helpers/FilePaths.h)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
 # Project Includes
@@ -52,6 +57,9 @@ target_precompile_headers(${PROJECT_NAME} PUBLIC
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC
         GLEW_STATIC STB_IMAGE_IMPLEMENTATION
+        RESOURCE_PATH="${BINARY_TO_ROOT}/${RESOURCE_PATH}/"
+        SHADER_PATH="${BINARY_TO_ROOT}/${SHADER_PATH}/"
+        TEXTURE_PATH="${BINARY_TO_ROOT}/${TEXTURE_PATH}/"
         )
 
 
