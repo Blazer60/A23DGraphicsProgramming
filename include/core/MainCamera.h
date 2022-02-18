@@ -25,6 +25,8 @@ public:
     
     void move();
     
+    void setProjectionMatrix(glm::vec2 viewSize);
+    
     [[nodiscard]] const glm::mat4 &getVpMatrix() const;
 
 protected:

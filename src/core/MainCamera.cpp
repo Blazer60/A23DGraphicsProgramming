@@ -94,3 +94,8 @@ const glm::mat4 &MainCamera::getVpMatrix() const
 {
     return mVpMatrix;
 }
+
+void MainCamera::setProjectionMatrix(glm::vec2 viewSize)
+{
+    mProjectionMatrix = glm::perspective(mFovY, viewSize.x / viewSize.y, mNearClip, mFarClip);
+}

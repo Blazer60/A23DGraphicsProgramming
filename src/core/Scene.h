@@ -11,6 +11,7 @@
 #include "Shader.h"
 #include "MainCamera.h"
 #include "Common.h"
+#include "FrameBufferObject.h"
 
 #include <memory>
 
@@ -33,6 +34,8 @@ protected:
     BasicSharedMesh mCube;
     BasicSharedMesh mTri;
     UvSharedMesh mUvCube;
+    
+    FrameBufferObject mFrameBufferObject;
     
     std::shared_ptr<MainCamera> mMainCamera;
     

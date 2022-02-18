@@ -23,7 +23,8 @@ Scene::Scene()
       mTri(primitives::basicTriangle()),
       mUvCube(primitives::uvCube()),
       mMainCamera(std::make_shared<MainCamera>()),
-      mUvRrComponent(ecs::create<RenderCoreElements>())
+      mUvRrComponent(ecs::create<RenderCoreElements>()),
+      mFrameBufferObject(glm::ivec2(1920, 1080))
 {
     ecs::Component basicCore = ecs::create<RenderCoreElements>();
     
@@ -77,7 +78,9 @@ Scene::Scene()
 ecs::Entity Scene::createUvCubeEntity() const
 {
     ecs::Entity eUvCube = ecs::create();
-    ecs::add(eUvCube, mUvRrComponent, RenderCoreElements());
+    RenderCoreElements coreElements;
+    coreElements.fbo = mFrameBufferObject.getId();
+    ecs::add(eUvCube, mUvRrComponent, coreElements);
     ecs::add(eUvCube, mUvCube);
     ecs::add(eUvCube, Vbo());
     ecs::add(eUvCube, Ebo());
@@ -102,13 +105,15 @@ void Scene::createChildThingAt(ecs::Component basicCore, glm::vec3 position)
     ecs::add(parent, Rotator { 0.f, 1.f });
     
     ecs::add(childA, mCube);
-    ecs::add(childA, basicCore, RenderCoreElements());
+    RenderCoreElements coreElements;
+    coreElements.fbo = mFrameBufferObject.getId();
+    ecs::add(childA, basicCore, coreElements);
     ecs::add(childA, Vbo());
     ecs::add(childA, Ebo());
     ecs::add(childA, uniforms);
     
     ecs::add(childB, mTri);
-    ecs::add(childB, basicCore, RenderCoreElements());
+    ecs::add(childB, basicCore, coreElements);
     ecs::add(childB, Vbo());
     ecs::add(childB, Ebo());
     ecs::add(childB, uniforms);
@@ -123,11 +128,20 @@ void Scene::onUpdate()
     const float depth { 1.f };
     glClearNamedFramebufferfv(0, GL_DEPTH, 0, &depth);
     
+    mFrameBufferObject.clear();
+    
+    mFrameBufferObject.update();
+    
+    mMainCamera->setProjectionMatrix(mFrameBufferObject.getSize());
     mMainCamera->update();
     ecs::update();
 }
 
 void Scene::onImguiUpdate()
 {
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBindVertexArray(0);
+    ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
+    mFrameBufferObject.imguiUpdate();
     ImGui::ShowDemoWindow();
 }

@@ -32,6 +32,7 @@ add_executable(${PROJECT_NAME}
         src/systems/UvBinderSystem.cpp              include/systems/UvBinderSystem.h            src/systems/UvShaderSystem.cpp
         include/systems/UvShaderSystem.h            src/helpers/FilePaths.cpp                   include/helpers/FilePaths.h
         src/systems/TextureBinderSystem.cpp         include/systems/TextureBinderSystem.h
+        src/core/FrameBufferObject.cpp              include/core/FrameBufferObject.h
         )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
