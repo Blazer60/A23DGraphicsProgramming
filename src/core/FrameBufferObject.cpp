@@ -59,8 +59,8 @@ void FrameBufferObject::imguiUpdate()
             };
         mSize = glm::vec2(size.x, size.y);
         ImGui::Image(reinterpret_cast<void *>(mTexId), size, ImVec2(0, 1), ImVec2(1, 0));
-        ImGui::End();
     }
+    ImGui::End();
     style.WindowPadding = temp;
 }
 
@@ -72,4 +72,9 @@ unsigned int FrameBufferObject::getId() const
 const glm::vec2 &FrameBufferObject::getSize() const
 {
     return mSize;
+}
+
+unsigned int FrameBufferObject::getTexture() const
+{
+    return mTexId;
 }

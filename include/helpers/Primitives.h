@@ -15,4 +15,5 @@ namespace primitives
     [[nodiscard]] BasicSharedMesh   basicTriangle();
     
     [[nodiscard]] UvSharedMesh      uvCube();
+    [[nodiscard]] UvSharedMesh      uvPlane();
 }

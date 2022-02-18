@@ -26,6 +26,8 @@ public:
     [[nodiscard]] unsigned int getId() const;
     
     const glm::vec2 &getSize() const;
+    
+    [[nodiscard]] unsigned int getTexture() const;
 
 protected:
     unsigned int mFboId { 0 };

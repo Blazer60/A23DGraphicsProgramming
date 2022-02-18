@@ -12,6 +12,8 @@
 #include "MainCamera.h"
 #include "Common.h"
 #include "FrameBufferObject.h"
+#include "PostProcessingShader.h"
+#include "FilePaths.h"
 
 #include <memory>
 
@@ -35,11 +37,14 @@ protected:
     BasicSharedMesh mTri;
     UvSharedMesh mUvCube;
     
-    FrameBufferObject mFrameBufferObject;
+    FrameBufferObject mMainFbo;
+    FrameBufferObject mInversionFbo;
     
     std::shared_ptr<MainCamera> mMainCamera;
     
     ecs::Component mUvRrComponent;
+    
+    PostProcessingShader mInversionShader { path::shaders() + "post-processing/inversion/Inversion.vert", path::shaders() + "post-processing/inversion/Inversion.frag" };
     
     ecs::Entity createUvCubeEntity() const;
     

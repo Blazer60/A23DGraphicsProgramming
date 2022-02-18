@@ -31,8 +31,8 @@ add_executable(${PROJECT_NAME}
         include/helpers/Timers.h                    src/systems/RotatorSystem.cpp               include/systems/RotatorSystem.h
         src/systems/UvBinderSystem.cpp              include/systems/UvBinderSystem.h            src/systems/UvShaderSystem.cpp
         include/systems/UvShaderSystem.h            src/helpers/FilePaths.cpp                   include/helpers/FilePaths.h
-        src/systems/TextureBinderSystem.cpp         include/systems/TextureBinderSystem.h
-        src/core/FrameBufferObject.cpp              include/core/FrameBufferObject.h
+        src/systems/TextureBinderSystem.cpp         include/systems/TextureBinderSystem.h       src/core/FrameBufferObject.cpp
+        include/core/FrameBufferObject.h            src/core/PostProcessingShader.cpp           include/core/PostProcessingShader.h
         )
 
 target_include_directories(${PROJECT_NAME} PUBLIC

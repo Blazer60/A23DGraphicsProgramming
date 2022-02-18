@@ -98,3 +98,28 @@ UvSharedMesh primitives::uvCube()
     };
     return std::make_shared<Mesh<UvVertex>>(std::move(vertices), std::move(indices));
 }
+
+UvSharedMesh primitives::uvPlane()
+{
+    const auto tl = glm::vec3(-1.f,  1.f,  0.f);
+    const auto tr = glm::vec3( 1.f,  1.f,  0.f);
+    const auto bl = glm::vec3(-1.f, -1.f,  0.f);
+    const auto br = glm::vec3( 1.f, -1.f,  0.f);
+    
+    // UV Coords.
+    const auto bottomLeft   = glm::vec2(0.f, 0.f);
+    const auto bottomRight  = glm::vec2(1.f, 0.f);
+    const auto topRight     = glm::vec2(1.f, 1.f);
+    const auto topLeft      = glm::vec2(0.f, 1.f);
+    
+    std::vector<UvVertex> vertices {
+        UvVertex{ tl, topLeft }, UvVertex{ tr, topRight },
+        UvVertex{ bl, bottomLeft }, UvVertex{ br, bottomRight }
+    };
+    
+    std::vector<unsigned int> indices {
+        0, 2, 1, 2, 3, 1
+    };
+    
+    return std::make_shared<Mesh<UvVertex>>(vertices, indices);
+}

@@ -24,7 +24,8 @@ Scene::Scene()
       mUvCube(primitives::uvCube()),
       mMainCamera(std::make_shared<MainCamera>()),
       mUvRrComponent(ecs::create<RenderCoreElements>()),
-      mFrameBufferObject(glm::ivec2(1920, 1080))
+      mMainFbo(glm::ivec2(1920, 1080)),
+      mInversionFbo(glm::ivec2(1920, 1080))
 {
     ecs::Component basicCore = ecs::create<RenderCoreElements>();
     
@@ -79,7 +80,7 @@ ecs::Entity Scene::createUvCubeEntity() const
 {
     ecs::Entity eUvCube = ecs::create();
     RenderCoreElements coreElements;
-    coreElements.fbo = mFrameBufferObject.getId();
+    coreElements.fbo = mMainFbo.getId();
     ecs::add(eUvCube, mUvRrComponent, coreElements);
     ecs::add(eUvCube, mUvCube);
     ecs::add(eUvCube, Vbo());
@@ -106,7 +107,7 @@ void Scene::createChildThingAt(ecs::Component basicCore, glm::vec3 position)
     
     ecs::add(childA, mCube);
     RenderCoreElements coreElements;
-    coreElements.fbo = mFrameBufferObject.getId();
+    coreElements.fbo = mMainFbo.getId();
     ecs::add(childA, basicCore, coreElements);
     ecs::add(childA, Vbo());
     ecs::add(childA, Ebo());
@@ -128,13 +129,16 @@ void Scene::onUpdate()
     const float depth { 1.f };
     glClearNamedFramebufferfv(0, GL_DEPTH, 0, &depth);
     
-    mFrameBufferObject.clear();
+    mMainFbo.clear();
+    mInversionFbo.clear();
     
-    mFrameBufferObject.update();
+    mMainFbo.update();
     
-    mMainCamera->setProjectionMatrix(mFrameBufferObject.getSize());
+    mMainCamera->setProjectionMatrix(mMainFbo.getSize());
     mMainCamera->update();
     ecs::update();
+    
+    mInversionShader.draw(mInversionFbo.getId(), mMainFbo.getTexture(), mInversionFbo.getSize());
 }
 
 void Scene::onImguiUpdate()
@@ -142,6 +146,7 @@ void Scene::onImguiUpdate()
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glBindVertexArray(0);
     ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
-    mFrameBufferObject.imguiUpdate();
+    mMainFbo.imguiUpdate();
+    mInversionFbo.imguiUpdate();
     ImGui::ShowDemoWindow();
 }
