@@ -17,9 +17,9 @@ PostProcessingShader::PostProcessingShader(const std::filesystem::path &vertexPa
     
     glCreateBuffers(1, &mVbo);
     glCreateBuffers(1, &mEbo);
-    glNamedBufferData(mVbo, mesh->vertices.size() * sizeof(VertexSpecification), &mesh->vertices[0], GL_STATIC_DRAW);
-    glNamedBufferData(mEbo, mesh->indices.size() * sizeof(unsigned int), &mesh->indices[0], GL_STATIC_DRAW);
-    mEboCount = mesh->indices.size();
+    glNamedBufferData(mVbo, mesh->verticesCount() * sizeof(VertexSpecification), mesh->verticesData(), GL_STATIC_DRAW);
+    glNamedBufferData(mEbo, mesh->indicesCount() * sizeof(unsigned int), mesh->indicesData(), GL_STATIC_DRAW);
+    mEboCount = mesh->indicesCount();
     
     glCreateVertexArrays(1, &mVao);
     

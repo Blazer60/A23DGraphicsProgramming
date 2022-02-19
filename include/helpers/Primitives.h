@@ -11,9 +11,11 @@
 
 namespace primitives
 {
-    [[nodiscard]] BasicSharedMesh   basicCube();
-    [[nodiscard]] BasicSharedMesh   basicTriangle();
+    // Basic Meshes
+    [[nodiscard]] SharedMesh  basicCube();
+    [[nodiscard]] SharedMesh  basicTriangle();
     
-    [[nodiscard]] UvSharedMesh      uvCube();
-    [[nodiscard]] UvSharedMesh      uvPlane();
+    // UV Meshes
+    [[nodiscard]] SharedMesh  uvCube();
+    [[nodiscard]] SharedMesh  uvPlane();
 }

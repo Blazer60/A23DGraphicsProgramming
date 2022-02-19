@@ -34,9 +34,9 @@ public:
     void onImguiUpdate();
 
 protected:
-    BasicSharedMesh mCube;
-    BasicSharedMesh mTri;
-    UvSharedMesh mUvCube;
+    SharedMesh mCube;
+    SharedMesh mTri;
+    SharedMesh mUvCube;
     
     FrameBufferObject mMainFbo;
     FrameBufferObject mInversionFbo;

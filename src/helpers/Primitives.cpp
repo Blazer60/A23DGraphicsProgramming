@@ -8,7 +8,7 @@
 #include "Primitives.h"
 #include "Components.h"
 
-BasicSharedMesh primitives::basicCube()
+SharedMesh primitives::basicCube()
 {
     const auto rtb = glm::vec3( 0.5f,  0.5f,  0.5f);
     const auto ltb = glm::vec3(-0.5f,  0.5f,  0.5f);
@@ -47,7 +47,7 @@ BasicSharedMesh primitives::basicCube()
     return std::make_shared<Mesh<BasicVertex>>(vertices, indices);
 }
 
-BasicSharedMesh primitives::basicTriangle()
+SharedMesh primitives::basicTriangle()
 {
     const auto red = glm::vec3(1.f, 0.f, 0.f);
     std::vector<BasicVertex> vertices {
@@ -60,7 +60,7 @@ BasicSharedMesh primitives::basicTriangle()
     return std::make_shared<Mesh<BasicVertex>>(std::move(vertices), std::move(indices));
 }
 
-UvSharedMesh primitives::uvCube()
+SharedMesh primitives::uvCube()
 {
     // Positions
     const auto rtb = glm::vec3( 0.5f,  0.5f,  0.5f);
@@ -99,7 +99,7 @@ UvSharedMesh primitives::uvCube()
     return std::make_shared<Mesh<UvVertex>>(std::move(vertices), std::move(indices));
 }
 
-UvSharedMesh primitives::uvPlane()
+SharedMesh primitives::uvPlane()
 {
     const auto tl = glm::vec3(-1.f,  1.f,  0.f);
     const auto tr = glm::vec3( 1.f,  1.f,  0.f);

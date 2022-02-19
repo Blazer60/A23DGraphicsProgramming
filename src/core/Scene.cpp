@@ -29,8 +29,6 @@ Scene::Scene()
     
     ecs::create<Vbo>(ecs::TypeDefault);
     ecs::create<Ebo>(ecs::TypeDefault);
-    ecs::create<BasicSharedMesh>(ecs::TypeDefault);
-    ecs::create<UvSharedMesh>(ecs::TypeDefault);
     ecs::create<Transform>(ecs::TypeDefault);
     ecs::create<std::shared_ptr<BasicUniforms>>(ecs::TypeDefault);
     ecs::create<Rotator>(ecs::TypeDefault);

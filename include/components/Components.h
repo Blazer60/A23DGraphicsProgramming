@@ -138,6 +138,4 @@ struct Mesh
     [[nodiscard]] const void *verticesData() const override { return static_cast<const void *>(&vertices[0]); };
 };
 
-typedef std::shared_ptr<Mesh<BasicVertex>>  BasicSharedMesh;
-typedef std::shared_ptr<Mesh<UvVertex>>     UvSharedMesh;
 typedef std::shared_ptr<IMesh>              SharedMesh;
