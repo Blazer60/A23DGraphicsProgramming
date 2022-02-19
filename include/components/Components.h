@@ -109,16 +109,35 @@ struct UvVertex
     glm::vec2 uv        { 0.f };
 };
 
+struct IMesh
+{
+    IMesh() = default;
+    explicit IMesh(std::vector<unsigned int> i)
+        : indices(std::move(i)) {}
+    
+    std::vector<unsigned int>   indices;
+    
+    [[nodiscard]] int64_t indicesCount() const { return static_cast<int64_t>(indices.size()); };
+    [[nodiscard]] virtual int64_t verticesCount() const = 0;
+    [[nodiscard]] const void *indicesData() const { return static_cast<const void *>(&indices[0]); }
+    [[nodiscard]] virtual const void *verticesData() const = 0;
+};
+
 template<typename Vertex>
 struct Mesh
+        : public IMesh
 {
     Mesh() = default;
     Mesh(std::vector<Vertex> v, std::vector<unsigned int> i)
-        : vertices(std::move(v)), indices(std::move(i)) {}
+        : IMesh(std::move(i)),
+          vertices(std::move(v)) {}
     
-    std::vector<Vertex>         vertices;
-    std::vector<unsigned int>   indices;
+    std::vector<Vertex> vertices;
+    
+    [[nodiscard]] int64_t verticesCount() const override { return static_cast<int64_t>(vertices.size()); }
+    [[nodiscard]] const void *verticesData() const override { return static_cast<const void *>(&vertices[0]); };
 };
 
 typedef std::shared_ptr<Mesh<BasicVertex>>  BasicSharedMesh;
 typedef std::shared_ptr<Mesh<UvVertex>>     UvSharedMesh;
+typedef std::shared_ptr<IMesh>              SharedMesh;

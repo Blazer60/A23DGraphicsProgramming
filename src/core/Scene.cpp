@@ -8,12 +8,10 @@
 #include "Scene.h"
 #include "Primitives.h"
 #include "Ecs.h"
-#include "BasicBinderSystem.h"
 #include "BasicShaderSystem.h"
 #include "BasicUniformUpdaterSystem.h"
 #include "UvShaderSystem.h"
 #include "RotatorSystem.h"
-#include "UvBinderSystem.h"
 #include "TextureBinderSystem.h"
 #include "gtc/type_ptr.hpp"
 #include "imgui.h"
@@ -39,6 +37,7 @@ Scene::Scene()
     ecs::create<UvUniforms>(ecs::TypeDefault);
     ecs::create<Texture>(ecs::TypeDefault);
     ecs::create<TexturePath>(ecs::TypeDefault);
+    ecs::create<SharedMesh>(ecs::TypeDefault);
     
     ecs::create<ecs::Entity>(ecs::TypeDefault);
     
@@ -61,11 +60,11 @@ Scene::Scene()
     ecs::createSystem<BasicUniformUpdaterSystem>();
     ecs::createSystem<RotatorSystem>();
     
-    ecs::UType basicBinderSystemType { basicCore, ecs::get<Vbo>(), ecs::get<Ebo>(), ecs::get<BasicSharedMesh>() };
-    ecs::createSystem<BasicBinderSystem>(basicBinderSystemType);
+    ecs::UType basicBinderSystemType { basicCore, ecs::get<Vbo>(), ecs::get<Ebo>(), ecs::get<SharedMesh>() };
+    ecs::createSystem<BinderSystem<BasicVertex>>(basicBinderSystemType);
     
-    ecs::UType uvBinderSystemType { mUvRrComponent, ecs::get<Vbo>(), ecs::get<Ebo>(), ecs::get<UvSharedMesh>() };
-    ecs::createSystem<UvBinderSystem>(uvBinderSystemType);
+    ecs::UType uvBinderSystemType { mUvRrComponent, ecs::get<Vbo>(), ecs::get<Ebo>(), ecs::get<SharedMesh>() };
+    ecs::createSystem<BinderSystem<UvVertex>>(uvBinderSystemType);
     
     ecs::UType basicShaderSystemType { basicCore, ecs::get<std::shared_ptr<BasicUniforms>>() };
     ecs::createSystem<BasicShaderSystem>(basicShaderSystemType, mMainCamera);
@@ -82,7 +81,7 @@ ecs::Entity Scene::createUvCubeEntity() const
     RenderCoreElements coreElements;
     coreElements.fbo = mMainFbo.getId();
     ecs::add(eUvCube, mUvRrComponent, coreElements);
-    ecs::add(eUvCube, mUvCube);
+    ecs::add(eUvCube, SharedMesh(mUvCube));
     ecs::add(eUvCube, Vbo());
     ecs::add(eUvCube, Ebo());
     ecs::add(eUvCube, std::make_shared<BasicUniforms>());
@@ -105,7 +104,7 @@ void Scene::createChildThingAt(ecs::Component basicCore, glm::vec3 position)
     ecs::add(parent, Transform { position });
     ecs::add(parent, Rotator { 0.f, 1.f });
     
-    ecs::add(childA, mCube);
+    ecs::add(childA, SharedMesh(mCube));
     RenderCoreElements coreElements;
     coreElements.fbo = mMainFbo.getId();
     ecs::add(childA, basicCore, coreElements);
@@ -113,7 +112,7 @@ void Scene::createChildThingAt(ecs::Component basicCore, glm::vec3 position)
     ecs::add(childA, Ebo());
     ecs::add(childA, uniforms);
     
-    ecs::add(childB, mTri);
+    ecs::add(childB, SharedMesh(mTri));
     ecs::add(childB, basicCore, coreElements);
     ecs::add(childB, Vbo());
     ecs::add(childB, Ebo());
