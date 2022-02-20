@@ -27,18 +27,6 @@ Scene::Scene()
 {
     ecs::Component basicCore = ecs::create<RenderCoreElements>();
     
-    ecs::create<Vbo>(ecs::TypeDefault);
-    ecs::create<Ebo>(ecs::TypeDefault);
-    ecs::create<Transform>(ecs::TypeDefault);
-    ecs::create<std::shared_ptr<BasicUniforms>>(ecs::TypeDefault);
-    ecs::create<Rotator>(ecs::TypeDefault);
-    ecs::create<UvUniforms>(ecs::TypeDefault);
-    ecs::create<Texture>(ecs::TypeDefault);
-    ecs::create<TexturePath>(ecs::TypeDefault);
-    ecs::create<SharedMesh>(ecs::TypeDefault);
-    
-    ecs::create<ecs::Entity>(ecs::TypeDefault);
-    
     const int count = 3;
     for (int x = 0; x < count; ++x)
     {
@@ -53,22 +41,14 @@ Scene::Scene()
     
     createUvCubeEntity();
     
-    ecs::createSystem<TextureBinderSystem>();
-    
-    ecs::createSystem<BasicUniformUpdaterSystem>();
-    ecs::createSystem<RotatorSystem>();
-    
-    ecs::UType basicBinderSystemType { basicCore, ecs::get<Vbo>(), ecs::get<Ebo>(), ecs::get<SharedMesh>() };
-    ecs::createSystem<BinderSystem<BasicVertex>>(basicBinderSystemType);
-    
-    ecs::UType uvBinderSystemType { mUvRrComponent, ecs::get<Vbo>(), ecs::get<Ebo>(), ecs::get<SharedMesh>() };
-    ecs::createSystem<BinderSystem<UvVertex>>(uvBinderSystemType);
-    
-    ecs::UType basicShaderSystemType { basicCore, ecs::get<std::shared_ptr<BasicUniforms>>() };
-    ecs::createSystem<BasicShaderSystem>(basicShaderSystemType, mMainCamera);
-    
-    ecs::UType uVShaderSystemType { mUvRrComponent, ecs::get<std::shared_ptr<BasicUniforms>>(), ecs::get<UvUniforms>(), ecs::get<Texture>() };
-    ecs::createSystem<UvShaderSystem>(uVShaderSystemType, mMainCamera);
+    // Creation order of system still matters.
+    ecs::createSystem<TextureBinderSystem>       ();
+    ecs::createSystem<BasicUniformUpdaterSystem> ();
+    ecs::createSystem<RotatorSystem>             ();
+    ecs::createSystem<BinderSystem<BasicVertex>> ({ basicCore });  // Default types are automatically appended.
+    ecs::createSystem<BinderSystem<UvVertex>>    ({ mUvRrComponent });
+    ecs::createSystem<BasicShaderSystem>         ({ basicCore },         mMainCamera);
+    ecs::createSystem<UvShaderSystem>            ({ mUvRrComponent },    mMainCamera);
     
     ecs::start();
 }

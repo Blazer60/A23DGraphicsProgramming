@@ -23,7 +23,7 @@ Core::Core(const glm::ivec2 &resolution)
         return;
     }
     
-    ecs::init();  // Never crashes.
+    ecs::init(ecs::initFlag::AutoInitialise);  // Never crashes.
     
     mScene = std::make_unique<Scene>();  // Scenes must be made after the initialisation of underlying architectures.
 }
