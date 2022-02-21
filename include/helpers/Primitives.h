@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "Components.h"
+#include "MeshComponents.h"
 
 namespace primitives
 {

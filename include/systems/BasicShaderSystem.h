@@ -8,7 +8,8 @@
 #pragma once
 
 #include "Ecs.h"
-#include "Components.h"
+#include "UniformComponents.h"
+#include "RenderComponents.h"
 #include "Shader.h"
 #include "MainCamera.h"
 #include "FilePaths.h"

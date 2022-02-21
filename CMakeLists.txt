@@ -21,25 +21,35 @@ add_subdirectory(vendor)
 
 
 add_executable(${PROJECT_NAME}
-        src/Main.cpp                                src/core/Core.cpp                           src/core/Core.h
-        src/core/Scene.cpp                          src/core/Scene.h                            include/core/DebugLogger.h
-        src/core/DebugLogger.cpp                    include/components/Components.h
+        src/Main.cpp
+        src/core/Core.cpp                           src/core/Core.h
+        src/core/Scene.cpp                          src/core/Scene.h
+        include/core/DebugLogger.h                  src/core/DebugLogger.cpp
+        include/components/Components.h
         src/helpers/Primitives.cpp                  include/helpers/Primitives.h
-        src/core/Shader.cpp                         include/core/Shader.h                       src/systems/BasicShaderSystem.cpp
-        include/systems/BasicShaderSystem.h         src/core/MainCamera.cpp                     include/core/MainCamera.h
-        src/systems/BasicUniformUpdaterSystem.cpp   include/systems/BasicUniformUpdaterSystem.h src/helpers/Timers.cpp
-        include/helpers/Timers.h                    src/systems/RotatorSystem.cpp               include/systems/RotatorSystem.h
-        src/systems/UvShaderSystem.cpp              include/systems/BinderSystem.h              src/systems/BinderSystem.cpp
-        include/systems/UvShaderSystem.h            src/helpers/FilePaths.cpp                   include/helpers/FilePaths.h
-        src/systems/TextureBinderSystem.cpp         include/systems/TextureBinderSystem.h       src/core/FrameBufferObject.cpp
-        include/core/FrameBufferObject.h            src/core/PostProcessingShader.cpp           include/core/PostProcessingShader.h
+        src/core/Shader.cpp                         include/core/Shader.h
+        src/systems/BasicShaderSystem.cpp           include/systems/BasicShaderSystem.h
+        src/core/MainCamera.cpp                     include/core/MainCamera.h
+        src/systems/BasicUniformUpdaterSystem.cpp   include/systems/BasicUniformUpdaterSystem.h
+        src/helpers/Timers.cpp                      include/helpers/Timers.h
+        src/systems/RotatorSystem.cpp               include/systems/RotatorSystem.h
+        src/systems/UvShaderSystem.cpp              include/systems/UvShaderSystem.h
+        src/systems/BinderSystem.cpp                include/systems/BinderSystem.h
+        src/helpers/FilePaths.cpp                   include/helpers/FilePaths.h
+        src/systems/TextureBinderSystem.cpp         include/systems/TextureBinderSystem.h
+        src/core/FrameBufferObject.cpp              include/core/FrameBufferObject.h
+        src/core/PostProcessingShader.cpp           include/core/PostProcessingShader.h
+        include/components/render-components/MeshComponents.h
+        include/components/render-components/RenderComponents.h
+        include/components/render-components/UniformComponents.h
+        include/components/render-components/TextureComponents.h
         )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
 # Project Includes
         include                                     include/core
         include/systems                             include/components
-        include/helpers
+        include/helpers                             include/components/render-components
 
 # ECS Includes
         entity-component-system                     entity-component-system/include

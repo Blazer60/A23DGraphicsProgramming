@@ -8,7 +8,8 @@
 #pragma once
 
 #include "Ecs.h"
-#include "Components.h"
+#include "MeshComponents.h"
+#include "RenderComponents.h"
 
 #include <typeinfo>
 

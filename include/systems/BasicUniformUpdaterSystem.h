@@ -9,6 +9,7 @@
 
 #include "Ecs.h"
 #include "Components.h"
+#include "UniformComponents.h"
 
 /**
  * Updates the Basic uniforms by the transform of an object.

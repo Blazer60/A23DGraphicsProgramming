@@ -8,7 +8,7 @@
 #pragma once
 
 #include "Ecs.h"
-#include "Components.h"
+#include "TextureComponents.h"
 
 /**
  * Binds a texture path to a texture that can be used by OpenGl.

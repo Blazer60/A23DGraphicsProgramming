@@ -9,6 +9,9 @@
 
 #include "Ecs.h"
 #include "Components.h"
+#include "RenderComponents.h"
+#include "UniformComponents.h"
+#include "TextureComponents.h"
 #include "Shader.h"
 #include "MainCamera.h"
 #include "FilePaths.h"
