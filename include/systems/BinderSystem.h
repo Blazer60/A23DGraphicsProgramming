@@ -77,7 +77,9 @@ void BinderSystem<VertexSpecification>::onStart()
 template<typename VertexSpecification>
 void BinderSystem<VertexSpecification>::onUpdate()
 {
-
+    mEntities.forEach([this](RenderCoreElements &coreElements, Vbo &vbo, Ebo &ebo, std::shared_ptr<IMesh> &mesh) {
+    
+    });
 }
 
 template<typename VertexSpecification>
