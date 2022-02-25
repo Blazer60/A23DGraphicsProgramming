@@ -15,6 +15,7 @@
 #include "TextureBinderSystem.h"
 #include "gtc/type_ptr.hpp"
 #include "imgui.h"
+#include "Loader.h"
 
 Scene::Scene()
     : mCube(primitives::basicCube()),
@@ -23,7 +24,8 @@ Scene::Scene()
       mMainCamera(std::make_shared<MainCamera>()),
       mUvRrComponent(ecs::create<RenderCoreElements>()),
       mMainFbo(glm::ivec2(1920, 1080)),
-      mInversionFbo(glm::ivec2(1920, 1080))
+      mInversionFbo(glm::ivec2(1920, 1080)),
+      mTeapot(loadModel<BasicVertex>(path::resources() + "models/UtahTeapot.obj"))
 {
     ecs::Component basicCore = ecs::create<RenderCoreElements>();
     
@@ -60,6 +62,7 @@ ecs::Entity Scene::createUvCubeEntity() const
     coreElements.fbo = mMainFbo.getId();
     ecs::add(eUvCube, mUvRrComponent, coreElements);
     ecs::add(eUvCube, SharedMesh(mUvCube));
+    // ecs::add(eUvCube, mTeapot);
     ecs::add(eUvCube, Vbo());
     ecs::add(eUvCube, Ebo());
     ecs::add(eUvCube, std::make_shared<BasicUniforms>());
@@ -82,7 +85,7 @@ void Scene::createChildThingAt(ecs::Component basicCore, glm::vec3 position)
     ecs::add(parent, Transform { position });
     ecs::add(parent, Rotator { 0.f, 1.f });
     
-    ecs::add(childA, SharedMesh(mCube));
+    ecs::add(childA, mTeapot);
     RenderCoreElements coreElements;
     coreElements.fbo = mMainFbo.getId();
     ecs::add(childA, basicCore, coreElements);

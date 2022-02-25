@@ -38,6 +38,8 @@ protected:
     SharedMesh mTri;
     SharedMesh mUvCube;
     
+    SharedMesh mTeapot;
+    
     FrameBufferObject mMainFbo;
     FrameBufferObject mInversionFbo;
     

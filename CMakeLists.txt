@@ -43,13 +43,14 @@ add_executable(${PROJECT_NAME}
         include/components/render-components/RenderComponents.h
         include/components/render-components/UniformComponents.h
         include/components/render-components/TextureComponents.h
-        )
+        src/loader/Loader.cpp include/loader/Loader.h src/loader/ObjLoader.cpp include/loader/ObjLoader.h src/loader/CommonLoader.cpp include/loader/CommonLoader.h)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
 # Project Includes
         include                                     include/core
         include/systems                             include/components
         include/helpers                             include/components/render-components
+        include/loader
 
 # ECS Includes
         entity-component-system                     entity-component-system/include
