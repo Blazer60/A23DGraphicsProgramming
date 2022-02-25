@@ -21,29 +21,13 @@ fileExtension getExtension(std::string_view path);
 template<typename VertexSpecification>
 SharedMesh loadModel(std::string_view path)
 {
-    // Check that it's an .obj file.
-    // Check the vertex type. Match up and create implementation.
-    
     const fileExtension type = getExtension(path);
     
     // Check if the end of the string has .obj file format.
     if (type == fileExtension::Obj)
-    {
-        if (typeid(VertexSpecification) == typeid(UvVertex))
-        {
-            Mesh<UvVertex> mesh = loadObjUvVertex(path);
-            return std::make_shared<Mesh<UvVertex>>(mesh);
-        }
-        if (typeid(VertexSpecification) == typeid(BasicVertex))
-        {
-            Mesh<BasicVertex> mesh = loadObjBasicVertex(path);
-            return std::make_shared<Mesh<BasicVertex>>(mesh);
-        }
-        else
-            debug::log("Unknown vertex type: " + std::string(typeid(VertexSpecification).name()), debug::severity::Warning);
-    }
+        return loadObj<VertexSpecification>(path);
     else
         debug::log("Unknown file type: " + std::string(path), debug::severity::Warning);
     
-    return SharedMesh();
+    return {  };
 }

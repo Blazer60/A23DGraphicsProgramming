@@ -7,11 +7,10 @@
 
 #include "ObjLoader.h"
 #include "CommonLoader.h"
-#include "RenderComponents.h"
 #include "MeshComponents.h"
 
 std::vector<uint32_t>
-loadObj(std::string_view path, const GenVertexSignature &genVertexDelegate, const GetSizeSignature &getSizeDelegate)
+generateObj(std::string_view path, const GenVertexSignature &genVertexDelegate, const GetSizeSignature &getSizeDelegate)
 {
     // All the information that is stored in the .obj file.
     std::vector<glm::vec3> positions;
@@ -30,7 +29,7 @@ loadObj(std::string_view path, const GenVertexSignature &genVertexDelegate, cons
     
         switch (nums.size())
         {
-            case 3:
+            case 3:  // Deliberately cascades down.
                 normalIndex = std::stoi(nums[2]);
             case 2:
                 if (!nums[1].empty())
@@ -90,7 +89,7 @@ loadObj(std::string_view path, const GenVertexSignature &genVertexDelegate, cons
             {"o",      doNothing },
             {"s",      doNothing },
             {"g",      doNothing },
-            {"mtlib",  doNothing },
+            {"mtllib", doNothing },
             {"usemtl", doNothing },
             {"v",      [&positions](std::string_view arg)  { positions.emplace_back(createVec<3>(arg)); } },
             {"vt",     [&uvs](std::string_view arg)        { uvs.emplace_back(createVec<2>(arg)); } },
@@ -114,7 +113,7 @@ Mesh<UvVertex> loadObjUvVertex(std::string_view path)
         return static_cast<uint32_t>(vertices.size());
     };
     
-    return { std::move(vertices), std::move(loadObj(path, genVertex, getSize)) };
+    return { std::move(vertices), std::move(generateObj(path, genVertex, getSize)) };
 }
 
 Mesh<BasicVertex> loadObjBasicVertex(std::string_view path)
@@ -129,5 +128,5 @@ Mesh<BasicVertex> loadObjBasicVertex(std::string_view path)
         return static_cast<uint32_t>(vertices.size());
     };
     
-    return { std::move(vertices), std::move(loadObj(path, genVertex, getSize)) };
+    return { std::move(vertices), std::move(generateObj(path, genVertex, getSize)) };
 }
