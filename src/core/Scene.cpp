@@ -126,6 +126,7 @@ void Scene::onImguiUpdate()
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glBindVertexArray(0);
     ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
+    mDirectionalLight.onImguiUpdate();
     mMainFbo.imguiUpdate();
     mInversionFbo.imguiUpdate();
     ImGui::ShowDemoWindow();

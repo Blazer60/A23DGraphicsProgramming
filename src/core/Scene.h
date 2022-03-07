@@ -15,6 +15,7 @@
 #include "PostProcessingShader.h"
 #include "FilePaths.h"
 #include "BinderSystem.h"
+#include "DirectionalLight.h"
 
 #include <memory>
 
@@ -48,6 +49,8 @@ protected:
     ecs::Component mUvRrComponent;
     
     PostProcessingShader mInversionShader { path::shaders() + "post-processing/inversion/Inversion.vert", path::shaders() + "post-processing/inversion/Inversion.frag" };
+    
+    DirectionalLight mDirectionalLight;
     
     ecs::Entity createUvCubeEntity() const;
     
