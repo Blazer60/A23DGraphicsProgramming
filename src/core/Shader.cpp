@@ -100,7 +100,7 @@ void Shader::unbind()
 
 int Shader::getLocation(const std::string &name)
 {
-    if (mCache.count(name) > 1)
+    if (mCache.count(name) > 0)
         return mCache.at(name);
     
     int location = glGetUniformLocation(mId, name.data());
