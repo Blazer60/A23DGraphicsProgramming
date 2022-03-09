@@ -95,6 +95,12 @@ void BinderSystem<VertexSpecification>::setVertexArrayLayout(unsigned int vao)
             { GL_FLOAT, 3 },
             { GL_FLOAT, 2 },
         });
+    else if (typeid(VertexSpecification) == typeid(PhongVertex))
+        vaoImpl::layout(vao, {
+                { GL_FLOAT, 3 },
+                { GL_FLOAT, 2 },
+                { GL_FLOAT, 3 },
+        });
     else
         debug::log("Vertex type does not have an instruction set.", debug::severity::Fatal);
 }

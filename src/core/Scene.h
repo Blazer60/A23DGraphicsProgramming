@@ -40,6 +40,7 @@ protected:
     SharedMesh mUvCube;
     
     SharedMesh mTeapot;
+    SharedMesh mPhongTeapot;
     
     FrameBufferObject mMainFbo;
     FrameBufferObject mInversionFbo;
@@ -47,12 +48,14 @@ protected:
     std::shared_ptr<MainCamera> mMainCamera;
     
     ecs::Component mUvRrComponent;
+    ecs::Component mPhongRenderComponent;
     
     PostProcessingShader mInversionShader { path::shaders() + "post-processing/inversion/Inversion.vert", path::shaders() + "post-processing/inversion/Inversion.frag" };
     
-    DirectionalLight mDirectionalLight;
+    std::shared_ptr<DirectionalLight> mDirectionalLight { std::make_shared<DirectionalLight>() };
     
     ecs::Entity createUvCubeEntity() const;
+    ecs::Entity createTeapotEntity() const;
     
     void createChildThingAt(ecs::Component basicCore, glm::vec3 position);
 };

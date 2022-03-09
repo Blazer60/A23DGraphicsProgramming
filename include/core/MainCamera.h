@@ -23,14 +23,21 @@ public:
     
     void update();
     
+    void imguiUpdate();
+    
     void move();
     
     void setProjectionMatrix(glm::vec2 viewSize);
     
     [[nodiscard]] const glm::mat4 &getVpMatrix() const;
+    
+    [[nodiscard]] const glm::mat4 &getViewMatrix() const;
+    
+    [[nodiscard]] const glm::vec3 &getPosition() const;
 
 protected:
     glm::mat4       mVpMatrix           { 1.f };
+    glm::mat4       mViewMatrix         { 1.f };
     glm::mat4       mProjectionMatrix   { 1.f };
     
     glm::vec3       mPosition           { 0.f, 0.f, 3.f };

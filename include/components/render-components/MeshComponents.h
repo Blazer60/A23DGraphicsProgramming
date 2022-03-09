@@ -30,6 +30,14 @@ struct UvVertex
     glm::vec2 uv        { 0.f };
 };
 
+/** Contains positions, uvs and normals. */
+struct PhongVertex
+{
+    glm::vec3 position  { 0.f };
+    glm::vec2 uv        { 0.f };
+    glm::vec3 normal    { 0.f };
+};
+
 /**
  * @brief An interface for the mesh class so that systems can get useful
  * information without knowing the type of Vertex it's working with.

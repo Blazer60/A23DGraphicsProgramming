@@ -19,3 +19,13 @@ void DirectionalLight::onImguiUpdate()
         ImGui::End();
     }
 }
+
+const glm::vec3 &DirectionalLight::getDirection() const
+{
+    return mDirection;
+}
+
+const glm::vec3 &DirectionalLight::getIntensity() const
+{
+    return mIntensity;
+}

@@ -43,7 +43,12 @@ add_executable(${PROJECT_NAME}
         include/components/render-components/RenderComponents.h
         include/components/render-components/UniformComponents.h
         include/components/render-components/TextureComponents.h
-        src/loader/Loader.cpp include/loader/Loader.h src/loader/ObjLoader.cpp include/loader/ObjLoader.h src/loader/CommonLoader.cpp include/loader/CommonLoader.h src/lighting/DirectionalLight.cpp include/lighting/DirectionalLight.h)
+        src/loader/Loader.cpp                       include/loader/Loader.h
+        src/loader/ObjLoader.cpp                    include/loader/ObjLoader.h
+        src/loader/CommonLoader.cpp                 include/loader/CommonLoader.h
+        src/lighting/DirectionalLight.cpp           include/lighting/DirectionalLight.h
+        src/systems/BlinnPhongShaderSystem.cpp      include/systems/BlinnPhongShaderSystem.h
+        )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
 # Project Includes

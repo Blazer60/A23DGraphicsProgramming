@@ -39,6 +39,11 @@ SharedMesh loadObj(std::string_view path)
         Mesh<BasicVertex> mesh = loadObjBasicVertex(path);
         return std::make_shared<Mesh<BasicVertex>>(mesh);
     }
+    if (typeid(VertexSpecification) == typeid(PhongVertex))
+    {
+        Mesh<PhongVertex> mesh = loadObjPhongVertex(path);
+        return std::make_shared<Mesh<PhongVertex>>(mesh);
+    }
     else
         debug::log("Unknown vertex type for .obj file: " + std::string(typeid(VertexSpecification).name()),
                    debug::severity::Warning);
@@ -68,3 +73,10 @@ Mesh<UvVertex> loadObjUvVertex(std::string_view path);
  * @returns A mesh with type Basic Vertex.
  */
 Mesh<BasicVertex> loadObjBasicVertex(std::string_view path);
+
+/**
+ * @brief Loads an obj file with vertex type Phong Vertex.
+ * @param path - The path to the .obj file that you want to load.
+ * @returns A mesh with type Basic Vertex.
+ */
+Mesh<PhongVertex> loadObjPhongVertex(std::string_view path);

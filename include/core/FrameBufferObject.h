@@ -35,7 +35,7 @@ protected:
     unsigned int mRboId { 0 };
     
     glm::vec2 mSize                 { 400 };
-    const glm::vec4  mClearColour   { 1.f, 1.f, 0.8f, 1.f };
+    const glm::vec4  mClearColour   { 0.2f, 0.2f, 0.3f, 1.f };
     const float      mDepth         { 1.f };
 };
 

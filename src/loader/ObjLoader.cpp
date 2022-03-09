@@ -130,3 +130,18 @@ Mesh<BasicVertex> loadObjBasicVertex(std::string_view path)
     
     return { std::move(vertices), std::move(generateObj(path, genVertex, getSize)) };
 }
+
+Mesh<PhongVertex> loadObjPhongVertex(std::string_view path)
+{
+    std::vector<PhongVertex> vertices;
+    
+    const auto genVertex = [&vertices](const ObjVertex &objVertex) {
+        vertices.emplace_back(PhongVertex { objVertex.position, objVertex.uv, objVertex.normal } );
+    };
+    
+    const auto getSize = [&vertices]() {
+        return static_cast<uint32_t>(vertices.size());
+    };
+    
+    return { std::move(vertices), std::move(generateObj(path, genVertex, getSize)) };
+}

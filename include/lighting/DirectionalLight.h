@@ -24,6 +24,12 @@ public:
 
 protected:
     glm::vec3 mDirection { glm::normalize(glm::vec3(1.f, 1.f, 1.f)) };
+public:
+    const glm::vec3 &getDirection() const;
+    
+    const glm::vec3 &getIntensity() const;
+
+protected:
     glm::vec3 mIntensity { 1.f };  // Intensity of each colour channel.
 };
 

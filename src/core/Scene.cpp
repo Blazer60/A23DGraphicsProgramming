@@ -16,6 +16,7 @@
 #include "gtc/type_ptr.hpp"
 #include "imgui.h"
 #include "Loader.h"
+#include "BlinnPhongShaderSystem.h"
 
 Scene::Scene()
     : mCube(primitives::basicCube()),
@@ -23,9 +24,11 @@ Scene::Scene()
       mUvCube(primitives::uvCube()),
       mMainCamera(std::make_shared<MainCamera>()),
       mUvRrComponent(ecs::create<RenderCoreElements>()),
+      mPhongRenderComponent(ecs::create<RenderCoreElements>()),
       mMainFbo(glm::ivec2(1920, 1080)),
       mInversionFbo(glm::ivec2(1920, 1080)),
-      mTeapot(loadModel<BasicVertex>(path::resources() + "models/UtahTeapot.obj"))
+      mTeapot(loadModel<BasicVertex>(path::resources() + "models/UtahTeapot.obj")),
+      mPhongTeapot(loadModel<PhongVertex>(path::resources() + "models/UtahTeapot.obj"))
 {
     ecs::Component basicCore = ecs::create<RenderCoreElements>();
     
@@ -42,6 +45,7 @@ Scene::Scene()
     }
     
     createUvCubeEntity();
+    createTeapotEntity();
     
     // Creation order of system still matters.
     ecs::createSystem<TextureBinderSystem>       ();
@@ -49,8 +53,10 @@ Scene::Scene()
     ecs::createSystem<RotatorSystem>             ();
     ecs::createSystem<BinderSystem<BasicVertex>> ({ basicCore });  // Default types are automatically appended.
     ecs::createSystem<BinderSystem<UvVertex>>    ({ mUvRrComponent });
+    ecs::createSystem<BinderSystem<PhongVertex>> ({ mPhongRenderComponent });
     ecs::createSystem<BasicShaderSystem>         ({ basicCore },         mMainCamera);
     ecs::createSystem<UvShaderSystem>            ({ mUvRrComponent },    mMainCamera);
+    ecs::createSystem<BlinnPhongShaderSystem>    ({ mPhongRenderComponent }, mMainCamera, mDirectionalLight);
     
     ecs::start();
 }
@@ -68,6 +74,24 @@ ecs::Entity Scene::createUvCubeEntity() const
     ecs::add(eUvCube, std::make_shared<BasicUniforms>());
     ecs::add(eUvCube, Transform());
     ecs::add(eUvCube, UvUniforms{ glm::vec3(1.f, 0.f, 1.f) });
+    ecs::add(eUvCube, Texture());
+    ecs::add(eUvCube, TexturePath(path::textures() + "HaSquare.png"));
+    return eUvCube;
+}
+
+ecs::Entity Scene::createTeapotEntity() const
+{
+    ecs::Entity eUvCube = ecs::create();
+    RenderCoreElements coreElements;
+    coreElements.fbo = mMainFbo.getId();
+    ecs::add(eUvCube, mPhongRenderComponent, coreElements);
+    ecs::add(eUvCube, mPhongTeapot);
+    // ecs::add(eUvCube, mTeapot);
+    ecs::add(eUvCube, Vbo());
+    ecs::add(eUvCube, Ebo());
+    ecs::add(eUvCube, std::make_shared<BasicUniforms>());
+    ecs::add(eUvCube, Transform { glm::vec3(-15.f, 0.f, 0.f) });
+    ecs::add(eUvCube, UvUniforms{ glm::vec3(1.f, 1.f, 1.f) });
     ecs::add(eUvCube, Texture());
     ecs::add(eUvCube, TexturePath(path::textures() + "HaSquare.png"));
     return eUvCube;
@@ -126,8 +150,9 @@ void Scene::onImguiUpdate()
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glBindVertexArray(0);
     ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
-    mDirectionalLight.onImguiUpdate();
-    mMainFbo.imguiUpdate();
+    mDirectionalLight->onImguiUpdate();
     mInversionFbo.imguiUpdate();
+    mMainFbo.imguiUpdate();
+    mMainCamera->imguiUpdate();
     ImGui::ShowDemoWindow();
 }

@@ -8,6 +8,7 @@
 #include "MainCamera.h"
 #include "glfw3.h"
 #include "Timers.h"
+#include "imgui.h"
 
 MainCamera::MainCamera()
     : mWindow(glfwGetCurrentContext())
@@ -35,10 +36,11 @@ MainCamera::MainCamera()
 void MainCamera::update()
 {
     move();
-    glm::mat4 viewMatrix = glm::translate(glm::mat4(1.f), mPosition)
-                         * glm::mat4(mRotation);
+    mViewMatrix = glm::translate(glm::mat4(1.f), mPosition)
+                * glm::mat4(mRotation);
+    mViewMatrix = glm::inverse(mViewMatrix);
     
-    mVpMatrix = mProjectionMatrix * glm::inverse(viewMatrix);
+    mVpMatrix   = mProjectionMatrix * mViewMatrix;
 }
 
 void MainCamera::move()
@@ -98,4 +100,24 @@ const glm::mat4 &MainCamera::getVpMatrix() const
 void MainCamera::setProjectionMatrix(glm::vec2 viewSize)
 {
     mProjectionMatrix = glm::perspective(mFovY, viewSize.x / viewSize.y, mNearClip, mFarClip);
+}
+
+const glm::mat4 &MainCamera::getViewMatrix() const
+{
+    return mViewMatrix;
+}
+
+void MainCamera::imguiUpdate()
+{
+    if (ImGui::Begin("Camera Details"))
+    {
+        ImGui::Text("Pos: %f, %f, %f", mPosition.x, mPosition.y, mPosition.z);
+        ImGui::Text("Rot: %f, %f, %f, %f,", mRotation.w, mRotation.x, mRotation.y, mRotation.z);
+        ImGui::End();
+    }
+}
+
+const glm::vec3 &MainCamera::getPosition() const
+{
+    return mPosition;
 }
