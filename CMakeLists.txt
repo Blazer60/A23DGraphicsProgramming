@@ -49,7 +49,7 @@ add_executable(${PROJECT_NAME}
         src/loader/CommonLoader.cpp                 include/loader/CommonLoader.h
         src/lighting/DirectionalLight.cpp           include/lighting/DirectionalLight.h
         src/systems/BlinnPhongShaderSystem.cpp      include/systems/BlinnPhongShaderSystem.h
-        src/loader/MtlLoader.cpp src/loader/MtlLoader.h
+        src/loader/MtlLoader.cpp                    include/loader/MtlLoader.h
         )
 
 target_include_directories(${PROJECT_NAME} PUBLIC

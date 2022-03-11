@@ -9,6 +9,7 @@
 
 #include "ObjLoader.h"
 #include "MeshComponents.h"
+#include "MaterialComponents.h"
 
 enum class fileExtension : uint32_t { None, Obj };
 
@@ -25,7 +26,7 @@ SharedMesh loadModel(std::string_view path)
     
     // Check if the end of the string has .obj file format.
     if (type == fileExtension::Obj)
-        return loadObj<VertexSpecification>(path);
+        return loadObj<VertexSpecification, BlinnPhongMaterial>(path);
     else
         debug::log("Unknown file type: " + std::string(path), debug::severity::Warning);
     

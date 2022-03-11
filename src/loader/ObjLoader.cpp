@@ -10,7 +10,8 @@
 #include "MeshComponents.h"
 
 std::vector<uint32_t>
-generateObj(std::string_view path, const GenVertexSignature &genVertexDelegate, const GetSizeSignature &getSizeDelegate)
+parseObj(std::string_view path, const GenVertexSignature &genVertexDelegate, const GetSizeSignature &getSizeDelegate,
+         const MtlDelegateSignature &loadMtlDelegate)
 {
     // All the information that is stored in the .obj file.
     std::vector<glm::vec3> positions;
@@ -89,7 +90,7 @@ generateObj(std::string_view path, const GenVertexSignature &genVertexDelegate, 
         {"o",      doNothing },
         {"s",      doNothing },
         {"g",      doNothing },
-        {"mtllib", doNothing },  // todo: Link the mtllib to the loader and track each type of material name.
+        {"mtllib", loadMtlDelegate },
         {"usemtl", doNothing },
         {"v",      [&positions](std::string_view arg)  { positions.emplace_back(createVec<3>(arg)); } },
         {"vt",     [&uvs](std::string_view arg)        { uvs.emplace_back(createVec<2>(arg)); } },
@@ -101,47 +102,3 @@ generateObj(std::string_view path, const GenVertexSignature &genVertexDelegate, 
     return std::move(indices);
 }
 
-Mesh<UvVertex> loadObjUvVertex(std::string_view path)
-{
-    std::vector<UvVertex> vertices;
-    
-    const auto genVertex = [&vertices](const ObjVertex &objVertex) {
-        vertices.emplace_back(UvVertex { objVertex.position, objVertex.uv });
-    };
-    
-    const auto getSize = [&vertices]() {
-        return static_cast<uint32_t>(vertices.size());
-    };
-    
-    return { std::move(vertices), std::move(generateObj(path, genVertex, getSize)) };
-}
-
-Mesh<BasicVertex> loadObjBasicVertex(std::string_view path)
-{
-    std::vector<BasicVertex> vertices;
-    
-    const auto genVertex = [&vertices](const ObjVertex &objVertex) {
-        vertices.emplace_back(BasicVertex { objVertex.position, glm::vec3(1.f, 0.f, 1.f) });
-    };
-    
-    const auto getSize = [&vertices]() {
-        return static_cast<uint32_t>(vertices.size());
-    };
-    
-    return { std::move(vertices), std::move(generateObj(path, genVertex, getSize)) };
-}
-
-Mesh<PhongVertex> loadObjPhongVertex(std::string_view path)
-{
-    std::vector<PhongVertex> vertices;
-    
-    const auto genVertex = [&vertices](const ObjVertex &objVertex) {
-        vertices.emplace_back(PhongVertex { objVertex.position, objVertex.uv, objVertex.normal } );
-    };
-    
-    const auto getSize = [&vertices]() {
-        return static_cast<uint32_t>(vertices.size());
-    };
-    
-    return { std::move(vertices), std::move(generateObj(path, genVertex, getSize)) };
-}
