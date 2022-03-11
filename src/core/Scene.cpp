@@ -17,6 +17,7 @@
 #include "imgui.h"
 #include "Loader.h"
 #include "BlinnPhongShaderSystem.h"
+#include "MaterialComponents.h"
 
 Scene::Scene()
     : mCube(primitives::basicCube()),

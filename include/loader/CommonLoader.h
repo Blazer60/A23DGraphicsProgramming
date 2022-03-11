@@ -9,6 +9,7 @@
 
 #include <functional>
 #include <charconv>
+#include <filesystem>
 
 /**
  * @brief Argument list that gets passed to parseFile() so that it knows how to interpret each line in the file.
@@ -35,6 +36,14 @@ std::vector<std::string> split(std::string_view args, char delim=' ');
  * @param _ - A dud.
  */
 void doNothing(std::string_view _);
+
+/**
+ * @brief Attempts to convert a relative file path from a base file into a relative path from the .exe.
+ * @param baseFile - The file that the relative path belongs to.
+ * @param relativeFile - The relative path that you want to convert.
+ * @returns A relative path from the .exe.
+ */
+std::string convertRelativePath(std::string_view baseFile, std::string_view relativeFile);
 
 template<uint32_t count>
 glm::vec<count, float, glm::defaultp> createVec(std::string_view arg)

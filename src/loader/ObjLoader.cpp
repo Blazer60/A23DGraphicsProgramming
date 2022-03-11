@@ -39,7 +39,7 @@ generateObj(std::string_view path, const GenVertexSignature &genVertexDelegate, 
                 positionIndex = std::stoi(nums[0]);
         }
         
-        // .obj files start counting at zero, so we can use it as a sanity check.
+        // .obj files start counting at one, so we can use it as a sanity check.
         return ObjVertex {
             positionIndex   == 0 ? glm::vec3(0.f) : positions[positionIndex - 1],
             uvIndex         == 0 ? glm::vec2(0.f) : uvs[uvIndex - 1],
@@ -85,16 +85,16 @@ generateObj(std::string_view path, const GenVertexSignature &genVertexDelegate, 
     };
     
     const ArgumentList argumentList {
-            {"#",      doNothing },
-            {"o",      doNothing },
-            {"s",      doNothing },
-            {"g",      doNothing },
-            {"mtllib", doNothing },
-            {"usemtl", doNothing },
-            {"v",      [&positions](std::string_view arg)  { positions.emplace_back(createVec<3>(arg)); } },
-            {"vt",     [&uvs](std::string_view arg)        { uvs.emplace_back(createVec<2>(arg)); } },
-            {"vn",     [&normals](std::string_view arg)    { normals.emplace_back(createVec<3>(arg)); } },
-            {"f",      createFace },
+        {"#",      doNothing },
+        {"o",      doNothing },
+        {"s",      doNothing },
+        {"g",      doNothing },
+        {"mtllib", doNothing },  // todo: Link the mtllib to the loader and track each type of material name.
+        {"usemtl", doNothing },
+        {"v",      [&positions](std::string_view arg)  { positions.emplace_back(createVec<3>(arg)); } },
+        {"vt",     [&uvs](std::string_view arg)        { uvs.emplace_back(createVec<2>(arg)); } },
+        {"vn",     [&normals](std::string_view arg)    { normals.emplace_back(createVec<3>(arg)); } },
+        {"f",      createFace },
     };
     
     parseFile(path, argumentList);

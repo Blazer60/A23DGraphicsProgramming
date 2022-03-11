@@ -61,3 +61,15 @@ void doNothing(std::string_view _)
 {
     // Doesn't do anything. We can add this to keywords that we know exist, but we don't want to handle them yet.
 }
+
+std::string convertRelativePath(std::string_view baseFile, std::string_view relativeFile)
+{
+    std::filesystem::path baseFilePath(baseFile);
+    std::filesystem::path relativeFilePath(relativeFile);
+    
+    baseFilePath.remove_filename();
+    
+    return relativeFilePath.is_relative()
+        ? baseFilePath.string() + relativeFilePath.string()
+        : relativeFilePath.string();
+}
