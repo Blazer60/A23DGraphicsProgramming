@@ -44,6 +44,8 @@ Scene::Scene()
         }
     }
     
+    createPhongModel(glm::vec3(-5.f, 0.f, 0.f), path::resources() + "models/pbr-spheres/StoneCladding.obj");
+    
     
     // Creation order of system still matters.
     ecs::createSystem<TextureBinderSystem>       ();

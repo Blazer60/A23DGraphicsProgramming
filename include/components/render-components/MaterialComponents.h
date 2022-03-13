@@ -8,6 +8,7 @@
 #pragma once
 
 #include "glm.hpp"
+#include "TextureLoader.h"
 
 struct MtlMaterial;
 
@@ -37,6 +38,8 @@ struct MtlMaterial
     glm::vec3       kS      { 0.f };
     unsigned int    d       { 1 };
     unsigned int    illum   { 2 };
+    std::string     MapKd   { "" };
+    std::string     MapNs   { "" };
 };
 
 /**
@@ -58,7 +61,9 @@ struct BlinnPhongMaterial
     ~BlinnPhongMaterial() = default;
     
     explicit BlinnPhongMaterial(const MtlMaterial &mtl)
-        : ambientColour(mtl.kA), diffuseColour(mtl.kD), specularColour(mtl.kS), specularExponent(mtl.nS) {}
+        : ambientColour(mtl.kA), diffuseColour(mtl.kD),
+          specularColour(mtl.kS), specularExponent(mtl.nS),
+          diffuseTextureId(load::texture(mtl.MapKd)) {}
     
     glm::vec3       ambientColour       { 0.2f };
     glm::vec3       diffuseColour       { 0.8f };

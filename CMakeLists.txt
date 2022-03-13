@@ -50,6 +50,7 @@ add_executable(${PROJECT_NAME}
         src/loader/MaterialLoader.cpp               include/loader/MaterialLoader.h
         src/loader/ModelLoader.cpp                  include/loader/ModelLoader.h
         src/loader/RawMesh.cpp                      include/loader/RawMesh.h
+        src/loader/TextureLoader.cpp                include/loader/TextureLoader.h
         )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
@@ -76,8 +77,9 @@ target_precompile_headers(${PROJECT_NAME} PUBLIC
         <glm.hpp>   [["DebugLogger.h"]]
         )
 
+# STB_IMAGE_IMPLEMENTATION is set within a source file (Texture Loader).
 target_compile_definitions(${PROJECT_NAME} PUBLIC
-        GLEW_STATIC STB_IMAGE_IMPLEMENTATION
+        GLEW_STATIC
         RESOURCE_PATH="${BINARY_TO_ROOT}/${RESOURCE_PATH}/"
         SHADER_PATH="${BINARY_TO_ROOT}/${SHADER_PATH}/"
         TEXTURE_PATH="${BINARY_TO_ROOT}/${TEXTURE_PATH}/"

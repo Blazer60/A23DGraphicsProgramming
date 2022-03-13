@@ -18,7 +18,7 @@ BlinnPhongShaderSystem::BlinnPhongShaderSystem(
             const BlinnPhongMaterial &material) {
         glBindFramebuffer(GL_FRAMEBUFFER, renderCoreElements.fbo);
         glBindVertexArray(renderCoreElements.vao);
-        // glBindTextureUnit(0, texture.id);
+        glBindTextureUnit(0, material.diffuseTextureId);
     
         mShader.set("u_mvp", mCamera->getVpMatrix() * uniforms->modelMat);
         mShader.set("u_modelMat", uniforms->modelMat);

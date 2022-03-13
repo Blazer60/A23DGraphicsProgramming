@@ -30,10 +30,13 @@ float lightDot(vec3 a, vec3 b)
 
 void main()
 {
+    vec3 diffuse_map = texture(u_texture, v_uvs).xyz;
+    if (diffuse_map == vec3(0.0))
+        diffuse_map = vec3(1.0);
     const float ambientIntensity  = 1.f * 0.1f;
     const vec3  diffuseIntensity  = 1.f * lightDot(v_normal, u_lightDir) * u_lightColour;
     const vec3  specularIntensity = 1.f * pow(lightDot(halfAngle(), v_normal), 128) * u_lightColour;
 
-    o_colour = ambientIntensity * u_colour + diffuseIntensity * u_colour + specularIntensity * u_colour;
+    o_colour = ambientIntensity * u_colour + diffuseIntensity * u_colour * diffuse_map + specularIntensity * u_colour;
     o_colour = clamp(o_colour, 0.f, 1.f);  // We clamp here since opengl will overflow the number. HDR is not enabled.
 }
