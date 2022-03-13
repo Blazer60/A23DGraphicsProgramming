@@ -14,7 +14,7 @@ UvShaderSystem::UvShaderSystem(std::shared_ptr<MainCamera> camera)
     : mCamera(std::move(camera))
 {
     mEntities.forEach([this](
-            const RenderCoreElements &renderCoreElements,
+            const RenderInformation &renderCoreElements,
             const std::shared_ptr<BasicUniforms> &uniforms,
             const UvUniforms &uvUniforms,
             const Texture &texture) {

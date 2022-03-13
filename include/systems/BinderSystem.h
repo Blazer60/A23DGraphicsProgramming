@@ -33,7 +33,7 @@ namespace vaoImpl
  */
 template<typename VertexSpecification>
 class BinderSystem
-        : public ecs::BaseSystem<RenderCoreElements, Vbo, Ebo, std::shared_ptr<IMesh>>
+        : public ecs::BaseSystem<RenderInformation, Vbo, Ebo, std::shared_ptr<IMesh>>
 {
 public:
     BinderSystem();
@@ -48,7 +48,7 @@ public:
 template<typename VertexSpecification>
 BinderSystem<VertexSpecification>::BinderSystem()
 {
-    mEntities.forEach([this](RenderCoreElements &coreElements, Vbo &vbo, Ebo &ebo, std::shared_ptr<IMesh> &mesh) {
+    mEntities.forEach([this](RenderInformation &coreElements, Vbo &vbo, Ebo &ebo, std::shared_ptr<IMesh> &mesh) {
         glCreateBuffers(1, &vbo.id);
         glCreateBuffers(1, &ebo.id);
         glNamedBufferData(vbo.id, mesh->verticesCount() * sizeof(VertexSpecification), mesh->verticesData(), GL_STATIC_DRAW);
@@ -77,7 +77,7 @@ void BinderSystem<VertexSpecification>::onStart()
 template<typename VertexSpecification>
 void BinderSystem<VertexSpecification>::onUpdate()
 {
-    mEntities.forEach([this](RenderCoreElements &coreElements, Vbo &vbo, Ebo &ebo, std::shared_ptr<IMesh> &mesh) {
+    mEntities.forEach([this](RenderInformation &coreElements, Vbo &vbo, Ebo &ebo, std::shared_ptr<IMesh> &mesh) {
     
     });
 }

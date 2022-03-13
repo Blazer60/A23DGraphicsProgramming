@@ -39,8 +39,6 @@ protected:
     SharedMesh mTri;
     SharedMesh mUvCube;
     
-    SharedMesh mTeapot;
-    SharedMesh mPhongTeapot;
     
     FrameBufferObject mMainFbo;
     FrameBufferObject mInversionFbo;
@@ -55,9 +53,10 @@ protected:
     std::shared_ptr<DirectionalLight> mDirectionalLight { std::make_shared<DirectionalLight>() };
     
     ecs::Entity createUvCubeEntity() const;
-    ecs::Entity createTeapotEntity() const;
     
     void createChildThingAt(ecs::Component basicCore, glm::vec3 position);
+    
+    ecs::Entity createPhongModel(glm::vec3 position, std::string_view path);
 };
 
 

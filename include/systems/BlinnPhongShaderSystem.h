@@ -16,6 +16,7 @@
 #include "MainCamera.h"
 #include "DirectionalLight.h"
 #include "FilePaths.h"
+#include "MaterialComponents.h"
 
 /**
  * Does forward Blinn-phong shading of models.
@@ -23,10 +24,10 @@
  * @date 07/03/2022
  */
 class BlinnPhongShaderSystem
-        : public ecs::BaseSystem<RenderCoreElements, std::shared_ptr<BasicUniforms>, UvUniforms, Texture>
+        : public ecs::BaseSystem<RenderInformation, std::shared_ptr<BasicUniforms>, BlinnPhongMaterial>
 {
 public:
-    explicit BlinnPhongShaderSystem(std::shared_ptr<MainCamera> camera, std::shared_ptr<DirectionalLight> directionalLight);
+    BlinnPhongShaderSystem(std::shared_ptr<MainCamera> camera, std::shared_ptr<DirectionalLight> directionalLight);
     
     void onStart() override;
     

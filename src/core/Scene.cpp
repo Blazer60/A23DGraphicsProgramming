@@ -15,38 +15,35 @@
 #include "TextureBinderSystem.h"
 #include "gtc/type_ptr.hpp"
 #include "imgui.h"
-#include "Loader.h"
 #include "BlinnPhongShaderSystem.h"
 #include "MaterialComponents.h"
+#include "ModelLoader.h"
 
 Scene::Scene()
     : mCube(primitives::basicCube()),
       mTri(primitives::basicTriangle()),
       mUvCube(primitives::uvCube()),
       mMainCamera(std::make_shared<MainCamera>()),
-      mUvRrComponent(ecs::create<RenderCoreElements>()),
-      mPhongRenderComponent(ecs::create<RenderCoreElements>()),
+      mUvRrComponent(ecs::create<RenderInformation>()),
+      mPhongRenderComponent(ecs::create<RenderInformation>()),
       mMainFbo(glm::ivec2(1920, 1080)),
-      mInversionFbo(glm::ivec2(1920, 1080)),
-      mTeapot(loadModel<BasicVertex>(path::resources() + "models/UtahTeapot.obj")),
-      mPhongTeapot(loadModel<PhongVertex>(path::resources() + "models/UtahTeapot.obj"))
+      mInversionFbo(glm::ivec2(1920, 1080))
 {
-    ecs::Component basicCore = ecs::create<RenderCoreElements>();
+    ecs::Component basicCore = ecs::create<RenderInformation>();
     
-    const int count = 3;
-    for (int x = 0; x < count; ++x)
+    createUvCubeEntity();
+    for (int i = 0; i < 3; ++i)
     {
-        for (int y = 0; y < count; ++y)
+        for (int j = 0; j < 3; ++j)
         {
-            for (int z = 0; z < count; ++z)
+            for (int k = 0; k < 3; ++k)
             {
-                createChildThingAt(basicCore, glm::vec3(x, y, z) * 4.f);
+                ecs::Entity parent = createPhongModel(glm::vec3(i * 3.f, j * 3.f, k * 3.f), path::resources() + "models/Bole.obj");
+                ecs::add(parent, Rotator { 1.f, 1.f });
             }
         }
     }
     
-    createUvCubeEntity();
-    createTeapotEntity();
     
     // Creation order of system still matters.
     ecs::createSystem<TextureBinderSystem>       ();
@@ -65,7 +62,7 @@ Scene::Scene()
 ecs::Entity Scene::createUvCubeEntity() const
 {
     ecs::Entity eUvCube = ecs::create();
-    RenderCoreElements coreElements;
+    RenderInformation coreElements;
     coreElements.fbo = mMainFbo.getId();
     ecs::add(eUvCube, mUvRrComponent, coreElements);
     ecs::add(eUvCube, SharedMesh(mUvCube));
@@ -80,22 +77,33 @@ ecs::Entity Scene::createUvCubeEntity() const
     return eUvCube;
 }
 
-ecs::Entity Scene::createTeapotEntity() const
+ecs::Entity Scene::createPhongModel(glm::vec3 position, std::string_view path)
 {
-    ecs::Entity eUvCube = ecs::create();
-    RenderCoreElements coreElements;
-    coreElements.fbo = mMainFbo.getId();
-    ecs::add(eUvCube, mPhongRenderComponent, coreElements);
-    ecs::add(eUvCube, mPhongTeapot);
-    // ecs::add(eUvCube, mTeapot);
-    ecs::add(eUvCube, Vbo());
-    ecs::add(eUvCube, Ebo());
-    ecs::add(eUvCube, std::make_shared<BasicUniforms>());
-    ecs::add(eUvCube, Transform { glm::vec3(-15.f, 0.f, 0.f) });
-    ecs::add(eUvCube, UvUniforms{ glm::vec3(1.f, 1.f, 1.f) });
-    ecs::add(eUvCube, Texture());
-    ecs::add(eUvCube, TexturePath(path::textures() + "HaSquare.png"));
-    return eUvCube;
+    // Our transform uniforms that will be distributed to every child in the hierarchy.
+    auto transformUniforms = std::make_shared<BasicUniforms>();
+    
+    ecs::Entity parent    = ecs::create();
+    ecs::Entity model     = ecs::create();  // Just contains model slots for hierarchical purity.
+    
+    // The parent only needs a transform, uniforms for the transform and a model child entity.
+    ecs::add(parent, model);
+    ecs::add(parent, Transform { position } );
+    ecs::add(parent, transformUniforms);
+    
+    auto meshes = load::model<PhongVertex, BlinnPhongMaterial>(path);
+    for (auto &mesh : meshes)
+    {
+        ecs::Entity modelSlot = ecs::create();
+        ecs::add(model, modelSlot);
+        
+        mesh.renderInformation.fbo = mMainFbo.getId();
+        
+        ecs::add(modelSlot, mPhongRenderComponent, mesh.renderInformation);
+        ecs::add(modelSlot, mesh.material);
+        ecs::add(modelSlot, transformUniforms);
+    }
+    
+    return parent;
 }
 
 void Scene::createChildThingAt(ecs::Component basicCore, glm::vec3 position)
@@ -110,8 +118,8 @@ void Scene::createChildThingAt(ecs::Component basicCore, glm::vec3 position)
     ecs::add(parent, Transform { position });
     ecs::add(parent, Rotator { 0.f, 1.f });
     
-    ecs::add(childA, mTeapot);
-    RenderCoreElements coreElements;
+    // ecs::add(childA, mTeapot);
+    RenderInformation coreElements;
     coreElements.fbo = mMainFbo.getId();
     ecs::add(childA, basicCore, coreElements);
     ecs::add(childA, Vbo());

@@ -22,7 +22,7 @@
  * @date 15/02/2022
  */
 class UvShaderSystem
-        : public ecs::BaseSystem<RenderCoreElements, std::shared_ptr<BasicUniforms>, UvUniforms, Texture>
+        : public ecs::BaseSystem<RenderInformation, std::shared_ptr<BasicUniforms>, UvUniforms, Texture>
 {
 public:
     explicit UvShaderSystem(std::shared_ptr<MainCamera> camera);

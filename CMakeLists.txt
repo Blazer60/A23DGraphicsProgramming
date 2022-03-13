@@ -44,12 +44,12 @@ add_executable(${PROJECT_NAME}
         include/components/render-components/UniformComponents.h
         include/components/render-components/TextureComponents.h
         include/components/render-components/MaterialComponents.h
-        src/loader/Loader.cpp                       include/loader/Loader.h
-        src/loader/ObjLoader.cpp                    include/loader/ObjLoader.h
-        src/loader/CommonLoader.cpp                 include/loader/CommonLoader.h
+        src/loader/CommonLoader.cpp include/loader/CommonLoader.h
         src/lighting/DirectionalLight.cpp           include/lighting/DirectionalLight.h
         src/systems/BlinnPhongShaderSystem.cpp      include/systems/BlinnPhongShaderSystem.h
-        src/loader/MtlLoader.cpp                    include/loader/MtlLoader.h
+        src/loader/MaterialLoader.cpp               include/loader/MaterialLoader.h
+        src/loader/ModelLoader.cpp                  include/loader/ModelLoader.h
+        src/loader/RawMesh.cpp                      include/loader/RawMesh.h
         )
 
 target_include_directories(${PROJECT_NAME} PUBLIC

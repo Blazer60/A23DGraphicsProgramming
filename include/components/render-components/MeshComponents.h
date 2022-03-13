@@ -12,6 +12,17 @@
 #include <vector>
 #include <memory>
 
+/**
+ * @brief An instruction that defines how a single element should be setup with the vao.
+ */
+struct Instruction
+{
+    GLenum type;
+    int count;
+};
+
+typedef std::vector<Instruction> Instructions;
+
 /** A Base Vertex to inherit your own vertex from. */
 struct Vertex {};
 
@@ -40,6 +51,14 @@ struct BasicVertex
     constexpr explicit BasicVertex(const ObjVertex &objVertex)
         : position(objVertex.position), colour(glm::vec3(1.f, 0.f, 1.f)) {}
     
+    static Instructions instructions()
+    {
+        return {
+            { GL_FLOAT, 3 },
+            { GL_FLOAT, 3 },
+        };
+    }
+    
     glm::vec3 position  { 0.f };
     glm::vec3 colour    { 0.f };
 };
@@ -58,6 +77,14 @@ struct UvVertex
     constexpr explicit UvVertex(const ObjVertex &objVertex)
         : position(objVertex.position), uv(objVertex.uv) {}
     
+    static Instructions instructions()
+    {
+        return {
+            { GL_FLOAT, 3 },
+            { GL_FLOAT, 2 },
+        };
+    }
+    
     glm::vec3 position  { 0.f };
     glm::vec2 uv        { 0.f };
 };
@@ -73,6 +100,15 @@ struct PhongVertex
     
     constexpr explicit PhongVertex(const ObjVertex &objVertex)
         : position(objVertex.position), uv(objVertex.uv), normal(objVertex.normal) {}
+    
+    static Instructions instructions()
+    {
+        return {
+            { GL_FLOAT, 3 },
+            { GL_FLOAT, 2 },
+            { GL_FLOAT, 3 },
+        };
+    }
         
     glm::vec3 position  { 0.f };
     glm::vec2 uv        { 0.f };
