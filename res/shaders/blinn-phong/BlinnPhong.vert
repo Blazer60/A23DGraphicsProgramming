@@ -15,6 +15,6 @@ void main()
 {
     gl_Position = u_mvp * vec4(a_position.xyz, 1.f);
     v_uvs = a_uvs;
-    v_normal = a_normal;
+    v_normal = mat3(u_modelMat) * a_normal;
     v_positionWS = vec3(u_modelMat * vec4(a_position.xyz, 1.f));
 }
