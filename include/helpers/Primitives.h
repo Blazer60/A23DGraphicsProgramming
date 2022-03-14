@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "MeshComponents.h"
+#include "Vertices.h"
 #include "ModelLoader.h"
 
 namespace primitives
@@ -20,7 +20,7 @@ namespace primitives
      * @tparam TMaterial - The type of Material you want (default is nothing).
      */
     template<typename TVertex, typename TMaterial=NoMaterial>
-    load::Model<TVertex, TMaterial> cube();
+    Model<TVertex, TMaterial> cube();
     
     /**
      * @brief Creates a plane.
@@ -28,7 +28,7 @@ namespace primitives
      * @tparam TMaterial - The type of Material you want (default is nothing).
      */
     template<typename TVertex, typename TMaterial=NoMaterial>
-    load::Model<TVertex, TMaterial> plane();
+    Model<TVertex, TMaterial> plane();
     
     /**
      * @brief Creates what ever you define provided it returns object vertices and indices for it.
@@ -37,14 +37,14 @@ namespace primitives
      * @param makeCallback - How to make the model.
      */
     template<typename TVertex, typename TMaterial>
-    load::Model<TVertex, TMaterial> make(const std::function<PrimitiveType()> &makeCallback);
+    Model<TVertex, TMaterial> make(const std::function<PrimitiveType()> &makeCallback);
     
     [[nodiscard]] PrimitiveType objectCube();
     [[nodiscard]] PrimitiveType objectPlane();
     
     
     template<typename TVertex, typename TMaterial>
-    load::Model<TVertex, TMaterial> primitives::make(const std::function<PrimitiveType()> &makeCallback)
+    Model<TVertex, TMaterial> primitives::make(const std::function<PrimitiveType()> &makeCallback)
     {
         const auto [objectVertices, indices] = makeCallback();
         
@@ -53,18 +53,18 @@ namespace primitives
         for (const auto &item : objectVertices)
             vertices.emplace_back(item);
         
-        load::Mesh<TVertex, TMaterial> mesh(vertices, indices, TMaterial());
+        Mesh<TVertex, TMaterial> mesh(vertices, indices, TMaterial());
         return { std::move(mesh) };
     }
     
     template<typename TVertex, typename TMaterial>
-    load::Model<TVertex, TMaterial> primitives::cube()
+    Model<TVertex, TMaterial> primitives::cube()
     {
         return make<TVertex, TMaterial>(objectCube);
     }
     
     template<typename TVertex, typename TMaterial>
-    load::Model<TVertex, TMaterial> plane()
+    Model<TVertex, TMaterial> plane()
     {
         return make<TVertex, TMaterial>(objectPlane);
     }

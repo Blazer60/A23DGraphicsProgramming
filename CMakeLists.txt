@@ -21,7 +21,7 @@ add_subdirectory(vendor)
 
 
 add_executable(${PROJECT_NAME}
-        include/components/render-components/MeshComponents.h
+        include/components/render-components/Vertices.h
         include/components/render-components/RenderComponents.h
         include/components/render-components/UniformComponents.h
         include/components/render-components/TextureComponents.h
@@ -46,7 +46,6 @@ add_executable(${PROJECT_NAME}
         src/systems/BasicUniformUpdaterSystem.cpp   include/systems/BasicUniformUpdaterSystem.h
         src/systems/RotatorSystem.cpp               include/systems/RotatorSystem.h
         src/systems/UvShaderSystem.cpp              include/systems/UvShaderSystem.h
-        src/systems/BinderSystem.cpp                include/systems/BinderSystem.h
         src/systems/TextureBinderSystem.cpp         include/systems/TextureBinderSystem.h
         src/systems/BlinnPhongShaderSystem.cpp      include/systems/BlinnPhongShaderSystem.h
 
@@ -57,7 +56,7 @@ add_executable(${PROJECT_NAME}
         src/loader/TextureLoader.cpp                include/loader/TextureLoader.h
 
         src/lighting/DirectionalLight.cpp           include/lighting/DirectionalLight.h
-        )
+        src/components/render-components/Mesh.cpp   include/components/render-components/Mesh.h)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
 # Project Includes

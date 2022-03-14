@@ -14,7 +14,6 @@
 #include "FrameBufferObject.h"
 #include "PostProcessingShader.h"
 #include "FilePaths.h"
-#include "BinderSystem.h"
 #include "DirectionalLight.h"
 #include "ModelLoader.h"
 
@@ -36,7 +35,7 @@ public:
     void onImguiUpdate();
 
 protected:
-    load::Model<UvVertex, NoMaterial> mCube;
+    Model<UvVertex, NoMaterial> mCube;
     
     FrameBufferObject mMainFbo;
     FrameBufferObject mInversionFbo;

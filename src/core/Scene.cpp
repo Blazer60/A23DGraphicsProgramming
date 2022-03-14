@@ -49,9 +49,6 @@ Scene::Scene()
     ecs::createSystem<TextureBinderSystem>       ();
     ecs::createSystem<BasicUniformUpdaterSystem> ();
     ecs::createSystem<RotatorSystem>             ();
-    ecs::createSystem<BinderSystem<BasicVertex>> ({ basicCore });  // Default types are automatically appended.
-    ecs::createSystem<BinderSystem<UvVertex>>    ({ mUvRrComponent });
-    ecs::createSystem<BinderSystem<PhongVertex>> ({ mPhongRenderComponent });
     ecs::createSystem<BasicShaderSystem>         ({ basicCore },         mMainCamera);
     ecs::createSystem<UvShaderSystem>            ({ mUvRrComponent },    mMainCamera);
     ecs::createSystem<BlinnPhongShaderSystem>    ({ mPhongRenderComponent }, mMainCamera, mDirectionalLight);
@@ -62,7 +59,7 @@ Scene::Scene()
 ecs::Entity Scene::createUvCubeEntity() const
 {
     ecs::Entity eUvCube = ecs::create();
-    load::Mesh<UvVertex, NoMaterial> cube = mCube[0];
+    Mesh<UvVertex, NoMaterial> cube = mCube[0];
     cube.renderInformation.fbo = mMainFbo.getId();
     ecs::add(eUvCube, mUvRrComponent, cube.renderInformation);
     

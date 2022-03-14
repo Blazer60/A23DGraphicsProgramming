@@ -8,7 +8,7 @@
 #pragma once
 
 #include "CommonLoader.h"
-#include "MeshComponents.h"
+#include "Vertices.h"
 
 #include <functional>
 

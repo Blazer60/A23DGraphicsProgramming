@@ -8,7 +8,7 @@
 #pragma once
 
 #include "RenderComponents.h"
-#include "MeshComponents.h"
+#include "Vertices.h"
 
 #include <functional>
 #include <charconv>
@@ -49,8 +49,6 @@ namespace load
      * @returns A relative path from the .exe.
      */
     std::string convertRelativePath(std::string_view baseFile, std::string_view relativeFile);
-    
-    void setVaoLayout(unsigned int vao, const Instructions &instructions);
     
     template<uint32_t count>
     glm::vec<count, float, glm::defaultp> createVec(std::string_view arg)
