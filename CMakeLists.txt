@@ -21,36 +21,42 @@ add_subdirectory(vendor)
 
 
 add_executable(${PROJECT_NAME}
-        src/Main.cpp
-        src/core/Core.cpp                           src/core/Core.h
-        src/core/Scene.cpp                          src/core/Scene.h
-        include/core/DebugLogger.h                  src/core/DebugLogger.cpp
-        include/components/Components.h
-        src/helpers/Primitives.cpp                  include/helpers/Primitives.h
-        src/core/Shader.cpp                         include/core/Shader.h
-        src/systems/BasicShaderSystem.cpp           include/systems/BasicShaderSystem.h
-        src/core/MainCamera.cpp                     include/core/MainCamera.h
-        src/systems/BasicUniformUpdaterSystem.cpp   include/systems/BasicUniformUpdaterSystem.h
-        src/helpers/Timers.cpp                      include/helpers/Timers.h
-        src/systems/RotatorSystem.cpp               include/systems/RotatorSystem.h
-        src/systems/UvShaderSystem.cpp              include/systems/UvShaderSystem.h
-        src/systems/BinderSystem.cpp                include/systems/BinderSystem.h
-        src/helpers/FilePaths.cpp                   include/helpers/FilePaths.h
-        src/systems/TextureBinderSystem.cpp         include/systems/TextureBinderSystem.h
-        src/core/FrameBufferObject.cpp              include/core/FrameBufferObject.h
-        src/core/PostProcessingShader.cpp           include/core/PostProcessingShader.h
         include/components/render-components/MeshComponents.h
         include/components/render-components/RenderComponents.h
         include/components/render-components/UniformComponents.h
         include/components/render-components/TextureComponents.h
         include/components/render-components/MaterialComponents.h
-        src/loader/CommonLoader.cpp include/loader/CommonLoader.h
-        src/lighting/DirectionalLight.cpp           include/lighting/DirectionalLight.h
+        include/components/Components.h
+
+        src/Main.cpp
+
+        src/core/Core.cpp                           src/core/Core.h
+        src/core/Scene.cpp                          src/core/Scene.h
+        src/core/Shader.cpp                         include/core/Shader.h
+        src/core/DebugLogger.cpp                    include/core/DebugLogger.h
+        src/core/MainCamera.cpp                     include/core/MainCamera.h
+        src/core/FrameBufferObject.cpp              include/core/FrameBufferObject.h
+        src/core/PostProcessingShader.cpp           include/core/PostProcessingShader.h
+
+        src/helpers/Primitives.cpp                  include/helpers/Primitives.h
+        src/helpers/Timers.cpp                      include/helpers/Timers.h
+        src/helpers/FilePaths.cpp                   include/helpers/FilePaths.h
+
+        src/systems/BasicShaderSystem.cpp           include/systems/BasicShaderSystem.h
+        src/systems/BasicUniformUpdaterSystem.cpp   include/systems/BasicUniformUpdaterSystem.h
+        src/systems/RotatorSystem.cpp               include/systems/RotatorSystem.h
+        src/systems/UvShaderSystem.cpp              include/systems/UvShaderSystem.h
+        src/systems/BinderSystem.cpp                include/systems/BinderSystem.h
+        src/systems/TextureBinderSystem.cpp         include/systems/TextureBinderSystem.h
         src/systems/BlinnPhongShaderSystem.cpp      include/systems/BlinnPhongShaderSystem.h
+
+        src/loader/CommonLoader.cpp                 include/loader/CommonLoader.h
         src/loader/MaterialLoader.cpp               include/loader/MaterialLoader.h
         src/loader/ModelLoader.cpp                  include/loader/ModelLoader.h
         src/loader/RawMesh.cpp                      include/loader/RawMesh.h
         src/loader/TextureLoader.cpp                include/loader/TextureLoader.h
+
+        src/lighting/DirectionalLight.cpp           include/lighting/DirectionalLight.h
         )
 
 target_include_directories(${PROJECT_NAME} PUBLIC

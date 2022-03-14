@@ -16,6 +16,7 @@
 #include "FilePaths.h"
 #include "BinderSystem.h"
 #include "DirectionalLight.h"
+#include "ModelLoader.h"
 
 #include <memory>
 
@@ -35,10 +36,7 @@ public:
     void onImguiUpdate();
 
 protected:
-    SharedMesh mCube;
-    SharedMesh mTri;
-    SharedMesh mUvCube;
-    
+    load::Model<UvVertex, NoMaterial> mCube;
     
     FrameBufferObject mMainFbo;
     FrameBufferObject mInversionFbo;
@@ -53,8 +51,6 @@ protected:
     std::shared_ptr<DirectionalLight> mDirectionalLight { std::make_shared<DirectionalLight>() };
     
     ecs::Entity createUvCubeEntity() const;
-    
-    void createChildThingAt(ecs::Component basicCore, glm::vec3 position);
     
     ecs::Entity createPhongModel(glm::vec3 position, std::string_view path);
 };

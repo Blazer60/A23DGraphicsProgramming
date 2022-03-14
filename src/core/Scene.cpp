@@ -20,9 +20,7 @@
 #include "ModelLoader.h"
 
 Scene::Scene()
-    : mCube(primitives::basicCube()),
-      mTri(primitives::basicTriangle()),
-      mUvCube(primitives::uvCube()),
+    : mCube(primitives::cube<UvVertex>()),
       mMainCamera(std::make_shared<MainCamera>()),
       mUvRrComponent(ecs::create<RenderInformation>()),
       mPhongRenderComponent(ecs::create<RenderInformation>()),
@@ -64,13 +62,10 @@ Scene::Scene()
 ecs::Entity Scene::createUvCubeEntity() const
 {
     ecs::Entity eUvCube = ecs::create();
-    RenderInformation coreElements;
-    coreElements.fbo = mMainFbo.getId();
-    ecs::add(eUvCube, mUvRrComponent, coreElements);
-    ecs::add(eUvCube, SharedMesh(mUvCube));
-    // ecs::add(eUvCube, mTeapot);
-    ecs::add(eUvCube, Vbo());
-    ecs::add(eUvCube, Ebo());
+    load::Mesh<UvVertex, NoMaterial> cube = mCube[0];
+    cube.renderInformation.fbo = mMainFbo.getId();
+    ecs::add(eUvCube, mUvRrComponent, cube.renderInformation);
+    
     ecs::add(eUvCube, std::make_shared<BasicUniforms>());
     ecs::add(eUvCube, Transform());
     ecs::add(eUvCube, UvUniforms{ glm::vec3(1.f, 0.f, 1.f) });
@@ -106,33 +101,6 @@ ecs::Entity Scene::createPhongModel(glm::vec3 position, std::string_view path)
     }
     
     return parent;
-}
-
-void Scene::createChildThingAt(ecs::Component basicCore, glm::vec3 position)
-{
-    ecs::Entity parent = ecs::create();
-    ecs::Entity childA = ecs::create();
-    ecs::Entity childB = ecs::create();
-    
-    ecs::add(parent, childA);
-    auto uniforms = std::make_shared<BasicUniforms>();
-    ecs::add(parent, uniforms);
-    ecs::add(parent, Transform { position });
-    ecs::add(parent, Rotator { 0.f, 1.f });
-    
-    // ecs::add(childA, mTeapot);
-    RenderInformation coreElements;
-    coreElements.fbo = mMainFbo.getId();
-    ecs::add(childA, basicCore, coreElements);
-    ecs::add(childA, Vbo());
-    ecs::add(childA, Ebo());
-    ecs::add(childA, uniforms);
-    
-    ecs::add(childB, SharedMesh(mTri));
-    ecs::add(childB, basicCore, coreElements);
-    ecs::add(childB, Vbo());
-    ecs::add(childB, Ebo());
-    ecs::add(childB, uniforms);
 }
 
 void Scene::onUpdate()

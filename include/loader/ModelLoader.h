@@ -25,6 +25,27 @@ namespace load
     template<typename TVertex, typename TMaterial>
     struct Mesh  // todo: move this to global namespace.
     {
+        Mesh(const std::vector<TVertex> &vertices, const std::vector<uint32_t> &indices, TMaterial mat)
+            : material(mat)
+        {
+            glCreateBuffers(1, &vbo);
+            glCreateBuffers(1, &ebo);
+            glNamedBufferData(vbo, vertices.size() * sizeof(TVertex), static_cast<const void *>(&vertices[0]), GL_STATIC_DRAW);
+            glNamedBufferData(ebo, indices.size() * sizeof(uint32_t), static_cast<const void *>(&indices[0]), GL_STATIC_DRAW);
+            renderInformation.eboCount = indices.size();
+    
+            glCreateVertexArrays(1, &renderInformation.vao);
+    
+            const unsigned int bindingIndex = 0;
+            const unsigned int offSet = 0;
+            const unsigned int stride = sizeof(TVertex);
+    
+            setVaoLayout(renderInformation.vao, TVertex::instructions());
+    
+            glVertexArrayVertexBuffer(renderInformation.vao, bindingIndex, vbo, offSet, stride);
+            glVertexArrayElementBuffer(renderInformation.vao, ebo);
+        }
+        
         Mesh(const RawMesh<TVertex> &mesh, TMaterial mat)
             : material(std::move(mat))
         {
