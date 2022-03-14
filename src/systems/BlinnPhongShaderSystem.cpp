@@ -21,13 +21,13 @@ BlinnPhongShaderSystem::BlinnPhongShaderSystem(
         glBindTextureUnit(0, material.diffuseTextureId);
     
         mShader.set("u_mvp", mCamera->getVpMatrix() * uniforms->modelMat);
-        mShader.set("u_modelMat", uniforms->modelMat);
-        mShader.set("u_viewMat", mCamera->getViewMatrix());
-        mShader.set("u_cameraPosWS", mCamera->getPosition());
+        mShader.set("u_model_matrix", uniforms->modelMat);
+        mShader.set("u_view_matrix", mCamera->getViewMatrix());
+        mShader.set("u_camera_position_ws", mCamera->getPosition());
         mShader.set("u_colour", material.diffuseColour);
         mShader.set("u_texture", 0);
-        mShader.set("u_lightDir", glm::normalize(mDirectionalLight->getDirection()));
-        mShader.set("u_lightColour", mDirectionalLight->getIntensity());
+        mShader.set("u_light_direction", glm::normalize(mDirectionalLight->getDirection()));
+        mShader.set("u_light_colour", mDirectionalLight->getIntensity());
     
         glDrawElements(GL_TRIANGLES, renderCoreElements.eboCount, GL_UNSIGNED_INT, 0);
     });
