@@ -14,8 +14,8 @@ TextureBufferObject::TextureBufferObject(const glm::ivec2 &size)
     init();
 }
 
-TextureBufferObject::TextureBufferObject(const glm::ivec2 &size, GLenum format)
-    : mSize(size), mFormat(format)
+TextureBufferObject::TextureBufferObject(const glm::ivec2 &size, GLenum format, std::string debugName)
+    : mSize(size), mFormat(format), mDebugName(std::move(debugName))
 {
     init();
 }
@@ -49,7 +49,7 @@ void TextureBufferObject::changeSize(const glm::ivec2 &size)
 
 void TextureBufferObject::imguiUpdate()
 {
-    const std::string name = "Buffer Object: " + std::to_string(mName);
+    const std::string name = "Buffer Object: " + std::to_string(mName) + " | " + mDebugName;
     auto &style = ImGui::GetStyle();
     const auto temp = style.WindowPadding;
     style.WindowPadding = ImVec2(0.f, 0.f);
@@ -58,13 +58,13 @@ void TextureBufferObject::imguiUpdate()
         ImVec2 regionSize = ImGui::GetContentRegionAvail();
         ImGui::Image(reinterpret_cast<void *>(mName), regionSize, ImVec2(0, 1), ImVec2(1, 0));
         
-        if (mSize.x != regionSize.x || mSize.y != regionSize.y)
+        if ((mSize.x != regionSize.x || mSize.y != regionSize.y) && !mDisableResizing)
         {
             changeSize(glm::ivec2(regionSize.x, regionSize.y));
             reattach();
         }
-        ImGui::End();
     }
+    ImGui::End();
     style.WindowPadding = temp;
 }
 

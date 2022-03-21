@@ -17,6 +17,7 @@
 #include "DirectionalLight.h"
 #include "ModelLoader.h"
 #include "TextureBufferObject.h"
+#include "Core.h"
 
 #include <memory>
 
@@ -38,6 +39,12 @@ public:
 protected:
     Model<UvVertex, NoMaterial> mCube;
     
+    FrameBufferObject mGeometryBuffer;
+    std::shared_ptr<TextureBufferObject> mPositions;
+    std::shared_ptr<TextureBufferObject> mNormals;
+    std::shared_ptr<TextureBufferObject> mAlbedo;
+    
+    
     FrameBufferObject mMainFbo;
     std::shared_ptr<TextureBufferObject> mMainTexture;
     
@@ -45,6 +52,7 @@ protected:
     
     ecs::Component mUvRrComponent;
     ecs::Component mPhongRenderComponent;
+    ecs::Component mGeometryRenderComponent;
     
     PostProcessingShader mInversionShader { path::shaders() + "post-processing/inversion/Inversion.vert", path::shaders() + "post-processing/inversion/Inversion.frag" };
     

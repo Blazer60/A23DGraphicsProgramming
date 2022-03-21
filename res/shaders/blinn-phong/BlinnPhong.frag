@@ -1,7 +1,7 @@
 #version 460 core
 
 in      vec2        v_uvs;
-in      vec3        v_normal;
+in      vec3        v_normal_ws;
 in      vec3        v_position_ws;
 
 uniform vec3        u_colour;
@@ -35,8 +35,8 @@ void main()
         diffuse_map = vec3(1.0);
 
     const vec3  ambient_intensity  = 1.f * 0.1f * u_light_colour;
-    const vec3  diffuse_intensity  = 1.f * light_dot(v_normal, u_light_direction) * u_light_colour;
-    const vec3  specular_intensity = 1.f * pow(light_dot(half_angle(), v_normal), 128) * u_light_colour;
+    const vec3  diffuse_intensity  = 1.f * light_dot(v_normal_ws, u_light_direction) * u_light_colour;
+    const vec3  specular_intensity = 1.f * pow(light_dot(half_angle(), v_normal_ws), 128) * u_light_colour;
 
     o_colour    = ambient_intensity  * u_colour * diffuse_map
                 + diffuse_intensity  * u_colour * diffuse_map

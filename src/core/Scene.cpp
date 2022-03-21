@@ -18,17 +18,27 @@
 #include "BlinnPhongShaderSystem.h"
 #include "MaterialComponents.h"
 #include "ModelLoader.h"
+#include "BlinnPhongGeometryShader.h"
 
 Scene::Scene()
     : mCube(primitives::cube<UvVertex>()),
       mMainCamera(std::make_shared<MainCamera>()),
       mUvRrComponent(ecs::create<RenderInformation>()),
       mPhongRenderComponent(ecs::create<RenderInformation>()),
+      mGeometryRenderComponent(ecs::create<RenderInformation>()),
       mMainFbo(glm::ivec2(1920, 1080)),
-      mMainTexture(std::make_shared<TextureBufferObject>(glm::ivec2(1920, 1080)))
+      mMainTexture(std::make_shared<TextureBufferObject>(glm::ivec2(1920, 1080))),
+      mGeometryBuffer(glm::ivec2(1920, 1080)),
+      mPositions(std::make_shared<TextureBufferObject>(glm::ivec2(1920, 1080), GL_RGB16F, "Position")),
+      mNormals(std::make_shared<TextureBufferObject>(glm::ivec2(1920, 1080), GL_RGB16_SNORM, "Normals")),
+      mAlbedo(std::make_shared<TextureBufferObject>(glm::ivec2(1920, 1080), GL_RGB16, "Albedo"))
 {
     mMainFbo.attach(mMainTexture, 0);
     mMainTexture->setClearColour(glm::vec4(0.2f, 0.2f, 0.4f, 1.f));
+    
+    mGeometryBuffer.attach(mPositions, 0);
+    mGeometryBuffer.attach(mNormals, 1);
+    mGeometryBuffer.attach(mAlbedo, 2);
     
     ecs::Component basicCore = ecs::create<RenderInformation>();
     
@@ -55,6 +65,7 @@ Scene::Scene()
     ecs::createSystem<BasicShaderSystem>         ({ basicCore },         mMainCamera);
     ecs::createSystem<UvShaderSystem>            ({ mUvRrComponent },    mMainCamera);
     ecs::createSystem<BlinnPhongShaderSystem>    ({ mPhongRenderComponent }, mMainCamera, mDirectionalLight);
+    ecs::createSystem<BlinnPhongGeometryShader>  ({ mGeometryRenderComponent }, mMainCamera, mDirectionalLight);
     
     ecs::start();
 }
@@ -93,9 +104,9 @@ ecs::Entity Scene::createPhongModel(glm::vec3 position, std::string_view path)
         ecs::Entity modelSlot = ecs::create();
         ecs::add(model, modelSlot);
         
-        mesh.renderInformation.fbo = mMainFbo.getFboName();
+        mesh.renderInformation.fbo = mGeometryBuffer.getFboName();
         
-        ecs::add(modelSlot, mPhongRenderComponent, mesh.renderInformation);
+        ecs::add(modelSlot, mGeometryRenderComponent, mesh.renderInformation);
         ecs::add(modelSlot, mesh.material);
         ecs::add(modelSlot, transformUniforms);
     }
@@ -113,6 +124,7 @@ void Scene::onUpdate()
     glClearNamedFramebufferfv(0, GL_DEPTH, 0, &depth);
     
     mMainFbo.clear();
+    mGeometryBuffer.clear();
     
     // mMainCamera->setProjectionMatrix(mMainFbo.getSize());
     mMainCamera->update();
@@ -130,6 +142,9 @@ void Scene::onImguiUpdate()
     // mInversionFbo.imguiUpdate();
     // mMainFbo.imguiUpdate();
     mMainTexture->imguiUpdate();
+    mPositions->imguiUpdate();
+    mNormals->imguiUpdate();
+    mAlbedo->imguiUpdate();
     mMainCamera->imguiUpdate();
     ImGui::ShowDemoWindow();
 }

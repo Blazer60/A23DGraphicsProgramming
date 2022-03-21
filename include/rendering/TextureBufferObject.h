@@ -26,7 +26,7 @@ public:
      * @see <a href="https://www.khronos.org/opengl/wiki/Image_Format">Image Formatting</a>
      * @param format - The OpenGL format with the syntax GL_(components)(size)[type].
      */
-    TextureBufferObject(const glm::ivec2 &size, GLenum format);
+    TextureBufferObject(const glm::ivec2 &size, GLenum format, std::string debugName="");
     
     ~TextureBufferObject();
     
@@ -41,10 +41,13 @@ protected:
     void deInit();
     
     std::function<void()> reattach  { [](){} };
+    const bool mDisableResizing { true };
+    
     unsigned int    mName           { 0 };
-    GLenum          mFormat         { GL_RGB8 };
+    GLenum          mFormat         { GL_RGB16 };
     glm::ivec2      mSize           { 1024 };
     glm::vec4       mClearColour    { 0.f };
+    std::string     mDebugName      { "" };
 };
 
 

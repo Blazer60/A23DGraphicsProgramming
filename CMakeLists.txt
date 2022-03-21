@@ -60,6 +60,7 @@ add_executable(${PROJECT_NAME}
         src/rendering/TextureBufferObject.cpp       include/rendering/TextureBufferObject.h
         src/rendering/FrameBufferObject.cpp         include/rendering/FrameBufferObject.h
         src/rendering/RenderBufferObject.cpp        include/rendering/RenderBufferObject.h
+        src/systems/BlinnPhongGeometryShader.cpp    include/systems/BlinnPhongGeometryShader.h
         )
 
 target_include_directories(${PROJECT_NAME} PUBLIC

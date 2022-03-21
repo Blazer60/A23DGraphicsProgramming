@@ -9,12 +9,12 @@ uniform mat4 u_model_matrix;
 
 out vec3 v_position_ws;
 out vec2 v_uvs;
-out vec3 v_normal;
+out vec3 v_normal_ws;
 
 void main()
 {
     gl_Position = u_mvp * vec4(a_position.xyz, 1.f);
     v_uvs = a_uvs;
-    v_normal = mat3(u_model_matrix) * a_normal;
+    v_normal_ws = mat3(u_model_matrix) * a_normal;
     v_position_ws = vec3(u_model_matrix * vec4(a_position.xyz, 1.f));
 }
