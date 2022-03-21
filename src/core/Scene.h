@@ -16,6 +16,7 @@
 #include "FilePaths.h"
 #include "DirectionalLight.h"
 #include "ModelLoader.h"
+#include "TextureBufferObject.h"
 
 #include <memory>
 
@@ -38,7 +39,7 @@ protected:
     Model<UvVertex, NoMaterial> mCube;
     
     FrameBufferObject mMainFbo;
-    FrameBufferObject mInversionFbo;
+    std::shared_ptr<TextureBufferObject> mMainTexture;
     
     std::shared_ptr<MainCamera> mMainCamera;
     

@@ -25,8 +25,11 @@ Scene::Scene()
       mUvRrComponent(ecs::create<RenderInformation>()),
       mPhongRenderComponent(ecs::create<RenderInformation>()),
       mMainFbo(glm::ivec2(1920, 1080)),
-      mInversionFbo(glm::ivec2(1920, 1080))
+      mMainTexture(std::make_shared<TextureBufferObject>(glm::ivec2(1920, 1080)))
 {
+    mMainFbo.attach(mMainTexture, 0);
+    mMainTexture->setClearColour(glm::vec4(0.2f, 0.2f, 0.4f, 1.f));
+    
     ecs::Component basicCore = ecs::create<RenderInformation>();
     
     createUvCubeEntity();
@@ -60,7 +63,7 @@ ecs::Entity Scene::createUvCubeEntity() const
 {
     ecs::Entity eUvCube = ecs::create();
     Mesh<UvVertex, NoMaterial> cube = mCube[0];
-    cube.renderInformation.fbo = mMainFbo.getId();
+    cube.renderInformation.fbo = mMainFbo.getFboName();
     ecs::add(eUvCube, mUvRrComponent, cube.renderInformation);
     
     ecs::add(eUvCube, std::make_shared<BasicUniforms>());
@@ -90,7 +93,7 @@ ecs::Entity Scene::createPhongModel(glm::vec3 position, std::string_view path)
         ecs::Entity modelSlot = ecs::create();
         ecs::add(model, modelSlot);
         
-        mesh.renderInformation.fbo = mMainFbo.getId();
+        mesh.renderInformation.fbo = mMainFbo.getFboName();
         
         ecs::add(modelSlot, mPhongRenderComponent, mesh.renderInformation);
         ecs::add(modelSlot, mesh.material);
@@ -104,21 +107,18 @@ void Scene::onUpdate()
 {
     // This needs to be in its own class.
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    const glm::vec4 bgColour { 0.f, 0.f, 0.2f, 1.f };
+    const glm::vec4 bgColour { 0.2f, 0.2f, 0.4f, 1.f };
     glClearNamedFramebufferfv(0, GL_COLOR, 0, glm::value_ptr(bgColour));
     const float depth { 1.f };
     glClearNamedFramebufferfv(0, GL_DEPTH, 0, &depth);
     
     mMainFbo.clear();
-    mInversionFbo.clear();
     
-    mMainFbo.update();
-    
-    mMainCamera->setProjectionMatrix(mMainFbo.getSize());
+    // mMainCamera->setProjectionMatrix(mMainFbo.getSize());
     mMainCamera->update();
     ecs::update();
     
-    mInversionShader.draw(mInversionFbo.getId(), mMainFbo.getTexture(), mInversionFbo.getSize());
+    // mInversionShader.draw(mInversionFbo.getId(), mMainFbo.getTexture(), mInversionFbo.getSize());
 }
 
 void Scene::onImguiUpdate()
@@ -127,8 +127,9 @@ void Scene::onImguiUpdate()
     glBindVertexArray(0);
     ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
     mDirectionalLight->onImguiUpdate();
-    mInversionFbo.imguiUpdate();
-    mMainFbo.imguiUpdate();
+    // mInversionFbo.imguiUpdate();
+    // mMainFbo.imguiUpdate();
+    mMainTexture->imguiUpdate();
     mMainCamera->imguiUpdate();
     ImGui::ShowDemoWindow();
 }

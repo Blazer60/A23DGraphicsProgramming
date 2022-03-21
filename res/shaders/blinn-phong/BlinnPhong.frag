@@ -11,7 +11,7 @@ uniform vec3        u_light_colour;
 uniform mat4        u_view_matrix;
 uniform vec3        u_camera_position_ws;
 
-out     vec3        o_colour;
+layout(location = 0) out vec3 o_colour;
 
 vec3 get_camera_direction()
 {

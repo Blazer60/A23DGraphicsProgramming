@@ -35,7 +35,6 @@ add_executable(${PROJECT_NAME}
         src/core/Shader.cpp                         include/core/Shader.h
         src/core/DebugLogger.cpp                    include/core/DebugLogger.h
         src/core/MainCamera.cpp                     include/core/MainCamera.h
-        src/core/FrameBufferObject.cpp              include/core/FrameBufferObject.h
         src/core/PostProcessingShader.cpp           include/core/PostProcessingShader.h
 
         src/helpers/Primitives.cpp                  include/helpers/Primitives.h
@@ -56,7 +55,12 @@ add_executable(${PROJECT_NAME}
         src/loader/TextureLoader.cpp                include/loader/TextureLoader.h
 
         src/lighting/DirectionalLight.cpp           include/lighting/DirectionalLight.h
-        src/components/render-components/Mesh.cpp   include/components/render-components/Mesh.h)
+        src/components/render-components/Mesh.cpp   include/components/render-components/Mesh.h
+
+        src/rendering/TextureBufferObject.cpp       include/rendering/TextureBufferObject.h
+        src/rendering/FrameBufferObject.cpp         include/rendering/FrameBufferObject.h
+        src/rendering/RenderBufferObject.cpp        include/rendering/RenderBufferObject.h
+        )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
 # Project Includes
@@ -64,6 +68,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
         include/systems                             include/components
         include/helpers                             include/components/render-components
         include/loader                              include/lighting
+        include/rendering
 
 # ECS Includes
         entity-component-system                     entity-component-system/include
