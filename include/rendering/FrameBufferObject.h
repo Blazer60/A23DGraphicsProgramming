@@ -22,6 +22,7 @@ public:
     ~FrameBufferObject();
     
     void attach(std::shared_ptr<TextureBufferObject> &textureBufferObject, int bindPoint);
+    void detach(int bindPoint);
     void clear();
     
     unsigned int getFboName() const;

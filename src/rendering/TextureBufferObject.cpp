@@ -55,13 +55,14 @@ void TextureBufferObject::imguiUpdate()
     style.WindowPadding = ImVec2(0.f, 0.f);
     if (ImGui::Begin(name.c_str(), nullptr))
     {
-        // const ImVec2 size {
-        //     ImGui::GetWindowContentRegionMax().x - ImGui::GetWindowContentRegionMin().x,
-        //     ImGui::GetWindowContentRegionMax().y - ImGui::GetWindowContentRegionMin().y,
-        // };
-        // mSize = glm::vec2(size.x, size.y);
-        auto size = ImVec2(mSize.x, mSize.y);
-        ImGui::Image(reinterpret_cast<void *>(mName), size, ImVec2(0, 1), ImVec2(1, 0));
+        ImVec2 regionSize = ImGui::GetContentRegionAvail();
+        ImGui::Image(reinterpret_cast<void *>(mName), regionSize, ImVec2(0, 1), ImVec2(1, 0));
+        
+        if (mSize.x != regionSize.x || mSize.y != regionSize.y)
+        {
+            changeSize(glm::ivec2(regionSize.x, regionSize.y));
+            reattach();
+        }
         ImGui::End();
     }
     style.WindowPadding = temp;

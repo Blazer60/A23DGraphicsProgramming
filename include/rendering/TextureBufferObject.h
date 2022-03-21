@@ -8,6 +8,8 @@
 #pragma once
 
 
+#include <functional>
+
 /**
  * Contains a texture that can be read and written to by openGl.
  * Most commonly used by attaching itself to framebuffer objects.
@@ -38,6 +40,7 @@ protected:
     void init();
     void deInit();
     
+    std::function<void()> reattach  { [](){} };
     unsigned int    mName           { 0 };
     GLenum          mFormat         { GL_RGB8 };
     glm::ivec2      mSize           { 1024 };

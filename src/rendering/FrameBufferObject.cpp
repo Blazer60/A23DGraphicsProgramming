@@ -26,13 +26,31 @@ FrameBufferObject::~FrameBufferObject()
 
 void FrameBufferObject::attach(std::shared_ptr<TextureBufferObject> &textureBufferObject, int bindPoint)
 {
-    textureBufferObject->changeSize(mSize);
+    textureBufferObject->reattach = [&textureBufferObject, bindPoint, this]() {
+        detach(bindPoint);
+        attach(textureBufferObject, bindPoint);
+    };
+    // textureBufferObject->changeSize(mSize);
     glNamedFramebufferTexture(mFboName, GL_COLOR_ATTACHMENT0 + bindPoint, textureBufferObject->mName, 0);
     validate();
     
     mTextures.push_back(textureBufferObject);
     mAttachments.emplace_back(GL_COLOR_ATTACHMENT0 + bindPoint);
     glNamedFramebufferDrawBuffers(mFboName, mAttachments.size(), &mAttachments[0]);
+}
+
+void FrameBufferObject::detach(int bindPoint)
+{
+    glNamedFramebufferTexture(mFboName, GL_COLOR_ATTACHMENT0 + bindPoint, 0, 0);
+    validate();
+    
+    const auto location = std::find(mAttachments.begin(), mAttachments.end(), GL_COLOR_ATTACHMENT0 + bindPoint);
+    const auto offset = std::distance(mAttachments.begin(), location);
+    mAttachments.erase(location);
+    mTextures.erase(mTextures.begin() + offset);
+    
+    const auto *target = mAttachments.size() == 0 ? nullptr : &mAttachments[0];
+    glNamedFramebufferDrawBuffers(mFboName, mAttachments.size(), target);
 }
 
 void FrameBufferObject::validate()
