@@ -72,3 +72,8 @@ void TextureBufferObject::setClearColour(const glm::vec4 &clearColour)
 {
     mClearColour = clearColour;
 }
+
+unsigned int TextureBufferObject::getName() const
+{
+    return mName;
+}

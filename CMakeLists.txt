@@ -26,42 +26,45 @@ add_executable(${PROJECT_NAME}
         include/components/render-components/UniformComponents.h
         include/components/render-components/TextureComponents.h
         include/components/render-components/MaterialComponents.h
+        include/components/render-components/LightingComponents.h
         include/components/Components.h
 
         src/Main.cpp
 
-        src/core/Core.cpp                           src/core/Core.h
-        src/core/Scene.cpp                          src/core/Scene.h
-        src/core/Shader.cpp                         include/core/Shader.h
-        src/core/DebugLogger.cpp                    include/core/DebugLogger.h
-        src/core/MainCamera.cpp                     include/core/MainCamera.h
-        src/core/PostProcessingShader.cpp           include/core/PostProcessingShader.h
+        src/core/Core.cpp                               src/core/Core.h
+        src/core/Scene.cpp                              src/core/Scene.h
+        src/core/Shader.cpp                             include/core/Shader.h
+        src/core/DebugLogger.cpp                        include/core/DebugLogger.h
+        src/core/MainCamera.cpp                         include/core/MainCamera.h
+        src/core/PostProcessingShader.cpp               include/core/PostProcessingShader.h
 
-        src/helpers/Primitives.cpp                  include/helpers/Primitives.h
-        src/helpers/Timers.cpp                      include/helpers/Timers.h
-        src/helpers/FilePaths.cpp                   include/helpers/FilePaths.h
+        src/helpers/Primitives.cpp                      include/helpers/Primitives.h
+        src/helpers/Timers.cpp                          include/helpers/Timers.h
+        src/helpers/FilePaths.cpp                       include/helpers/FilePaths.h
 
-        src/systems/BasicShaderSystem.cpp           include/systems/BasicShaderSystem.h
-        src/systems/BasicUniformUpdaterSystem.cpp   include/systems/BasicUniformUpdaterSystem.h
-        src/systems/RotatorSystem.cpp               include/systems/RotatorSystem.h
-        src/systems/UvShaderSystem.cpp              include/systems/UvShaderSystem.h
-        src/systems/TextureBinderSystem.cpp         include/systems/TextureBinderSystem.h
-        src/systems/BlinnPhongShaderSystem.cpp      include/systems/BlinnPhongShaderSystem.h
+        src/systems/BasicShaderSystem.cpp               include/systems/BasicShaderSystem.h
+        src/systems/BasicUniformUpdaterSystem.cpp       include/systems/BasicUniformUpdaterSystem.h
+        src/systems/RotatorSystem.cpp                   include/systems/RotatorSystem.h
+        src/systems/UvShaderSystem.cpp                  include/systems/UvShaderSystem.h
+        src/systems/TextureBinderSystem.cpp             include/systems/TextureBinderSystem.h
+        src/systems/BlinnPhongShaderSystem.cpp          include/systems/BlinnPhongShaderSystem.h
 
-        src/loader/CommonLoader.cpp                 include/loader/CommonLoader.h
-        src/loader/MaterialLoader.cpp               include/loader/MaterialLoader.h
-        src/loader/ModelLoader.cpp                  include/loader/ModelLoader.h
-        src/loader/RawMesh.cpp                      include/loader/RawMesh.h
-        src/loader/TextureLoader.cpp                include/loader/TextureLoader.h
+        src/loader/CommonLoader.cpp                     include/loader/CommonLoader.h
+        src/loader/MaterialLoader.cpp                   include/loader/MaterialLoader.h
+        src/loader/ModelLoader.cpp                      include/loader/ModelLoader.h
+        src/loader/RawMesh.cpp                          include/loader/RawMesh.h
+        src/loader/TextureLoader.cpp                    include/loader/TextureLoader.h
 
-        src/lighting/DirectionalLight.cpp           include/lighting/DirectionalLight.h
-        src/components/render-components/Mesh.cpp   include/components/render-components/Mesh.h
+        src/lighting/DirectionalLight.cpp               include/lighting/DirectionalLight.h
+        src/components/render-components/Mesh.cpp       include/components/render-components/Mesh.h
 
-        src/rendering/TextureBufferObject.cpp       include/rendering/TextureBufferObject.h
-        src/rendering/FrameBufferObject.cpp         include/rendering/FrameBufferObject.h
-        src/rendering/RenderBufferObject.cpp        include/rendering/RenderBufferObject.h
-        src/systems/BlinnPhongGeometryShader.cpp    include/systems/BlinnPhongGeometryShader.h
-        )
+        src/rendering/TextureBufferObject.cpp           include/rendering/TextureBufferObject.h
+        src/rendering/FrameBufferObject.cpp             include/rendering/FrameBufferObject.h
+        src/rendering/RenderBufferObject.cpp            include/rendering/RenderBufferObject.h
+        src/systems/BlinnPhongGeometryShader.cpp        include/systems/BlinnPhongGeometryShader.h
+        src/systems/DirectionalLightShaderSystem.cpp    include/systems/DirectionalLightShaderSystem.h
+        src/rendering/RenderPipeline.cpp                include/rendering/RenderPipeline.h
+        src/rendering/DeferredLightShader.cpp           include/rendering/DeferredLightShader.h)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
 # Project Includes

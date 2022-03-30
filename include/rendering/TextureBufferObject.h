@@ -36,6 +36,8 @@ public:
     
     void setClearColour(const glm::vec4 &clearColour);
     
+    unsigned int getName() const;
+    
 protected:
     void init();
     void deInit();

@@ -18,6 +18,8 @@
 #include "ModelLoader.h"
 #include "TextureBufferObject.h"
 #include "Core.h"
+#include "RenderPipeline.h"
+#include "DeferredLightShader.h"
 
 #include <memory>
 
@@ -37,12 +39,11 @@ public:
     void onImguiUpdate();
 
 protected:
+    glm::ivec2 mSreenSize { 1920, 1080 };  // Must be at the top.
+    
     Model<UvVertex, NoMaterial> mCube;
     
-    FrameBufferObject mGeometryBuffer;
-    std::shared_ptr<TextureBufferObject> mPositions;
-    std::shared_ptr<TextureBufferObject> mNormals;
-    std::shared_ptr<TextureBufferObject> mAlbedo;
+    RenderPipeline mRenderPipeline;
     
     
     FrameBufferObject mMainFbo;
@@ -53,6 +54,8 @@ protected:
     ecs::Component mUvRrComponent;
     ecs::Component mPhongRenderComponent;
     ecs::Component mGeometryRenderComponent;
+    
+    DeferredLightShader mDeferredLightShader;
     
     PostProcessingShader mInversionShader { path::shaders() + "post-processing/inversion/Inversion.vert", path::shaders() + "post-processing/inversion/Inversion.frag" };
     

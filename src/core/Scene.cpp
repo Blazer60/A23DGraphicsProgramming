@@ -19,6 +19,7 @@
 #include "MaterialComponents.h"
 #include "ModelLoader.h"
 #include "BlinnPhongGeometryShader.h"
+#include "DirectionalLightShaderSystem.h"
 
 Scene::Scene()
     : mCube(primitives::cube<UvVertex>()),
@@ -28,17 +29,12 @@ Scene::Scene()
       mGeometryRenderComponent(ecs::create<RenderInformation>()),
       mMainFbo(glm::ivec2(1920, 1080)),
       mMainTexture(std::make_shared<TextureBufferObject>(glm::ivec2(1920, 1080))),
-      mGeometryBuffer(glm::ivec2(1920, 1080)),
-      mPositions(std::make_shared<TextureBufferObject>(glm::ivec2(1920, 1080), GL_RGB16F, "Position")),
-      mNormals(std::make_shared<TextureBufferObject>(glm::ivec2(1920, 1080), GL_RGB16_SNORM, "Normals")),
-      mAlbedo(std::make_shared<TextureBufferObject>(glm::ivec2(1920, 1080), GL_RGB16, "Albedo"))
+      mDeferredLightShader(mMainCamera, mRenderPipeline.mOutput, mRenderPipeline.mDiffuse, mRenderPipeline.mSpecular,
+                           mRenderPipeline.mAlbedo
+      )
 {
     mMainFbo.attach(mMainTexture, 0);
     mMainTexture->setClearColour(glm::vec4(0.2f, 0.2f, 0.4f, 1.f));
-    
-    mGeometryBuffer.attach(mPositions, 0);
-    mGeometryBuffer.attach(mNormals, 1);
-    mGeometryBuffer.attach(mAlbedo, 2);
     
     ecs::Component basicCore = ecs::create<RenderInformation>();
     
@@ -57,6 +53,8 @@ Scene::Scene()
     
     createPhongModel(glm::vec3(-5.f, 0.f, 0.f), path::resources() + "models/pbr-spheres/StoneCladding.obj");
     
+    ecs::Entity light = ecs::create();
+    ecs::add(light, light::DirectionalLight());
     
     // Creation order of system still matters.
     ecs::createSystem<TextureBinderSystem>       ();
@@ -66,7 +64,7 @@ Scene::Scene()
     ecs::createSystem<UvShaderSystem>            ({ mUvRrComponent },    mMainCamera);
     ecs::createSystem<BlinnPhongShaderSystem>    ({ mPhongRenderComponent }, mMainCamera, mDirectionalLight);
     ecs::createSystem<BlinnPhongGeometryShader>  ({ mGeometryRenderComponent }, mMainCamera, mDirectionalLight);
-    
+    ecs::createSystem<DirectionalLightShaderSystem>(mMainCamera, mRenderPipeline.mLightAccumulator, mRenderPipeline.mPosition, mRenderPipeline.mNormal, mRenderPipeline.mAlbedo);
     ecs::start();
 }
 
@@ -104,7 +102,7 @@ ecs::Entity Scene::createPhongModel(glm::vec3 position, std::string_view path)
         ecs::Entity modelSlot = ecs::create();
         ecs::add(model, modelSlot);
         
-        mesh.renderInformation.fbo = mGeometryBuffer.getFboName();
+        mesh.renderInformation.fbo = mRenderPipeline.mGeometry->getFboName();
         
         ecs::add(modelSlot, mGeometryRenderComponent, mesh.renderInformation);
         ecs::add(modelSlot, mesh.material);
@@ -124,11 +122,15 @@ void Scene::onUpdate()
     glClearNamedFramebufferfv(0, GL_DEPTH, 0, &depth);
     
     mMainFbo.clear();
-    mGeometryBuffer.clear();
+    mRenderPipeline.mGeometry->clear();
+    mRenderPipeline.mLightAccumulator->clear();
+    mRenderPipeline.mOutput->clear();
     
     // mMainCamera->setProjectionMatrix(mMainFbo.getSize());
     mMainCamera->update();
     ecs::update();
+    
+    mDeferredLightShader.render();
     
     // mInversionShader.draw(mInversionFbo.getId(), mMainFbo.getTexture(), mInversionFbo.getSize());
 }
@@ -142,9 +144,7 @@ void Scene::onImguiUpdate()
     // mInversionFbo.imguiUpdate();
     // mMainFbo.imguiUpdate();
     mMainTexture->imguiUpdate();
-    mPositions->imguiUpdate();
-    mNormals->imguiUpdate();
-    mAlbedo->imguiUpdate();
+    mRenderPipeline.imguiUpdate();
     mMainCamera->imguiUpdate();
     ImGui::ShowDemoWindow();
 }

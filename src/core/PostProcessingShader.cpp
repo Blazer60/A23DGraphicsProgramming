@@ -23,8 +23,8 @@ void PostProcessingShader::draw(unsigned int fbo, unsigned int texture, glm::vec
     glUseProgram(mId);
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
     glBindVertexArray(mVao);
-    glBindTextureUnit(0, texture);
     
+    glBindTextureUnit(0, texture);
     set("u_texture", 0);
     
     glDrawElements(GL_TRIANGLES, mEboCount, GL_UNSIGNED_INT, 0);

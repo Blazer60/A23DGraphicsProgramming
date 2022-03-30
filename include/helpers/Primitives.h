@@ -31,6 +31,16 @@ namespace primitives
     Model<TVertex, TMaterial> plane();
     
     /**
+     * @brief
+     * @tparam TVertex
+     * @tparam TMaterial
+     * @param points
+     * @return
+     */
+    template<typename TVertex, typename TMaterial>
+    Model<TVertex, TMaterial> triangleFanCircle(unsigned int points);
+    
+    /**
      * @brief Creates what ever you define provided it returns object vertices and indices for it.
      * @tparam TVertex - The type of Vertex you want.
      * @tparam TMaterial - The type of Material you want (default is nothing).
@@ -41,10 +51,11 @@ namespace primitives
     
     [[nodiscard]] PrimitiveType objectCube();
     [[nodiscard]] PrimitiveType objectPlane();
+    [[nodiscard]] PrimitiveType objectTriangleFanCircle(unsigned int points);
     
     
     template<typename TVertex, typename TMaterial>
-    Model<TVertex, TMaterial> primitives::make(const std::function<PrimitiveType()> &makeCallback)
+    Model<TVertex, TMaterial> make(const std::function<PrimitiveType()> &makeCallback)
     {
         const auto [objectVertices, indices] = makeCallback();
         
@@ -58,7 +69,7 @@ namespace primitives
     }
     
     template<typename TVertex, typename TMaterial>
-    Model<TVertex, TMaterial> primitives::cube()
+    Model<TVertex, TMaterial> cube()
     {
         return make<TVertex, TMaterial>(objectCube);
     }
@@ -67,5 +78,13 @@ namespace primitives
     Model<TVertex, TMaterial> plane()
     {
         return make<TVertex, TMaterial>(objectPlane);
+    }
+    
+    template<typename TVertex, typename TMaterial>
+    Model<TVertex, TMaterial> triangleFanCircle(const unsigned int points)
+    {
+        return make<TVertex, TMaterial>([&points]() {
+            return objectTriangleFanCircle(points);
+        });
     }
 }
