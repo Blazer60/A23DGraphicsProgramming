@@ -87,7 +87,7 @@ primitives::PrimitiveType primitives::objectTriangleFanCircle(unsigned int point
     while (angle < glm::two_pi<float>())
     {
         // Assuming that NDC are [-1, 1] and UVs are [0, 1]
-        const glm::vec2 position { glm::acos(angle), glm::asin(angle) };
+        const glm::vec2 position { glm::cos(angle), glm::sin(angle) };
         const glm::vec2 uvs { (position + 1.f) / 2.f };
         vertices.emplace_back(ObjVertex { glm::vec3(position, 0.f), uvs });
         
@@ -95,17 +95,13 @@ primitives::PrimitiveType primitives::objectTriangleFanCircle(unsigned int point
     }
     
     std::vector<unsigned int> indices;
-    indices.reserve(2 * points * points);
+    indices.reserve(3 * points);
     
-    for (int i = 0; i < static_cast<int>(points) - 1; ++i)
+    for (int i = 0; i < static_cast<int>(points) - 2; ++i)
     {
         indices.emplace_back(0);  // Our anchor.
         indices.emplace_back(i + 1);
         indices.emplace_back(i + 2);
     }
-    // Fan attaches back to itself.
-    indices.emplace_back(0);
-    indices.emplace_back(points - 1);
-    indices.emplace_back(1);
     return { std::move(vertices), std::move(indices) };
 }
