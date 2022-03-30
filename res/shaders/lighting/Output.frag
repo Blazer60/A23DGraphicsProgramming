@@ -13,7 +13,7 @@ void main()
     const vec3 diffuse  = texture(u_diffuse, v_uvs).rgb;
     const vec3 specular = texture(u_specular, v_uvs).rgb;
     const vec3 albedo   = texture(u_albedo, v_uvs).rgb;
-    const vec3 ambient = 0.1f * albedo;
+    const vec3 ambient = 0.2f * albedo;
 
     o_colour = ambient + diffuse + specular;
     o_colour = clamp(o_colour, 0.f, 1.f);
