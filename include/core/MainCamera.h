@@ -19,6 +19,8 @@
 class MainCamera
 {
 public:
+    explicit MainCamera(const glm::vec3 &position);
+    
     MainCamera();
     
     void update();

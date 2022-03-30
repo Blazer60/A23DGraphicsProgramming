@@ -64,7 +64,8 @@ add_executable(${PROJECT_NAME}
         src/systems/BlinnPhongGeometryShader.cpp        include/systems/BlinnPhongGeometryShader.h
         src/systems/DirectionalLightShaderSystem.cpp    include/systems/DirectionalLightShaderSystem.h
         src/rendering/RenderPipeline.cpp                include/rendering/RenderPipeline.h
-        src/rendering/DeferredLightShader.cpp           include/rendering/DeferredLightShader.h)
+        src/rendering/DeferredLightShader.cpp           include/rendering/DeferredLightShader.h
+        src/core/Renderer.cpp                           src/core/Renderer.h)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
 # Project Includes

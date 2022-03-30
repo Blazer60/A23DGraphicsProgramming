@@ -33,6 +33,17 @@ MainCamera::MainCamera()
     // });
 }
 
+MainCamera::MainCamera(const glm::vec3 &position)
+    : mWindow(glfwGetCurrentContext()), mPosition(position)
+{
+    glm::ivec2 size;
+    glfwGetWindowSize(mWindow, &size.x, &size.y);
+    
+    const glm::vec2 fSize { size };
+    
+    mProjectionMatrix = glm::perspective(mFovY, fSize.x / fSize.y, mNearClip, mFarClip);
+}
+
 void MainCamera::update()
 {
     move();

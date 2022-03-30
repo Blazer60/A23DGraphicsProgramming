@@ -21,6 +21,9 @@
 #include "RenderPipeline.h"
 #include "DeferredLightShader.h"
 
+#include "Renderer.h"
+#include "Primitives.h"
+
 #include <memory>
 
 /**
@@ -41,27 +44,10 @@ public:
 protected:
     glm::ivec2 mSreenSize { 1920, 1080 };  // Must be at the top.
     
-    Model<UvVertex, NoMaterial> mCube;
-    
-    RenderPipeline mRenderPipeline;
-    
-    
-    FrameBufferObject mMainFbo;
-    std::shared_ptr<TextureBufferObject> mMainTexture;
-    
-    std::shared_ptr<MainCamera> mMainCamera;
-    
-    ecs::Component mUvRrComponent;
-    ecs::Component mPhongRenderComponent;
-    ecs::Component mGeometryRenderComponent;
-    
-    DeferredLightShader mDeferredLightShader;
-    
-    PostProcessingShader mInversionShader { path::shaders() + "post-processing/inversion/Inversion.vert", path::shaders() + "post-processing/inversion/Inversion.frag" };
-    
-    std::shared_ptr<DirectionalLight> mDirectionalLight { std::make_shared<DirectionalLight>() };
-    
-    ecs::Entity createUvCubeEntity() const;
+    Model<UvVertex, NoMaterial> mCube { primitives::cube<UvVertex>() };
+
+    std::shared_ptr<MainCamera> mMainCamera { std::make_shared<MainCamera>(glm::vec3(0.f, 1.f, 5.f)) };
+    Renderer mRenderer { mMainCamera };
     
     ecs::Entity createPhongModel(glm::vec3 position, std::string_view path);
 };
