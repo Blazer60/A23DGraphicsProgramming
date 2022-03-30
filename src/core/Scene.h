@@ -42,14 +42,27 @@ public:
     void onImguiUpdate();
 
 protected:
+    ecs::Entity createPhongModel(const glm::vec3 position, Model<PhongVertex, BlinnPhongMaterial> &meshes);
+    
     glm::ivec2 mSreenSize { 1920, 1080 };  // Must be at the top.
     
-    Model<UvVertex, NoMaterial> mCube { primitives::cube<UvVertex>() };
-
-    std::shared_ptr<MainCamera> mMainCamera { std::make_shared<MainCamera>(glm::vec3(0.f, 1.f, 5.f)) };
-    Renderer mRenderer { mMainCamera };
+    Model<PhongVertex, BlinnPhongMaterial> mBanana {
+        load::model<PhongVertex, BlinnPhongMaterial>(
+            path::resources() + "models/Bole.obj")
+    };
     
-    ecs::Entity createPhongModel(glm::vec3 position, std::string_view path);
+    Model<PhongVertex, BlinnPhongMaterial> mStoneCladding {
+        load::model<PhongVertex, BlinnPhongMaterial>(
+            path::resources() + "models/pbr-spheres/StoneCladding.obj")
+    };
+    
+    Model<PhongVertex, BlinnPhongMaterial> mFloor {
+        load::model<PhongVertex, BlinnPhongMaterial>(
+            path::resources() + "models/floor/Floor.obj")
+    };
+    std::shared_ptr<MainCamera> mMainCamera { std::make_shared<MainCamera>(glm::vec3(0.f, 1.f, 5.f)) };
+    
+    Renderer mRenderer { mMainCamera };
 };
 
 

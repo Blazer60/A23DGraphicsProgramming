@@ -17,20 +17,24 @@
 
 Scene::Scene()
 {
-    for (int i = 0; i < 3; ++i)
+    const int count = 5;
+    for (int i = 0; i < count; ++i)
     {
-        for (int j = 0; j < 3; ++j)
+        for (int j = 0; j < count; ++j)
         {
-            for (int k = 0; k < 3; ++k)
+            for (int k = 0; k < count; ++k)
             {
-                ecs::Entity parent = createPhongModel(glm::vec3(i * 3.f, j * 3.f + 1.f, k * 3.f), path::resources() + "models/Bole.obj");
+                ecs::Entity parent = createPhongModel(glm::vec3(i * 3.f, j * 3.f + 3.f, k * 3.f), mBanana);
                 ecs::add(parent, Rotator { 1.f, 1.f });
             }
         }
     }
     
-    createPhongModel(glm::vec3(-5.f, 1.0f, 0.f), path::resources() + "models/pbr-spheres/StoneCladding.obj");
-    createPhongModel(glm::vec3(0.f, 0.f, 0.f), path::resources() + "models/floor/Floor.obj");
+    auto triangleFan = primitives::triangleFanCircle<PhongVertex, BlinnPhongMaterial>(20);
+    createPhongModel(glm::vec3(0.f, 1.f, 0.f), triangleFan);
+    
+    createPhongModel(glm::vec3(-5.f, 1.0f, 0.f), mStoneCladding);
+    createPhongModel(glm::vec3(0.f, 0.f, 0.f), mFloor);
     
     ecs::Entity light = ecs::create();
     ecs::add(light, light::DirectionalLight());
@@ -42,7 +46,7 @@ Scene::Scene()
     ecs::start();
 }
 
-ecs::Entity Scene::createPhongModel(glm::vec3 position, std::string_view path)
+ecs::Entity Scene::createPhongModel(const glm::vec3 position, Model<PhongVertex, BlinnPhongMaterial> &meshes)
 {
     // Our transform uniforms that will be distributed to every child in the hierarchy.
     auto transformUniforms = std::make_shared<BasicUniforms>();
@@ -55,7 +59,6 @@ ecs::Entity Scene::createPhongModel(glm::vec3 position, std::string_view path)
     ecs::add(parent, Transform { position } );
     ecs::add(parent, transformUniforms);
     
-    auto meshes = load::model<PhongVertex, BlinnPhongMaterial>(path);
     for (auto &mesh : meshes)
     {
         ecs::Entity modelSlot = ecs::create();
