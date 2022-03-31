@@ -9,6 +9,7 @@
 #include "BasicShaderSystem.h"
 #include "BlinnPhongGeometryShader.h"
 #include "DirectionalLightShaderSystem.h"
+#include "PointLightShader.h"
 
 
 Renderer::Renderer(std::weak_ptr<MainCamera> camera) :
@@ -25,12 +26,18 @@ Renderer::Renderer(std::weak_ptr<MainCamera> camera) :
         mCamera.lock(), mRenderPipeline.mLightAccumulator,
         mRenderPipeline.mPosition, mRenderPipeline.mNormal,
         mRenderPipeline.mAlbedo);
+    ecs::createSystem<PointLightShader>(
+        mCamera.lock(), mRenderPipeline.mLightAccumulator,
+        mRenderPipeline.mPosition, mRenderPipeline.mNormal,
+        mRenderPipeline.mAlbedo);
     
     geometryFboName = mRenderPipeline.mGeometry->getFboName();
 }
 
 void Renderer::clear()
 {
+    // todo: Blending doesn't work?
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);  // todo: Make the geometry shader take in the geometry buffer.
     mRenderPipeline.mGeometry->clear();
     mRenderPipeline.mLightAccumulator->clear();
     mRenderPipeline.mOutput->clear();

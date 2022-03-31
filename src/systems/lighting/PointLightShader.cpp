@@ -1,20 +1,20 @@
 /**
- * @file DirectionalLightShaderSystem.cpp
+ * @file PointLightShader.cpp
  * @author Ryan Purse
- * @date 23/03/2022
+ * @date 31/03/2022
  */
 
 
-#include "DirectionalLightShaderSystem.h"
-#include "Vertices.h"
+#include "systems/lighting/PointLightShader.h"
 #include "Primitives.h"
 
-DirectionalLightShaderSystem::DirectionalLightShaderSystem(
+PointLightShader::PointLightShader(
     std::shared_ptr<MainCamera> camera,
     std::shared_ptr<FrameBufferObject> lightAccumulationBuffer,
     std::shared_ptr<TextureBufferObject> positions,
     std::shared_ptr<TextureBufferObject> normals,
-    std::shared_ptr<TextureBufferObject> albedo) :
+    std::shared_ptr<TextureBufferObject> albedo)
+    :
     mCamera(std::move(camera)),
     mLightAccumulationBuffer(std::move(lightAccumulationBuffer)),
     mPositions(std::move(positions)),
@@ -27,33 +27,35 @@ DirectionalLightShaderSystem::DirectionalLightShaderSystem(
     mEbo = mesh.ebo;
     mVbo = mesh.vbo;
     
-    mEntities.forEach([this](const light::DirectionalLight &directionalLight) {
-        mShader.set("u_light_direction", directionalLight.direction);
-        mShader.set("u_light_intensity", directionalLight.intensity);
-    
+    mEntities.forEach([this](const light::PointLight &pointLight) {
+        mShader.set("u_light_position",  mCamera->getVpMatrix() * pointLight.position);
+        mShader.set("u_light_intensity", pointLight.intensity);
+        mShader.set("u_light_distance",  pointLight.distance);
+        mShader.set("u_light_power",     pointLight.power);
+        
         glDrawElements(GL_TRIANGLES, mEboCount, GL_UNSIGNED_INT, 0);
     });
 }
 
-DirectionalLightShaderSystem::~DirectionalLightShaderSystem()
+PointLightShader::~PointLightShader()
 {
-    // todo: clean up opengl stuff.
+
 }
 
-void DirectionalLightShaderSystem::onStart()
-{
-    bind();
-}
-
-void DirectionalLightShaderSystem::onUpdate()
+void PointLightShader::onStart()
 {
     bind();
 }
 
-void DirectionalLightShaderSystem::bind()
+void PointLightShader::onUpdate()
+{
+    bind();
+}
+
+void PointLightShader::bind()
 {
     mShader.bind();
-    glBindFramebuffer(GL_FRAMEBUFFER, mLightAccumulationBuffer->getFboName());  // todo: Should this be a member function?
+    mLightAccumulationBuffer->bind();
     glBindVertexArray(mVao);
     
     glBindTextureUnit(0, mPositions->getName());

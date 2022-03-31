@@ -13,7 +13,7 @@
 #include "TextureBinderSystem.h"
 #include "MaterialComponents.h"
 #include "ModelLoader.h"
-#include "DirectionalLightShaderSystem.h"
+#include "systems/lighting/DirectionalLightShaderSystem.h"
 
 Scene::Scene()
 {
@@ -38,6 +38,11 @@ Scene::Scene()
     
     ecs::Entity light = ecs::create();
     ecs::add(light, light::DirectionalLight());
+    
+    ecs::Entity point = ecs::create();
+    ecs::add(point, light::PointLight( {
+        glm::vec4(5.f, 3.f, 0.f, 1.f)
+    } ));
     
     // Creation order of system still matters.
     ecs::createSystem<TextureBinderSystem>       ();

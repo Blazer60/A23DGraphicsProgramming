@@ -12,9 +12,23 @@ FrameBufferObject::FrameBufferObject(const glm::ivec2 &size)
     : mSize(size), mRenderBufferObject(size)
 {
     glCreateFramebuffers(1, &mFboName);
-    glNamedFramebufferRenderbuffer(mFboName, mRenderBufferObject.getAttachment(),
-                                   GL_RENDERBUFFER, mRenderBufferObject.getName()
-                                   );
+    glNamedFramebufferRenderbuffer(
+        mFboName, mRenderBufferObject.getAttachment(),
+        GL_RENDERBUFFER, mRenderBufferObject.getName());
+    
+    validate();
+}
+
+FrameBufferObject::FrameBufferObject(
+    const glm::ivec2 &size, GLenum sourceBlendFunction, GLenum destinationBlendFunction) :
+    mSize(size), mRenderBufferObject(size),
+    mSourceBlend(sourceBlendFunction), mDestinationBlend(destinationBlendFunction)
+{
+    glCreateFramebuffers(1, &mFboName);
+    glNamedFramebufferRenderbuffer(
+        mFboName, mRenderBufferObject.getAttachment(),
+        GL_RENDERBUFFER, mRenderBufferObject.getName());
+    
     validate();
 }
 
@@ -85,4 +99,10 @@ void FrameBufferObject::clear()
 unsigned int FrameBufferObject::getFboName() const
 {
     return mFboName;
+}
+
+void FrameBufferObject::bind() const
+{
+    glBindFramebuffer(GL_FRAMEBUFFER, mFboName);
+    glBlendFunc(mSourceBlend, mDestinationBlend);
 }

@@ -9,8 +9,8 @@
 
 RenderPipeline::RenderPipeline() :
     mGeometry(std::make_shared<FrameBufferObject>(mSize)),
-    mLightAccumulator(std::make_shared<FrameBufferObject>(mSize)),
-    mOutput(std::make_shared<FrameBufferObject>(mSize)),
+    mLightAccumulator(std::make_shared<FrameBufferObject>(mSize, GL_ONE, GL_ONE)),
+    mOutput(std::make_shared<FrameBufferObject>(mSize, GL_ONE, GL_ONE)),
     
     mPosition(  std::make_shared<TextureBufferObject>(mSize, GL_RGB16F,       "Position")),
     mNormal(    std::make_shared<TextureBufferObject>(mSize, GL_RGB16_SNORM,  "Normals")),

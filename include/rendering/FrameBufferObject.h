@@ -19,12 +19,14 @@ class FrameBufferObject
 {
 public:
     explicit FrameBufferObject(const glm::ivec2 &size);
+    FrameBufferObject(const glm::ivec2 &size, GLenum sourceBlendFunction, GLenum destinationBlendFunction);
     ~FrameBufferObject();
     
     void attach(std::shared_ptr<TextureBufferObject> &textureBufferObject, int bindPoint);
     void attach(const TextureBufferObject &textureBufferObject, int bindPoint);
     void detach(int bindPoint);
     void clear();
+    void bind() const;
     
     unsigned int getFboName() const;
 
@@ -38,6 +40,9 @@ protected:
     const float     mDepth          { 1.f };
     glm::ivec2      mSize           { 1024 };
     RenderBufferObject mRenderBufferObject;
+    
+    GLenum mSourceBlend         { GL_SRC_ALPHA };
+    GLenum mDestinationBlend    { GL_ONE_MINUS_SRC_ALPHA };
 };
 
 

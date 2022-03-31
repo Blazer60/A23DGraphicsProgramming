@@ -29,7 +29,7 @@ DeferredLightShader::DeferredLightShader(
 void DeferredLightShader::render()
 {
     mShader.bind();
-    glBindFramebuffer(GL_FRAMEBUFFER, mOutput->getFboName());
+    mOutput->bind();
     glBindVertexArray(mVao);
     
     glBindTextureUnit(0, mDiffuse->getName());

@@ -62,10 +62,11 @@ add_executable(${PROJECT_NAME}
         src/rendering/FrameBufferObject.cpp             include/rendering/FrameBufferObject.h
         src/rendering/RenderBufferObject.cpp            include/rendering/RenderBufferObject.h
         src/systems/BlinnPhongGeometryShader.cpp        include/systems/BlinnPhongGeometryShader.h
-        src/systems/DirectionalLightShaderSystem.cpp    include/systems/DirectionalLightShaderSystem.h
+        src/systems/lighting/DirectionalLightShaderSystem.cpp include/systems/lighting/DirectionalLightShaderSystem.h
         src/rendering/RenderPipeline.cpp                include/rendering/RenderPipeline.h
         src/rendering/DeferredLightShader.cpp           include/rendering/DeferredLightShader.h
-        src/core/Renderer.cpp                           src/core/Renderer.h)
+        src/core/Renderer.cpp                           src/core/Renderer.h
+        src/systems/lighting/PointLightShader.cpp       include/systems/lighting/PointLightShader.h)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
 # Project Includes
@@ -73,7 +74,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
         include/systems                             include/components
         include/helpers                             include/components/render-components
         include/loader                              include/lighting
-        include/rendering
+        include/rendering                           include/systems/lighting
 
 # ECS Includes
         entity-component-system                     entity-component-system/include
