@@ -9,6 +9,8 @@ set(RESOURCE_PATH   "res/")
 set(SHADER_PATH     "res/shaders")
 set(TEXTURE_PATH    "res/textures")
 
+set(USE_PRE_BUILT_LIBS ON)
+
 message(STATUS "Using Cmake:    " ${CMAKE_VERSION})
 message(STATUS "Compiling with: " ${CMAKE_CXX_COMPILER_ID})
 message(STATUS "CXX Standard:   " ${CMAKE_CXX_STANDARD})
@@ -103,10 +105,19 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC
 
 
 find_package(OpenGL)  # Glew Requires OpenGL to be added.
-find_library(ECS   NAMES EntityComponentSystem2022 PATHS ${CMAKE_CURRENT_BINARY_DIR}/entity-component-system REQUIRED)
-find_library(GLEW  NAMES libglew32d                PATHS ${CMAKE_CURRENT_BINARY_DIR}/lib                     REQUIRED)
-find_library(GLFW  NAMES glfw3                     PATHS ${CMAKE_CURRENT_BINARY_DIR}/vendor/glfw/src         REQUIRED)
-find_library(IMGUI NAMES imgui                     PATHS ${CMAKE_CURRENT_BINARY_DIR}/vendor                  REQUIRED)
+
+if (${USE_PRE_BUILT_LIBS} EQUAL OFF)
+    find_library(ECS   NAMES EntityComponentSystem2022 PATHS ${CMAKE_CURRENT_BINARY_DIR}/entity-component-system REQUIRED)
+    find_library(GLEW  NAMES libglew32d                PATHS ${CMAKE_CURRENT_BINARY_DIR}/lib                     REQUIRED)
+    find_library(GLFW  NAMES glfw3                     PATHS ${CMAKE_CURRENT_BINARY_DIR}/vendor/glfw/src         REQUIRED)
+    find_library(IMGUI NAMES imgui                     PATHS ${CMAKE_CURRENT_BINARY_DIR}/vendor                  REQUIRED)
+else()
+    find_library(ECS   NAMES EntityComponentSystem2022 PATHS ${CMAKE_SOURCE_DIR}/vendor/lib REQUIRED)
+    find_library(GLEW  NAMES libglew32d                PATHS ${CMAKE_SOURCE_DIR}/vendor/lib REQUIRED)
+    find_library(GLFW  NAMES glfw3                     PATHS ${CMAKE_SOURCE_DIR}/vendor/lib REQUIRED)
+    find_library(IMGUI NAMES imgui                     PATHS ${CMAKE_SOURCE_DIR}/vendor/lib REQUIRED)
+endif ()
+
 
 target_link_libraries(${PROJECT_NAME}
         ${ECS}  ${GLEW}
