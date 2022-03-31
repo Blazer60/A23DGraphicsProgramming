@@ -7,6 +7,7 @@
 
 #include "DebugLogger.h"
 
+#include "Pch.h"
 #include <fstream>
 #include <sstream>
 #include <deque>

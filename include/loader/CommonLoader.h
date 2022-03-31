@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include "Pch.h"
 #include "RenderComponents.h"
 #include "Vertices.h"
 

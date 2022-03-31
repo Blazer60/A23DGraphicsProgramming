@@ -7,7 +7,7 @@
 
 #pragma once
 
-
+#include "Pch.h"
 #include "detail/type_quat.hpp"
 
 /**

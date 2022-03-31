@@ -4,6 +4,7 @@
  * @author Ryan Purse
  */
 
+#include "Pch.h"
 #include "core/Core.h"
 
 int main()

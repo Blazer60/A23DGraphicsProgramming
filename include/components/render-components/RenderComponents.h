@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include "Pch.h"
+
 /**
  * @brief Core elements used for rendering an item to the screen by OpenGL.
  * ONLY items that never change each frame. E.g.: No uniforms

@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include "Pch.h"
 #include "Ecs.h"
 #include "UniformComponents.h"
 #include "RenderComponents.h"
