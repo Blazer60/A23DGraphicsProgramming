@@ -4,19 +4,47 @@ set(PROJECT_NAME A23DGraphicsProgramming)
 project(${PROJECT_NAME})
 set(CMAKE_CXX_STANDARD 17)
 
-set(BINARY_TO_ROOT  "..")
+string(REPLACE ${CMAKE_SOURCE_DIR} "" RELATIVE_PATH ${CMAKE_BINARY_DIR})
+string(REGEX MATCHALL / FILE_DIFF ${RELATIVE_PATH})
+string(REPLACE "/" "../" BIN_PATH ${FILE_DIFF})
+set(BINARY_TO_ROOT  ${BIN_PATH})
 set(RESOURCE_PATH   "res/")
 set(SHADER_PATH     "res/shaders")
 set(TEXTURE_PATH    "res/textures")
 
 set(USE_PRE_BUILT_LIBS ON)
 set(USE_PSEUDO_PCH ON)
+set(ADD_ECS_TO_EXECUTABLE ON)
 
 message(STATUS "Using Cmake:    " ${CMAKE_VERSION})
 message(STATUS "Compiling with: " ${CMAKE_CXX_COMPILER_ID})
 message(STATUS "CXX Standard:   " ${CMAKE_CXX_STANDARD})
 
-add_subdirectory(entity-component-system)
+if (${ADD_ECS_TO_EXECUTABLE})
+    set(ECS_INCLUDE_FILES
+        entity-component-system/include/systems/BaseSystem.h
+        entity-component-system/include/systems/Entities.h
+        entity-component-system/include/Common.h
+        entity-component-system/include/Core.h
+        entity-component-system/include/Ecs.h
+
+        entity-component-system/src/components/Archetype.h
+        entity-component-system/src/components/ArchetypeManager.h
+        entity-component-system/src/components/ComponentArray.h
+        entity-component-system/src/systems/SystemManager.h
+        entity-component-system/src/EntityManager.h)
+
+    set(ECS_SOURCE_FILES
+        entity-component-system/src/components/Archetype.cpp
+        entity-component-system/src/components/ArchetypeManager.cpp
+        entity-component-system/src/systems/SystemManager.cpp
+        entity-component-system/src/Common.cpp
+        entity-component-system/src/Core.cpp
+        entity-component-system/src/EntityManager.cpp)
+else()
+    add_subdirectory(entity-component-system)
+endif ()
+
 add_subdirectory(vendor/glm)
 add_subdirectory(vendor/glew/build/cmake)
 add_subdirectory(vendor/glfw)
@@ -24,6 +52,8 @@ add_subdirectory(vendor)
 
 
 add_executable(${PROJECT_NAME}
+        ${ECS_INCLUDE_FILES} ${ECS_SOURCE_FILES}
+
         include/components/render-components/Vertices.h
         include/components/render-components/RenderComponents.h
         include/components/render-components/UniformComponents.h
@@ -112,19 +142,20 @@ add_compile_definitions(
 
 find_package(OpenGL)  # Glew Requires OpenGL to be added.
 
+if (NOT ${ADD_ECS_TO_EXECUTABLE})
+    find_library(ECS NAMES EntityComponentSystem2022 PATHS ${CMAKE_CURRENT_BINARY_DIR}/entity-component-system REQUIRED)
+    target_link_libraries(${ECS})
+endif ()
+
 if (${USE_PRE_BUILT_LIBS} EQUAL OFF)
-    find_library(ECS   NAMES EntityComponentSystem2022 PATHS ${CMAKE_CURRENT_BINARY_DIR}/entity-component-system REQUIRED)
-    find_library(GLEW  NAMES libglew32d                PATHS ${CMAKE_CURRENT_BINARY_DIR}/lib                     REQUIRED)
-    find_library(GLFW  NAMES glfw3                     PATHS ${CMAKE_CURRENT_BINARY_DIR}/vendor/glfw/src         REQUIRED)
-    find_library(IMGUI NAMES imgui                     PATHS ${CMAKE_CURRENT_BINARY_DIR}/vendor                  REQUIRED)
+    find_library(GLEW  NAMES libglew32d PATHS ${CMAKE_CURRENT_BINARY_DIR}/lib             REQUIRED)
+    find_library(GLFW  NAMES glfw3      PATHS ${CMAKE_CURRENT_BINARY_DIR}/vendor/glfw/src REQUIRED)
+    find_library(IMGUI NAMES imgui      PATHS ${CMAKE_CURRENT_BINARY_DIR}/vendor          REQUIRED)
 else()
-    find_library(ECS   NAMES EntityComponentSystem2022 PATHS ${CMAKE_SOURCE_DIR}/vendor/lib REQUIRED)
-    find_library(GLEW  NAMES libglew32d                PATHS ${CMAKE_SOURCE_DIR}/vendor/lib REQUIRED)
-    find_library(GLFW  NAMES glfw3                     PATHS ${CMAKE_SOURCE_DIR}/vendor/lib REQUIRED)
-    find_library(IMGUI NAMES imgui                     PATHS ${CMAKE_SOURCE_DIR}/vendor/lib REQUIRED)
+    find_library(GLEW  NAMES libglew32d PATHS ${CMAKE_SOURCE_DIR}/vendor/lib REQUIRED)
+    find_library(GLFW  NAMES glfw3      PATHS ${CMAKE_SOURCE_DIR}/vendor/lib REQUIRED)
+    find_library(IMGUI NAMES imgui      PATHS ${CMAKE_SOURCE_DIR}/vendor/lib REQUIRED)
 endif ()
 
 target_link_libraries(${PROJECT_NAME}
-        ${ECS}  ${GLEW}
-        ${GLFW} ${IMGUI}
-        OpenGL::GL)
+        ${GLEW} ${GLFW} ${IMGUI} OpenGL::GL)

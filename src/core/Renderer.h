@@ -23,22 +23,25 @@
 class Renderer
 {
 public:
-    explicit Renderer(std::weak_ptr<MainCamera> camera);
+    Renderer(std::weak_ptr<MainCamera> camera, ecs::Core &EntityComponentSystem);
     
     void clear();
     void update();
     void imguiUpdate();
     
-    // Tags let us know which object should be rendered in which way.
-    const ecs::Component basicTag    { ecs::create<RenderInformation>() };
-    const ecs::Component uvTag       { ecs::create<RenderInformation>() };
-    const ecs::Component phongTag    { ecs::create<RenderInformation>() };
-    const ecs::Component geometryTag { ecs::create<RenderInformation>() };
-    
     unsigned int geometryFboName   { 0 };
     
 protected:
     // NOTE: Order of declaration matters here.
+    ecs::Core &mEcs;
+    
+public:
+    // Tags let us know which object should be rendered in which way.
+    const Component basicTag    { mEcs.create<RenderInformation>() };
+    const Component uvTag       { mEcs.create<RenderInformation>() };
+    const Component phongTag    { mEcs.create<RenderInformation>() };
+    const Component geometryTag { mEcs.create<RenderInformation>() };
+    
     std::weak_ptr<MainCamera>               mCamera;  // Must be declared first. Other object rely on this being set.
     glm::ivec2                              mScreenSize { 1920, 1080 };
     RenderPipeline                          mRenderPipeline;
@@ -46,6 +49,8 @@ protected:
     DeferredLightShader                     mDeferredLightingShader;
     
     std::shared_ptr<DirectionalLight>       mDirectionalLight;
+    
+    
 };
 
 

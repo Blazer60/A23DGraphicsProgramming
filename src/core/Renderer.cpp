@@ -12,8 +12,9 @@
 #include "PointLightShader.h"
 
 
-Renderer::Renderer(std::weak_ptr<MainCamera> camera) :
+Renderer::Renderer(std::weak_ptr<MainCamera> camera, ecs::Core &EntityComponentSystem) :
     mCamera(std::move(camera)),
+    mEcs(EntityComponentSystem),
     mMainTexture(std::make_shared<TextureBufferObject>(mScreenSize)),
     mDeferredLightingShader(
         camera.lock(), mRenderPipeline.mOutput,
@@ -21,12 +22,12 @@ Renderer::Renderer(std::weak_ptr<MainCamera> camera) :
         mRenderPipeline.mAlbedo),
     mDirectionalLight(std::make_shared<DirectionalLight>())
 {
-    ecs::createSystem<BlinnPhongGeometryShader> ({ geometryTag },   mCamera.lock(), mDirectionalLight);
-    ecs::createSystem<DirectionalLightShaderSystem>(
+    mEcs.createSystem<BlinnPhongGeometryShader> ({ geometryTag },   mCamera.lock(), mDirectionalLight);
+    mEcs.createSystem<DirectionalLightShaderSystem>(
         mCamera.lock(), mRenderPipeline.mLightAccumulator,
         mRenderPipeline.mPosition, mRenderPipeline.mNormal,
         mRenderPipeline.mAlbedo);
-    ecs::createSystem<PointLightShader>(
+    mEcs.createSystem<PointLightShader>(
         mCamera.lock(), mRenderPipeline.mLightAccumulator,
         mRenderPipeline.mPosition, mRenderPipeline.mNormal,
         mRenderPipeline.mAlbedo);

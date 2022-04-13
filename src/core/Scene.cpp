@@ -7,7 +7,6 @@
 
 #include "Scene.h"
 #include "Ecs.h"
-#include "BasicShaderSystem.h"
 #include "BasicUniformUpdaterSystem.h"
 #include "RotatorSystem.h"
 #include "TextureBinderSystem.h"
@@ -24,8 +23,8 @@ Scene::Scene()
         {
             for (int k = 0; k < count; ++k)
             {
-                ecs::Entity parent = createPhongModel(glm::vec3(i * 3.f, j * 3.f + 3.f, k * 3.f), mBanana);
-                ecs::add(parent, Rotator { 1.f, 1.f });
+                Entity parent = createPhongModel(glm::vec3(i * 3.f, j * 3.f + 3.f, k * 3.f), mBanana);
+                mEcs.add(parent, Rotator { 1.f, 1.f });
             }
         }
     }
@@ -36,44 +35,44 @@ Scene::Scene()
     createPhongModel(glm::vec3(-5.f, 1.0f, 0.f), mStoneCladding);
     createPhongModel(glm::vec3(0.f, 0.f, 0.f), mFloor);
     
-    ecs::Entity light = ecs::create();
-    ecs::add(light, light::DirectionalLight());
+    Entity light = mEcs.create();
+    mEcs.add(light, light::DirectionalLight());
     
-    ecs::Entity point = ecs::create();
-    ecs::add(point, light::PointLight( {
+    Entity point = mEcs.create();
+    mEcs.add(point, light::PointLight( {
         glm::vec4(5.f, 3.f, 0.f, 1.f)
     } ));
     
     // Creation order of system still matters.
-    ecs::createSystem<TextureBinderSystem>       ();
-    ecs::createSystem<BasicUniformUpdaterSystem> ();
-    ecs::createSystem<RotatorSystem>             ();
-    ecs::start();
+    mEcs.createSystem<TextureBinderSystem>       ();
+    mEcs.createSystem<BasicUniformUpdaterSystem> ();
+    mEcs.createSystem<RotatorSystem>             ();
+    mEcs.start();
 }
 
-ecs::Entity Scene::createPhongModel(const glm::vec3 position, Model<PhongVertex, BlinnPhongMaterial> &meshes)
+Entity Scene::createPhongModel(const glm::vec3 position, Model<PhongVertex, BlinnPhongMaterial> &meshes)
 {
     // Our transform uniforms that will be distributed to every child in the hierarchy.
     auto transformUniforms = std::make_shared<BasicUniforms>();
     
-    ecs::Entity parent    = ecs::create();
-    ecs::Entity model     = ecs::create();  // Just contains model slots for hierarchical purity.
+    Entity parent    = mEcs.create();
+    Entity model     = mEcs.create();  // Just contains model slots for hierarchical purity.
     
     // The parent only needs a transform, uniforms for the transform and a model child entity.
-    ecs::add(parent, model);
-    ecs::add(parent, Transform { position } );
-    ecs::add(parent, transformUniforms);
+    mEcs.add(parent, model);
+    mEcs.add(parent, Transform { position } );
+    mEcs.add(parent, transformUniforms);
     
     for (auto &mesh : meshes)
     {
-        ecs::Entity modelSlot = ecs::create();
-        ecs::add(model, modelSlot);
+        Entity modelSlot = mEcs.create();
+        mEcs.add(model, modelSlot);
         
         mesh.renderInformation.fbo = mRenderer.geometryFboName;
         
-        ecs::add(modelSlot, mRenderer.geometryTag, mesh.renderInformation);
-        ecs::add(modelSlot, mesh.material);
-        ecs::add(modelSlot, transformUniforms);
+        mEcs.add(modelSlot, mRenderer.geometryTag, mesh.renderInformation);
+        mEcs.add(modelSlot, mesh.material);
+        mEcs.add(modelSlot, transformUniforms);
     }
     
     return parent;
@@ -84,7 +83,7 @@ void Scene::onUpdate()
     mRenderer.clear();
     
     mMainCamera->update();
-    ecs::update();
+    mEcs.update();
     
     mRenderer.update();
 }

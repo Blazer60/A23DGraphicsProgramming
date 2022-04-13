@@ -8,7 +8,6 @@
 #include "glew.h"
 #include "Core.h"
 #include "Scene.h"
-#include "Ecs.h"
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 #include "glfw3.h"
@@ -22,8 +21,6 @@ Core::Core(const glm::ivec2 &resolution)
         debug::log("Unable to initialise everything.", debug::severity::Warning);
         return;
     }
-    
-    ecs::init(ecs::initFlag::AutoInitialise);  // Never crashes.
     
     mScene = std::make_unique<Scene>();  // Scenes must be made after the initialisation of underlying architectures.
 }

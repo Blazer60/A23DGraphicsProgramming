@@ -24,6 +24,8 @@
 #include "Renderer.h"
 #include "Primitives.h"
 
+#include "Ecs.h"
+
 #include <memory>
 
 /**
@@ -42,7 +44,9 @@ public:
     void onImguiUpdate();
 
 protected:
-    ecs::Entity createPhongModel(const glm::vec3 position, Model<PhongVertex, BlinnPhongMaterial> &meshes);
+    ecs::Core mEcs { ecs::initFlag::AutoInitialise };
+    
+    Entity createPhongModel(const glm::vec3 position, Model<PhongVertex, BlinnPhongMaterial> &meshes);
     
     glm::ivec2 mSreenSize { 1920, 1080 };  // Must be at the top.
     
@@ -55,14 +59,14 @@ protected:
         load::model<PhongVertex, BlinnPhongMaterial>(
             path::resources() + "models/pbr-spheres/StoneCladding.obj")
     };
-    
     Model<PhongVertex, BlinnPhongMaterial> mFloor {
         load::model<PhongVertex, BlinnPhongMaterial>(
             path::resources() + "models/floor/Floor.obj")
     };
+    
     std::shared_ptr<MainCamera> mMainCamera { std::make_shared<MainCamera>(glm::vec3(0.f, 1.f, 5.f)) };
     
-    Renderer mRenderer { mMainCamera };
+    Renderer mRenderer { mMainCamera, mEcs };
 };
 
 
