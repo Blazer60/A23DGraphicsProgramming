@@ -14,17 +14,21 @@
 #include "ModelLoader.h"
 #include "systems/lighting/DirectionalLightShaderSystem.h"
 
+#include "Physics.h"
+#include "PhysicsSystems.h"
+
 Scene::Scene()
 {
-    const int count = 5;
+    const int count = 3;
     for (int i = 0; i < count; ++i)
     {
         for (int j = 0; j < count; ++j)
         {
             for (int k = 0; k < count; ++k)
             {
-                Entity parent = createPhongModel(glm::vec3(i * 3.f, j * 3.f + 3.f, k * 3.f), mBanana);
-                mEcs.add(parent, Rotator { 1.f, 1.f });
+                Entity parent = createPhongModel(glm::vec3(i * 3.f, j * 3.f + 10.f, k * 3.f), mBanana);
+                mEcs.add(parent, DynamicObject { glm::vec3(i, 100.f, j), 1.f });
+                mEcs.add(parent, Velocity());
             }
         }
     }
@@ -44,9 +48,16 @@ Scene::Scene()
     } ));
     
     // Creation order of system still matters.
-    mEcs.createSystem<TextureBinderSystem>       ();
-    mEcs.createSystem<BasicUniformUpdaterSystem> ();
-    mEcs.createSystem<RotatorSystem>             ();
+    mEcs.createSystem<TextureBinderSystem>();
+    mEcs.createSystem<BasicUniformUpdaterSystem>();
+    mEcs.createSystem<RotatorSystem>();
+    
+    mEcs.createSystem<Gravity>();
+    mEcs.createSystem<RungeKutta>(4);
+    // mEcs.createSystem<EulerIntegration>();
+    // mEcs.createSystem<RungeKutta2>();
+    // mEcs.createSystem<RungeKutta4>();
+    
     mEcs.start();
 }
 

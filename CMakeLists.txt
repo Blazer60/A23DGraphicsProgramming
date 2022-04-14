@@ -101,6 +101,8 @@ add_executable(${PROJECT_NAME}
         src/rendering/RenderBufferObject.cpp                    include/rendering/RenderBufferObject.h
         src/rendering/RenderPipeline.cpp                        include/rendering/RenderPipeline.h
         src/rendering/DeferredLightShader.cpp                   include/rendering/DeferredLightShader.h
+        include/components/Physics.h
+        src/systems/physics/PhysicsSystems.cpp                  include/systems/physics/PhysicsSystems.h
         )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
@@ -110,6 +112,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
         include/helpers   include/components/render-components
         include/loader    include/lighting
         include/rendering include/systems/lighting
+        include/systems/physics
 
 # ECS Includes
         entity-component-system                 entity-component-system/include
