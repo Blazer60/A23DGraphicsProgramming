@@ -18,27 +18,43 @@
 #include "PhysicsSystems.h"
 #include "CollisionSystem.h"
 #include "BoundingVolumeVisual.h"
+#include "gtc/type_ptr.hpp"
 
 Scene::Scene()
 {
-    const int count = 3;
-    for (int i = 0; i < count; ++i)
-    {
-        for (int j = 0; j < count; ++j)
-        {
-            for (int k = 0; k < count; ++k)
-            {
-                Entity parent = createPhongModel(glm::vec3(i, j + 10.f, k), mBanana);
-                mEcs.add(parent, DynamicObject { glm::vec3(0.f, 1.f, 0.f), 1.f });
-                mEcs.add(parent, Velocity());
-                std::shared_ptr<BoundingVolume> boundingBox = std::make_shared<BoundingSphere>(parent);
-                boundingBox->callbacks.subscribe([]() {
-                    std::cout << "Callback\n";
-                });
-                mEcs.add(parent, std::move(boundingBox));
-            }
-        }
-    }
+    // const int count = 3;
+    // for (int i = 0; i < count; ++i)
+    // {
+    //     for (int j = 0; j < count; ++j)
+    //     {
+    //         for (int k = 0; k < count; ++k)
+    //         {
+    //             Entity parent = createPhongModel(glm::vec3(i, j + 10.f, k), mBanana);
+    //             mEcs.add(parent, DynamicObject { glm::vec3(0.f, 1.f, 0.f), 1.f });
+    //             mEcs.add(parent, Velocity());
+    //             std::shared_ptr<BoundingVolume> boundingBox = std::make_shared<BoundingSphere>(parent, 0.2f);
+    //             boundingBox->callbacks.subscribe([]() {
+    //                 std::cout << "Callback\n";
+    //             });
+    //             mEcs.add(parent, std::move(boundingBox));
+    //         }
+    //     }
+    // }
+    
+    mAlpha = createPhongModel(glm::vec3(2.f, 1.f, 5.f), mStoneCladding);
+    mEcs.add(mAlpha, Rotator {});
+    std::shared_ptr<BoundingVolume> boundingSphereAlpha = std::make_shared<BoundingBox>(mAlpha);
+    boundingSphereAlpha->callbacks.subscribe([]() {
+        std::cout << "Alpha Hit\n";
+    });
+    mEcs.add(mAlpha, boundingSphereAlpha);
+    
+    mBeta  = createPhongModel(glm::vec3(-2.f, 1.f, 5.f), mStoneCladding);
+    std::shared_ptr<BoundingVolume> boundingSphereBeta = std::make_shared<BoundingBox>(mBeta);
+    boundingSphereBeta->callbacks.subscribe([]() {
+        std::cout << "Beta Hit\n";
+    });
+    mEcs.add(mBeta, boundingSphereBeta);
     
     auto triangleFan = primitives::triangleFanCircle<PhongVertex, BlinnPhongMaterial>(20);
     createPhongModel(glm::vec3(0.f, 1.f, 0.f), triangleFan);
@@ -115,4 +131,14 @@ void Scene::onImguiUpdate()
     mRenderer.imguiUpdate();
     mMainCamera->imguiUpdate();
     ImGui::ShowDemoWindow();
+    
+    if(ImGui::Begin("Alpha Settings"))
+    {
+        auto &transform = mEcs.getComponent<Transform>(mAlpha);
+        ImGui::DragFloat3("Position", glm::value_ptr(transform.position), 0.1f);
+        ImGui::DragFloat4("Rotation", glm::value_ptr(transform.rotation), 0.1f);
+        ImGui::DragFloat3("Scale", glm::value_ptr(transform.scale), 0.1f);
+        
+        ImGui::End();
+    }
 }

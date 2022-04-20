@@ -41,7 +41,7 @@ void DeferredLightShader::render()
     mShader.set("u_albedo",   2);
     
     mShader.set("u_model_matrix", glm::mat4(1.f));
-    // mShader.set("u_camera_position_ws", mCamera->getPosition());
+    // mSphereShader.set("u_camera_position_ws", mCamera->getPosition());
     
     glDrawElements(GL_TRIANGLES, mEboCount, GL_UNSIGNED_INT, 0);
 }

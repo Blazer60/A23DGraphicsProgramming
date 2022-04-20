@@ -32,7 +32,7 @@ void BasicShaderSystem::onUpdate()
     // glm::mat4 projectionMat = glm::perspective(glm::radians(45.f), 1920.f / 1080.f, 0.0001f, 100.f);
     // glm::mat4 view = glm::translate(glm::mat4(1.f), glm::vec3(0.f, 0.f, -2.f));
     
-    // mShader.set("u_mvp", mCamera->getVpMatrix());
+    // mSphereShader.set("u_mvp", mCamera->getVpMatrix());
 }
 
 void BasicShaderSystem::onStart()

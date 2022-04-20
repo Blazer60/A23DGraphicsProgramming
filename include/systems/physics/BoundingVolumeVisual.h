@@ -26,15 +26,18 @@ class BoundingVolumeVisual
 {
 public:
     BoundingVolumeVisual(std::shared_ptr<MainCamera> camera, const unsigned int geometryBufferId);
+    
     void drawSphere(const BoundingSphere &boundingSphere, const glm::mat4 &modelMatrix);
     
-    void onStart() override;
-    
-    void onUpdate() override;
+    void drawBox(const BoundingBox &boundingBox, const glm::mat4 &modelMatrix);
 
 protected:
-    Mesh<UvVertex, NoMaterial> mSphere { load::model<UvVertex, NoMaterial>(path::resources() + "models/physics/Sphere.obj")[0] };
-    Shader mShader { path::shaders() + "physics/SphereVolume.vert", path::shaders() + "physics/SphereVolume.frag" };
+    Mesh<UvVertex, NoMaterial> mSphere  { load::model<UvVertex, NoMaterial>(path::resources() + "models/physics/Sphere.obj")[0] };
+    Mesh<UvVertex, NoMaterial> mBox     { load::model<UvVertex, NoMaterial>(path::resources() + "models/physics/Box.obj")[0] };
+    
+    Shader mSphereShader    { path::shaders() + "physics/SphereVolume.vert",    path::shaders() + "physics/SphereVolume.frag" };
+    Shader mBoxShader       { path::shaders() + "physics/BoxVolume.vert",       path::shaders() + "physics/BoxVolume.frag" };
+    
     std::shared_ptr<MainCamera> mCamera;
     unsigned int mFbo { 0 };
 };

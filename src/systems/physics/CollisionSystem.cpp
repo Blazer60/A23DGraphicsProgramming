@@ -81,7 +81,8 @@ void CollisionSystem::collisionRhs(const BoundingBox &lhs, const glm::mat4 &lhsM
             hit = collisionCheck(lhs, glm::inverse(lhsModelMat), *rhsSphere, rhsModelMat);
         
         else if (auto rhsBox = std::dynamic_pointer_cast<BoundingBox>(rhs))
-            hit = collisionCheck(lhs, glm::inverse(lhsModelMat), *rhsBox, rhsModelMat);
+            hit = collisionCheck(lhs, glm::inverse(lhsModelMat), *rhsBox, rhsModelMat)
+                || collisionCheck(*rhsBox, glm::inverse(rhsModelMat), lhs, lhsModelMat);
         
         
         if (hit)
@@ -93,10 +94,10 @@ bool CollisionSystem::collisionCheck(
     const BoundingSphere &lhs, const glm::mat4 &lhsModelMat,
     const BoundingSphere &rhs, const glm::mat4 &rhsModelMat)
 {
-    const glm::vec3 pointA = lhsModelMat * glm::vec4(0.f);
+    const glm::vec3 pointA = lhsModelMat * glm::vec4(0.f, 0.f, 0.f, 1.f);
     const float radiusA = lhs.radius;
     
-    const glm::vec3 pointB = rhsModelMat * glm::vec4(0.f);
+    const glm::vec3 pointB = rhsModelMat * glm::vec4(0.f, 0.f, 0.f, 1.f);
     const float radiusB = rhs.radius;
     
     return physics::SphereToSphere(pointA, radiusA, pointB, radiusB);
@@ -106,7 +107,7 @@ bool CollisionSystem::collisionCheck(
     const BoundingBox &lhs,     const glm::mat4 &lhsInverseModelMat,
     const BoundingSphere &rhs,  const glm::mat4 &rhsModelMat)
 {
-    const glm::vec3 point = lhsInverseModelMat * rhsModelMat * glm::vec4(0.f);
+    const glm::vec3 point = lhsInverseModelMat * rhsModelMat * glm::vec4(0.f, 0.f, 0.f, 1.f);
     return physics::SphereToBox(point, rhs.radius, lhs.halfSize);
 }
 
@@ -131,8 +132,8 @@ bool CollisionSystem::collisionCheck(
     for (const auto &coord : coords)
     {
         const glm::vec3 point = lhsInverseModelMat * rhsModelMat * coord;
-        glm::min(min, sdf::toBox(point, lhs.halfSize));
+        min = glm::min(min, sdf::toBox(point, lhs.halfSize));
     }
     
-    return min < 0.f;
+    return min <= 0.f;
 }
