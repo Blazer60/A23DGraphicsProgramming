@@ -103,7 +103,9 @@ add_executable(${PROJECT_NAME}
         src/rendering/DeferredLightShader.cpp                   include/rendering/DeferredLightShader.h
         include/components/Physics.h
         src/systems/physics/PhysicsSystems.cpp                  include/systems/physics/PhysicsSystems.h
-        )
+        include/helpers/Callback.h
+        src/helpers/PhysicsHelpers.cpp src/helpers/PhysicsHelpers.h
+        src/systems/physics/CollisionSystem.cpp src/systems/physics/CollisionSystem.h)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
 # Project Includes
