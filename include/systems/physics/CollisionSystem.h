@@ -25,11 +25,11 @@ public:
     void onUpdate() override;
     
     void collisionLhs();
-    void collisionRhs(const BoundingSphere &lhs, const glm::mat4 &inverseModelMat);
-    void collisionRhs(const BoundingBox &lhs, const glm::mat4 &inverseModelMat);
+    void collisionRhs(const BoundingSphere &lhs, const glm::mat4 &lhsModelMat);
+    void collisionRhs(const BoundingBox &lhs, const glm::mat4 &lhsModelMat);
     
     bool collisionCheck(
-        const BoundingSphere &lhs, const glm::mat4 &lhsInverseModelMat,
+        const BoundingSphere &lhs, const glm::mat4 &lhsModelMat,
         const BoundingSphere &rhs, const glm::mat4 &rhsModelMat);
     
     bool collisionCheck(

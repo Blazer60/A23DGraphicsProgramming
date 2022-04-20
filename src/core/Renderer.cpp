@@ -10,6 +10,7 @@
 #include "BlinnPhongGeometryShader.h"
 #include "DirectionalLightShaderSystem.h"
 #include "PointLightShader.h"
+#include "BoundingVolumeVisual.h"
 
 
 Renderer::Renderer(std::weak_ptr<MainCamera> camera, ecs::Core &EntityComponentSystem) :
@@ -33,6 +34,7 @@ Renderer::Renderer(std::weak_ptr<MainCamera> camera, ecs::Core &EntityComponentS
         mRenderPipeline.mAlbedo);
     
     geometryFboName = mRenderPipeline.mGeometry->getFboName();
+    mEcs.createSystem<BoundingVolumeVisual>(mCamera.lock(), geometryFboName);
 }
 
 void Renderer::clear()

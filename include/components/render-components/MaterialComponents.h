@@ -50,6 +50,7 @@ struct NoMaterial
         : public Material
 {
     NoMaterial() = default;
+    explicit NoMaterial(const MtlMaterial &mtl) {};
 };
 
 /**

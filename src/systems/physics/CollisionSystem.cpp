@@ -22,10 +22,7 @@ CollisionSystem::CollisionSystem()
 
 void CollisionSystem::onUpdate()
 {
-    for (auto &lhs : mBoundingVolumes)
-    {
-    
-    }
+    collisionLhs(); // O(n^2)
     
     // Reset for next round.
     mBoundingVolumes.clear();
@@ -37,53 +34,58 @@ void CollisionSystem::collisionLhs()
     for (int i = 0; i < mBoundingVolumes.size(); ++i)
     {
         const std::shared_ptr<BoundingVolume> &lhs = mBoundingVolumes[i];
-        const glm::mat4 inverseModelMat = glm::inverse(mBasicUniforms[i]->modelMat);
+        const glm::mat4 modelMat = mBasicUniforms[i]->modelMat;
         
         if (auto lhsSphere = std::dynamic_pointer_cast<BoundingSphere>(lhs))
-            collisionRhs(*lhsSphere, inverseModelMat);
+            collisionRhs(*lhsSphere, modelMat);
         if (auto lhsBox = std::dynamic_pointer_cast<BoundingBox>(lhs))
-            collisionRhs(*lhsBox, inverseModelMat);
+            collisionRhs(*lhsBox, modelMat);
     }
 }
 
-void CollisionSystem::collisionRhs(const BoundingSphere &lhs, const glm::mat4 &inverseModelMat)
+void CollisionSystem::collisionRhs(const BoundingSphere &lhs, const glm::mat4 &lhsModelMat)
 {
     for (int i = 0; i < mBoundingVolumes.size(); ++i)
     {
         const std::shared_ptr<BoundingVolume> &rhs = mBoundingVolumes[i];
-        const glm::mat4 &modelMat = mBasicUniforms[i]->modelMat;
-        
+        const glm::mat4 &rhsModelMat = mBasicUniforms[i]->modelMat;
+    
+        bool hit = false;
         if (lhs.entity == rhs->entity)
             continue;
-        if (auto rhsSphere = std::dynamic_pointer_cast<BoundingSphere>(rhs))
-        {
         
-        }
-        if (auto rhsBox = std::dynamic_pointer_cast<BoundingBox>(rhs))
-        {
+        else if (auto rhsSphere = std::dynamic_pointer_cast<BoundingSphere>(rhs))
+            hit = collisionCheck(lhs, lhsModelMat, *rhsSphere, rhsModelMat);
         
-        }
-    }
-    for (const auto &rhs : mBoundingVolumes)
-    {
-    
+        else if (auto rhsBox = std::dynamic_pointer_cast<BoundingBox>(rhs))
+            hit = collisionCheck(*rhsBox, glm::inverse(rhsModelMat), lhs, lhsModelMat);
+        
+        
+        if (hit)
+            lhs.callbacks.broadcast();
     }
 }
 
-void CollisionSystem::collisionRhs(const BoundingBox &lhs, const glm::mat4 &inverseModelMat)
+void CollisionSystem::collisionRhs(const BoundingBox &lhs, const glm::mat4 &lhsModelMat)
 {
-    for (const auto &rhs : mBoundingVolumes)
+    for (int i = 0; i < mBoundingVolumes.size(); ++i)
     {
+        const std::shared_ptr<BoundingVolume> &rhs = mBoundingVolumes[i];
+        const glm::mat4 &rhsModelMat = mBasicUniforms[i]->modelMat;
+        
+        bool hit = false;
         if (lhs.entity == rhs->entity)
             continue;
-        if (auto rhsSphere = std::dynamic_pointer_cast<BoundingSphere>(rhs))
-        {
         
-        }
-        if (auto rhsBox = std::dynamic_pointer_cast<BoundingBox>(rhs))
-        {
+        else if (auto rhsSphere = std::dynamic_pointer_cast<BoundingSphere>(rhs))
+            hit = collisionCheck(lhs, glm::inverse(lhsModelMat), *rhsSphere, rhsModelMat);
         
-        }
+        else if (auto rhsBox = std::dynamic_pointer_cast<BoundingBox>(rhs))
+            hit = collisionCheck(lhs, glm::inverse(lhsModelMat), *rhsBox, rhsModelMat);
+        
+        
+        if (hit)
+            lhs.callbacks.broadcast();
     }
 }
 

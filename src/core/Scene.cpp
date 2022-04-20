@@ -17,6 +17,7 @@
 #include "Physics.h"
 #include "PhysicsSystems.h"
 #include "CollisionSystem.h"
+#include "BoundingVolumeVisual.h"
 
 Scene::Scene()
 {
@@ -27,10 +28,10 @@ Scene::Scene()
         {
             for (int k = 0; k < count; ++k)
             {
-                Entity parent = createPhongModel(glm::vec3(i * 3.f, j * 3.f + 10.f, k * 3.f), mBanana);
-                mEcs.add(parent, DynamicObject { glm::vec3(i, 100.f, j), 1.f });
+                Entity parent = createPhongModel(glm::vec3(i, j + 10.f, k), mBanana);
+                mEcs.add(parent, DynamicObject { glm::vec3(0.f, 1.f, 0.f), 1.f });
                 mEcs.add(parent, Velocity());
-                std::shared_ptr<BoundingVolume> boundingBox = std::make_shared<BoundingBox>(parent);
+                std::shared_ptr<BoundingVolume> boundingBox = std::make_shared<BoundingSphere>(parent);
                 boundingBox->callbacks.subscribe([]() {
                     std::cout << "Callback\n";
                 });
@@ -58,9 +59,8 @@ Scene::Scene()
     mEcs.createSystem<BasicUniformUpdaterSystem>();
     mEcs.createSystem<RotatorSystem>();
     
-    mEcs.createSystem<Gravity>();
+    // mEcs.createSystem<Gravity>();
     mEcs.createSystem<RungeKutta>(4);
-    
     mEcs.createSystem<CollisionSystem>();
     // mEcs.createSystem<EulerIntegration>();
     // mEcs.createSystem<RungeKutta2>();
