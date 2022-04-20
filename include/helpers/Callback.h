@@ -27,7 +27,7 @@ public:
     
     void unsubscribe(const Token token);
     
-    void broadcast(const TArgs &... args);
+    void broadcast(const TArgs &... args) const;
     
 protected:
     std::vector<Signature>  mSubscribers;
@@ -54,7 +54,7 @@ void Callback<TArgs...>::unsubscribe(const Callback::Token token)
 }
 
 template<typename... TArgs>
-void Callback<TArgs...>::broadcast(const TArgs &... args)
+void Callback<TArgs...>::broadcast(const TArgs &... args) const
 {
     for (const auto &subscriber : mSubscribers)
         subscriber(args...);

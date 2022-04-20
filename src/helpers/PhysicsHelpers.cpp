@@ -27,4 +27,10 @@ namespace physics
         const float distance = sdf::toSphere(pointB - pointA, radiusA) - radiusB;
         return distance <= 0;
     }
+    
+    bool SphereToBox(const glm::vec3 &point, const float radius, const glm::vec3 &halfSize)
+    {
+        const float distance = sdf::toBox(point, halfSize) - radius;
+        return distance <= 0;
+    }
 }

@@ -27,7 +27,9 @@ namespace sdf
     float toBox(const glm::vec3 &point, const glm::vec3 &halfSize);
 }
 
-namespace Physics
+namespace physics
 {
     bool SphereToSphere(const glm::vec3 &pointA, const float radiusA, const glm::vec3 &pointB, const float radiusB);
+    
+    [[maybe_unused]] bool SphereToBox(const glm::vec3 &point, const float radius, const glm::vec3 &halfSize);
 }

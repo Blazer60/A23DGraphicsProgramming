@@ -9,7 +9,7 @@
 
 #include "Pch.h"
 #include "Ecs.h"
-#include "Physics.h"
+#include "BoundingVolumes.h"
 #include "UniformComponents.h"
 
 /**
@@ -23,6 +23,23 @@ public:
     CollisionSystem();
 
     void onUpdate() override;
+    
+    void collisionLhs();
+    void collisionRhs(const BoundingSphere &lhs, const glm::mat4 &inverseModelMat);
+    void collisionRhs(const BoundingBox &lhs, const glm::mat4 &inverseModelMat);
+    
+    bool collisionCheck(
+        const BoundingSphere &lhs, const glm::mat4 &lhsInverseModelMat,
+        const BoundingSphere &rhs, const glm::mat4 &rhsModelMat);
+    
+    bool collisionCheck(
+        const BoundingBox &lhs,     const glm::mat4 &lhsInverseModelMat,
+        const BoundingSphere &rhs,  const glm::mat4 &rhsModelMat);
+    
+    bool collisionCheck(
+        const BoundingBox &lhs, const glm::mat4 &lhsInverseModelMat,
+        const BoundingBox &rhs, const glm::mat4 &rhsModelMat);
+    
 protected:
     std::vector<std::shared_ptr<BoundingVolume>>    mBoundingVolumes;
     std::vector<std::shared_ptr<BasicUniforms>>     mBasicUniforms;
