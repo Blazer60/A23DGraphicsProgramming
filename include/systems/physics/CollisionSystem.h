@@ -11,6 +11,7 @@
 #include "Ecs.h"
 #include "BoundingVolumes.h"
 #include "UniformComponents.h"
+#include "PhysicsHelpers.h"
 
 /**
  * @author Ryan Purse
@@ -28,16 +29,16 @@ public:
     void collisionRhs(const BoundingSphere &lhs, const glm::mat4 &lhsModelMat);
     void collisionRhs(const BoundingBox &lhs, const glm::mat4 &lhsModelMat);
     
-    bool collisionCheck(
+    HitRecord collisionCheck(
         const BoundingSphere &lhs, const glm::mat4 &lhsModelMat,
         const BoundingSphere &rhs, const glm::mat4 &rhsModelMat);
     
-    bool collisionCheck(
-        const BoundingBox &lhs,     const glm::mat4 &lhsInverseModelMat,
+    HitRecord collisionCheck(
+        const BoundingBox &lhs,     const glm::mat4 &lhsModelMat,
         const BoundingSphere &rhs,  const glm::mat4 &rhsModelMat);
     
-    bool collisionCheck(
-        const BoundingBox &lhs, const glm::mat4 &lhsInverseModelMat,
+    std::vector<HitRecord> collisionCheck(
+        const BoundingBox &lhs, const glm::mat4 &lhsModelMat,
         const BoundingBox &rhs, const glm::mat4 &rhsModelMat);
     
 protected:

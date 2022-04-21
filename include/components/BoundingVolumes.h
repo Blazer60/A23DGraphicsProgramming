@@ -11,6 +11,9 @@
 #include "Ecs.h"
 #include "Callback.h"
 
+// this, other, position, normal
+typedef Callback<Entity, Entity, glm::vec3&, glm::vec3&> HitCallback;
+
 struct BoundingVolume
 {
     explicit BoundingVolume(const Entity entity) :
@@ -20,7 +23,7 @@ struct BoundingVolume
     virtual ~BoundingVolume() = default;
     
     Entity entity { 0 };
-    Callback<> callbacks;
+    HitCallback callbacks;
 };
 
 struct BoundingSphere

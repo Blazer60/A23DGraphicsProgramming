@@ -41,18 +41,20 @@ Scene::Scene()
     //     }
     // }
     
-    mAlpha = createPhongModel(glm::vec3(2.f, 1.f, 5.f), mStoneCladding);
-    mEcs.add(mAlpha, Rotator {});
+    mAlpha = createPhongModel(glm::vec3(2.f, 2.f, 5.f), mStoneCladding);
+    // mEcs.add(mAlpha, Rotator {});
     std::shared_ptr<BoundingVolume> boundingSphereAlpha = std::make_shared<BoundingBox>(mAlpha);
-    boundingSphereAlpha->callbacks.subscribe([]() {
-        std::cout << "Alpha Hit\n";
+    boundingSphereAlpha->callbacks.subscribe([](Entity alpha, Entity other, const glm::vec3 &position, const glm::vec3 &normal) {
+        std::cout   << position.x << ", " << position.y << ", " << position.z << " || "
+                    << normal.x << ", " << normal.y << ", " << normal.z
+                    << " | Alpha Hit\n";
     });
     mEcs.add(mAlpha, boundingSphereAlpha);
     
-    mBeta  = createPhongModel(glm::vec3(-2.f, 1.f, 5.f), mStoneCladding);
+    mBeta  = createPhongModel(glm::vec3(-1.f, 1.f, 5.f), mStoneCladding);
     std::shared_ptr<BoundingVolume> boundingSphereBeta = std::make_shared<BoundingBox>(mBeta);
-    boundingSphereBeta->callbacks.subscribe([]() {
-        std::cout << "Beta Hit\n";
+    boundingSphereBeta->callbacks.subscribe([](Entity alpha, Entity other, const glm::vec3 &position, const glm::vec3 &normal) {
+        std::cout << position.x << ", " << position.y << ", " << position.z << " | Beta Hit\n";
     });
     mEcs.add(mBeta, boundingSphereBeta);
     

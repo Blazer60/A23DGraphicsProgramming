@@ -16,21 +16,30 @@ namespace sdf
     
     float toBox(const glm::vec3 &point, const glm::vec3 &halfSize)
     {
-        return glm::length(glm::max(glm::abs(point)-halfSize, glm::vec3(0.f)));
+        return glm::length(toBox3(point, halfSize));
+    }
+    
+    glm::vec3 toBox3(const glm::vec3 &point, const glm::vec3 &halfSize)
+    {
+        return glm::max(glm::abs(point) - halfSize, glm::vec3(0.f));
+    }
+    
+    float sphereToSphere(const glm::vec3 &pointA, const float radiusA, const glm::vec3 &pointB, const float radiusB)
+    {
+        return sdf::toSphere(pointB - pointA, radiusA) - radiusB;
+    }
+    
+    float sphereToBox(const glm::vec3 &point, const float radius, const glm::vec3 &halfSize)
+    {
+        return sdf::toBox(point, halfSize) - radius;
     }
 }
 
-namespace physics
+namespace sat
 {
-    bool SphereToSphere(const glm::vec3 &pointA, const float radiusA, const glm::vec3 &pointB, const float radiusB)
+    bool inRange(const glm::vec3 &value, const glm::vec3 &lower, const glm::vec3 &upper)
     {
-        const float distance = sdf::toSphere(pointB - pointA, radiusA) - radiusB;
-        return distance <= 0;
-    }
-    
-    bool SphereToBox(const glm::vec3 &point, const float radius, const glm::vec3 &halfSize)
-    {
-        const float distance = sdf::toBox(point, halfSize) - radius;
-        return distance <= 0;
+        return glm::all(glm::lessThan(lower, value) && glm::lessThan(value, upper));
     }
 }
+
