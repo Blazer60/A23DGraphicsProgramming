@@ -24,10 +24,15 @@ struct HitRecord
     glm::vec3   normal    { 1.f, 0.f, 0.f };
 };
 
-template<typename T>
-T sign(T value)
+namespace physics
 {
-    return (T(0) < value) - (value < T(0));
+    template<typename T>
+    T sign(const T &value)
+    {
+        return (T(0) < value) - (value < T(0));
+    }
+    
+    glm::vec3 sign3(const glm::vec3 &value);
 }
 
 /**
@@ -52,6 +57,14 @@ namespace sdf
     float sphereToSphere(const glm::vec3 &pointA, const float radiusA, const glm::vec3 &pointB, const float radiusB);
     
     float sphereToBox(const glm::vec3 &point, const float radius, const glm::vec3 &halfSize);
+    
+    /**
+     * @brief Gets a normal for a point an a box by judging which edge it's closest to.
+     * @param point - The point relative to the box's origin.
+     * @param halfSize - The box's extent.
+     * @returns A normal pointing away from the box's origin.
+     */
+    glm::vec3 boxNormal(const glm::vec3 &point, const glm::vec3 &halfSize);
 }
 
 /**
@@ -60,4 +73,6 @@ namespace sdf
 namespace sat
 {
     bool inRange(const glm::vec3 &value, const glm::vec3 &lower, const glm::vec3 &upper);
+    
+    
 }

@@ -6,6 +6,16 @@
 
 
 #include "PhysicsHelpers.h"
+#include <gtx/component_wise.hpp>
+
+
+namespace physics
+{
+    glm::vec3 sign3(const glm::vec3 &value)
+    {
+        return { sign(value.x), sign(value.y), sign(value.z) };
+    }
+}
 
 namespace sdf
 {
@@ -32,6 +42,20 @@ namespace sdf
     float sphereToBox(const glm::vec3 &point, const float radius, const glm::vec3 &halfSize)
     {
         return sdf::toBox(point, halfSize) - radius;
+    }
+    
+    glm::vec3 boxNormal(const glm::vec3 &point, const glm::vec3 &halfSize)
+    {
+        // The point must be in positive space for min and max to work.
+        const glm::vec3     beta    = glm::abs(point);
+        const glm::vec3     sign    = physics::sign3(point);
+        
+        const glm::vec3     alpha   = beta / halfSize;          // Since we are dealing with more than 1x1x1 cubes.
+        const float         max     = glm::compMax(alpha);      // Only interested in the largest value.
+        const glm::vec3     gamma   = glm::floor(alpha / max);  // Normalised for us here.
+        const glm::vec3     normal  = sign * gamma;             // Add back in the signs.
+        
+        return normal;
     }
 }
 

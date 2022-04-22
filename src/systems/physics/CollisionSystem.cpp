@@ -10,6 +10,7 @@
 
 #include <numeric>
 #include <gtx/component_wise.hpp>
+#include <unordered_set>
 
 CollisionSystem::CollisionSystem()
 {
@@ -91,12 +92,12 @@ void CollisionSystem::collisionRhs(const BoundingBox &lhs, const glm::mat4 &lhsM
         else if (auto rhsBox = std::dynamic_pointer_cast<BoundingBox>(rhs))
         {
             auto hits = collisionCheck(lhs, lhsModelMat, *rhsBox, rhsModelMat);
-            for (auto &hit: hits)
+            for (auto &hit : hits)
             {
                 lhs.callbacks.broadcast(lhs.entity, rhs->entity, hit.position, hit.normal);
             }
             hits = collisionCheck(*rhsBox, rhsModelMat, lhs, lhsModelMat);
-            for (auto &hit: hits)
+            for (auto &hit : hits)
             {
                 hit.normal *= -1.f;
                 lhs.callbacks.broadcast(lhs.entity, rhs->entity, hit.position, hit.normal);
@@ -142,37 +143,32 @@ std::vector<HitRecord> CollisionSystem::collisionCheck(
 {
     const glm::mat4 lhsInverseModelMat = glm::inverse(lhsModelMat);
     const glm::vec3 &halfSize = rhs.halfSize;
-    const glm::vec4 coords[] = {
-        glm::vec4(+halfSize.x, +halfSize.y, +halfSize.z, 1.f),  // East, Up, North
-        glm::vec4(+halfSize.x, +halfSize.y, -halfSize.z, 1.f),  // East, Up, South
-        glm::vec4(-halfSize.x, +halfSize.y, -halfSize.z, 1.f),  // West, Up, South
-        glm::vec4(-halfSize.x, +halfSize.y, +halfSize.z, 1.f),  // West, Up, North
+    
+    const glm::vec3 boxCenter = lhsInverseModelMat * rhsModelMat * glm::vec4(0.f, 0.f, 0.f, 1.f);
+    const glm::vec3 normal = lhsModelMat * glm::vec4(sdf::boxNormal(boxCenter, lhs.halfSize), 0.f);
+    
+    const glm::vec3 coords[] = {
+        lhsInverseModelMat * rhsModelMat * glm::vec4(+halfSize.x, +halfSize.y, +halfSize.z, 1.f),  // East, Up, North
+        lhsInverseModelMat * rhsModelMat * glm::vec4(+halfSize.x, +halfSize.y, -halfSize.z, 1.f),  // East, Up, South
+        lhsInverseModelMat * rhsModelMat * glm::vec4(-halfSize.x, +halfSize.y, -halfSize.z, 1.f),  // West, Up, South
+        lhsInverseModelMat * rhsModelMat * glm::vec4(-halfSize.x, +halfSize.y, +halfSize.z, 1.f),  // West, Up, North
         
-        glm::vec4(+halfSize.x, -halfSize.y, +halfSize.z, 1.f),  // East, Down, North
-        glm::vec4(+halfSize.x, -halfSize.y, -halfSize.z, 1.f),  // East, Down, South
-        glm::vec4(-halfSize.x, -halfSize.y, -halfSize.z, 1.f),  // West, Down, South
-        glm::vec4(-halfSize.x, -halfSize.y, +halfSize.z, 1.f),  // West, Down, North
+        lhsInverseModelMat * rhsModelMat * glm::vec4(+halfSize.x, -halfSize.y, +halfSize.z, 1.f),  // East, Down, North
+        lhsInverseModelMat * rhsModelMat * glm::vec4(+halfSize.x, -halfSize.y, -halfSize.z, 1.f),  // East, Down, South
+        lhsInverseModelMat * rhsModelMat * glm::vec4(-halfSize.x, -halfSize.y, -halfSize.z, 1.f),  // West, Down, South
+        lhsInverseModelMat * rhsModelMat * glm::vec4(-halfSize.x, -halfSize.y, +halfSize.z, 1.f),  // West, Down, North
     };
     
     std::vector<HitRecord> hitRecords;
-    for (const auto &coord : coords)
+    for (const auto &point : coords)
     {
-        const glm::vec3 p = lhsInverseModelMat * rhsModelMat * coord;
-        const glm::vec3 q = glm::abs(p) - lhs.halfSize;
-        const glm::vec3 s = p - lhs.halfSize;
-        const glm::vec3 d = glm::max(q, 0.f);
-        const glm::vec3 e = s * d;
-        const glm::vec3 h = p - e;
-        
-        const glm::vec3 signs = sign(p);
-    
-        const glm::vec3 normal      = glm::normalize(lhsModelMat * glm::vec4(signs * (glm::abs(q)), 1.f));
-        const glm::vec3 position    = lhsModelMat * glm::vec4(p + signs * d, 1.f);
-        const float     distance    = glm::length(d) + glm::min(glm::compMax(q), 0.f);
-        
-        if (distance <= 0)
-            hitRecords.emplace_back(true, position, normal);
+        const glm::vec3 distance = sdf::toBox3(point, lhs.halfSize);
+        if (glm::length(distance) <= 0)
+            hitRecords.emplace_back(
+                true,
+                lhsModelMat * glm::vec4(physics::sign3(point) * distance, 1.f),
+                normal);
     }
     
-    return std::move(hitRecords);
+    return hitRecords;
 }

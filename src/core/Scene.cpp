@@ -42,7 +42,7 @@ Scene::Scene()
     // }
     
     mAlpha = createPhongModel(glm::vec3(2.f, 2.f, 5.f), mStoneCladding);
-    // mEcs.add(mAlpha, Rotator {});
+    mEcs.add(mAlpha, Rotator {});
     std::shared_ptr<BoundingVolume> boundingSphereAlpha = std::make_shared<BoundingBox>(mAlpha);
     boundingSphereAlpha->callbacks.subscribe([](Entity alpha, Entity other, const glm::vec3 &position, const glm::vec3 &normal) {
         std::cout   << position.x << ", " << position.y << ", " << position.z << " || "
