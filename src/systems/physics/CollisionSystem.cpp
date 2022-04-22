@@ -91,17 +91,29 @@ void CollisionSystem::collisionRhs(const BoundingBox &lhs, const glm::mat4 &lhsM
         
         else if (auto rhsBox = std::dynamic_pointer_cast<BoundingBox>(rhs))
         {
-            auto hits = collisionCheck(lhs, lhsModelMat, *rhsBox, rhsModelMat);
-            for (auto &hit : hits)
+            auto hits  = collisionCheck(lhs, lhsModelMat, *rhsBox, rhsModelMat);
+            auto hits2 = collisionCheck(*rhsBox, rhsModelMat, lhs, lhsModelMat);
+            
+            if (hits.empty() && hits2.empty())
+                continue;
+            
+            HitRecord theHit { true };
+            for (const auto &hit : hits)
             {
-                lhs.callbacks.broadcast(lhs.entity, rhs->entity, hit.position, hit.normal);
+                theHit.position += hit.position;
+                theHit.normal   += hit.normal;
             }
-            hits = collisionCheck(*rhsBox, rhsModelMat, lhs, lhsModelMat);
-            for (auto &hit : hits)
+    
+            for (const auto &hit : hits2)
             {
-                hit.normal *= -1.f;
-                lhs.callbacks.broadcast(lhs.entity, rhs->entity, hit.position, hit.normal);
+                theHit.position += hit.position;
+                theHit.normal   -= hit.normal;  // Opposite direction
             }
+            
+            theHit.position /= hits.size() + hits2.size();
+            theHit.normal   /= hits.size() + hits2.size();
+    
+            lhs.callbacks.broadcast(lhs.entity, rhs->entity, theHit.position, theHit.normal);
         }
     }
 }

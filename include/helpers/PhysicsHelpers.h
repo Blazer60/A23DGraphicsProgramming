@@ -8,6 +8,7 @@
 #pragma once
 
 #include "Pch.h"
+#include "Common.h"
 
 struct HitRecord
 {

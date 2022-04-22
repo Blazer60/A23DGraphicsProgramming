@@ -41,17 +41,28 @@ Scene::Scene()
     //     }
     // }
     
-    mAlpha = createPhongModel(glm::vec3(2.f, 2.f, 5.f), mStoneCladding);
-    mEcs.add(mAlpha, Rotator {});
+    const auto addImpulse = [this](Entity entity, Entity other, const glm::vec3 &position, const glm::vec3 &normal) {
+        auto &dynamicObject = mEcs.getComponent<DynamicObject>(entity);
+        auto &velocity      = mEcs.getComponent<Velocity>(entity);
+        
+        glm::vec3 upNormal = glm::vec3(0.f, 1.f, 0.f);
+        const auto impulseForce = -(1.f + 0.8f) * glm::dot(velocity.value, upNormal) * dynamicObject.mass;
+        dynamicObject.force += upNormal * (impulseForce / timers::deltaTime<float>());
+        // todo: make a fixed delta time function for physics
+        // dynamicObject.force += upNormal * (impulseForce / 0.16f);
+        // dynamicObject.force += glm::vec3(0.f, 9.81f * dynamicObject.mass, 0.f);
+        std::cout << dynamicObject.force.x << " " << dynamicObject.force.y << " " << dynamicObject.force.z << "\n";
+        // dynamicObject.force += glm::vec3(0.f, 100.f, 0.f);
+    };
+    
+    mAlpha = createPhongModel(glm::vec3(2.f, 4.f, 5.f), mStoneCladding);
     std::shared_ptr<BoundingVolume> boundingSphereAlpha = std::make_shared<BoundingBox>(mAlpha);
-    boundingSphereAlpha->callbacks.subscribe([](Entity alpha, Entity other, const glm::vec3 &position, const glm::vec3 &normal) {
-        std::cout   << position.x << ", " << position.y << ", " << position.z << " || "
-                    << normal.x << ", " << normal.y << ", " << normal.z
-                    << " | Alpha Hit\n";
-    });
+    boundingSphereAlpha->callbacks.subscribe(addImpulse);
+    mEcs.add(mAlpha, DynamicObject { glm::vec3(0.f, 0.f, 0.f), 1.f });
+    mEcs.add(mAlpha, Velocity { glm::vec3(0.f) });
     mEcs.add(mAlpha, boundingSphereAlpha);
     
-    mBeta  = createPhongModel(glm::vec3(-1.f, 1.f, 5.f), mStoneCladding);
+    mBeta  = createPhongModel(glm::vec3(-1.f, 4.f, 5.f), mStoneCladding);
     std::shared_ptr<BoundingVolume> boundingSphereBeta = std::make_shared<BoundingBox>(mBeta);
     boundingSphereBeta->callbacks.subscribe([](Entity alpha, Entity other, const glm::vec3 &position, const glm::vec3 &normal) {
         std::cout << position.x << ", " << position.y << ", " << position.z << " | Beta Hit\n";
@@ -62,7 +73,11 @@ Scene::Scene()
     createPhongModel(glm::vec3(0.f, 1.f, 0.f), triangleFan);
     
     createPhongModel(glm::vec3(-5.f, 1.0f, 0.f), mStoneCladding);
-    createPhongModel(glm::vec3(0.f, 0.f, 0.f), mFloor);
+    
+    Entity floor = createPhongModel(glm::vec3(0.f, 0.f, 0.f), mFloor);
+    std::shared_ptr<BoundingVolume> floorHitBox = std::make_shared<BoundingBox>(floor, glm::vec3(10.f, 0.1f, 10.f));
+    mEcs.add(floor, floorHitBox);
+    
     
     Entity light = mEcs.create();
     mEcs.add(light, light::DirectionalLight());
@@ -77,9 +92,9 @@ Scene::Scene()
     mEcs.createSystem<BasicUniformUpdaterSystem>();
     mEcs.createSystem<RotatorSystem>();
     
-    // mEcs.createSystem<Gravity>();
-    mEcs.createSystem<RungeKutta>(4);
-    mEcs.createSystem<CollisionSystem>();
+    // mEcs.createSystem<Gravity>();  // Toggle with P
+    // mEcs.createSystem<RungeKutta>(4);
+    // mEcs.createSystem<CollisionSystem>();
     // mEcs.createSystem<EulerIntegration>();
     // mEcs.createSystem<RungeKutta2>();
     // mEcs.createSystem<RungeKutta4>();
@@ -122,6 +137,16 @@ void Scene::onUpdate()
     mMainCamera->update();
     mEcs.update();
     
+    static bool setup = false;
+    if (!setup && glfwGetKey(glfwGetCurrentContext(), GLFW_KEY_P))
+    {
+        mEcs.createSystem<Gravity>();
+        mEcs.createSystem<CollisionSystem>();
+        mEcs.createSystem<RungeKutta>(4);
+        setup = true;
+        std::cout << "Starting Physics\n";
+    }
+    
     mRenderer.update();
 }
 
@@ -140,6 +165,9 @@ void Scene::onImguiUpdate()
         ImGui::DragFloat3("Position", glm::value_ptr(transform.position), 0.1f);
         ImGui::DragFloat4("Rotation", glm::value_ptr(transform.rotation), 0.1f);
         ImGui::DragFloat3("Scale", glm::value_ptr(transform.scale), 0.1f);
+        
+        auto &velocity = mEcs.getComponent<Velocity>(mAlpha);
+        ImGui::DragFloat3("Velocity", glm::value_ptr(velocity.value), 0.1f);
         
         ImGui::End();
     }
