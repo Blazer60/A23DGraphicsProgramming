@@ -14,6 +14,7 @@
 class DynamicObject;
 class Velocity;
 class Transform;
+class Kinematic;
 
 /**
  * Applies gravity to all dynamic objects within the scene.
@@ -69,3 +70,11 @@ protected:
     std::vector<float>  mBinomials;
     uint32_t            mDegree { 4 };
 };
+
+class KinematicSystem
+    : public ecs::BaseSystem<Kinematic, Velocity, Transform>
+{
+public:
+    KinematicSystem();
+};
+

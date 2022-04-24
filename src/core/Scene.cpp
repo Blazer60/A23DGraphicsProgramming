@@ -44,22 +44,21 @@ Scene::Scene()
     const auto addImpulse = [this](Entity entity, Entity other, const glm::vec3 &position, const glm::vec3 &normal) {
         auto &dynamicObject = mEcs.getComponent<DynamicObject>(entity);
         auto &velocity      = mEcs.getComponent<Velocity>(entity);
+        auto &transform     = mEcs.getComponent<Transform>(entity);
         
-        glm::vec3 upNormal = glm::vec3(0.f, 1.f, 0.f);
-        const auto impulseForce = -(1.f + 0.8f) * glm::dot(velocity.value, upNormal) * dynamicObject.mass;
-        dynamicObject.force += upNormal * (impulseForce / timers::deltaTime<float>());
-        // todo: make a fixed delta time function for physics
-        // dynamicObject.force += upNormal * (impulseForce / 0.16f);
-        // dynamicObject.force += glm::vec3(0.f, 9.81f * dynamicObject.mass, 0.f);
-        std::cout << dynamicObject.force.x << " " << dynamicObject.force.y << " " << dynamicObject.force.z << "\n";
-        // dynamicObject.force += glm::vec3(0.f, 100.f, 0.f);
+        const float impulse = -(1.f + 0.8f) * glm::dot(velocity.value, normal) / (1.f / dynamicObject.mass);
+        velocity.value += normal * impulse / dynamicObject.mass;
+        
+        const glm::vec3 contactForce = dynamicObject.force * glm::dot(glm::normalize(dynamicObject.force), normal);
+        
+        dynamicObject.force += contactForce;
     };
     
-    mAlpha = createPhongModel(glm::vec3(2.f, 4.f, 5.f), mStoneCladding);
-    std::shared_ptr<BoundingVolume> boundingSphereAlpha = std::make_shared<BoundingBox>(mAlpha);
+    mAlpha = createPhongModel(glm::vec3(1.1f, 4.f, 0.f), mStoneCladding);
+    std::shared_ptr<BoundingVolume> boundingSphereAlpha = std::make_shared<BoundingSphere>(mAlpha);
     boundingSphereAlpha->callbacks.subscribe(addImpulse);
-    mEcs.add(mAlpha, DynamicObject { glm::vec3(0.f, 0.f, 0.f), 1.f });
-    mEcs.add(mAlpha, Velocity { glm::vec3(0.f) });
+    mEcs.add(mAlpha, DynamicObject { glm::vec3(0.f, -1.f, 0.f), 10.f });
+    mEcs.add(mAlpha, Velocity { glm::vec3(0.f, -2.f, 0.f) });
     mEcs.add(mAlpha, boundingSphereAlpha);
     
     mBeta  = createPhongModel(glm::vec3(-1.f, 4.f, 5.f), mStoneCladding);
@@ -67,16 +66,19 @@ Scene::Scene()
     boundingSphereBeta->callbacks.subscribe([](Entity alpha, Entity other, const glm::vec3 &position, const glm::vec3 &normal) {
         std::cout << position.x << ", " << position.y << ", " << position.z << " | Beta Hit\n";
     });
+    mEcs.add(mBeta, Velocity());
     mEcs.add(mBeta, boundingSphereBeta);
     
-    auto triangleFan = primitives::triangleFanCircle<PhongVertex, BlinnPhongMaterial>(20);
-    createPhongModel(glm::vec3(0.f, 1.f, 0.f), triangleFan);
+    // auto triangleFan = primitives::triangleFanCircle<PhongVertex, BlinnPhongMaterial>(20);
+    // createPhongModel(glm::vec3(0.f, 1.f, 0.f), triangleFan);
     
-    createPhongModel(glm::vec3(-5.f, 1.0f, 0.f), mStoneCladding);
+    // createPhongModel(glm::vec3(-5.f, 1.0f, 0.f), mStoneCladding);
     
-    Entity floor = createPhongModel(glm::vec3(0.f, 0.f, 0.f), mFloor);
-    std::shared_ptr<BoundingVolume> floorHitBox = std::make_shared<BoundingBox>(floor, glm::vec3(10.f, 0.1f, 10.f));
+    Entity floor = createPhongModel(glm::vec3(0.f, -1.f, 0.f), mFloor);
+    std::shared_ptr<BoundingVolume> floorHitBox = std::make_shared<BoundingBox>(floor, glm::vec3(2.f, 1.f, 2.f));  //
+    mEcs.add(floor, Velocity { glm::vec3(0.f, 0.0f, 0.f) });
     mEcs.add(floor, floorHitBox);
+    mEcs.add(floor, Kinematic());
     
     
     Entity light = mEcs.create();
@@ -142,7 +144,9 @@ void Scene::onUpdate()
     {
         mEcs.createSystem<Gravity>();
         mEcs.createSystem<CollisionSystem>();
-        mEcs.createSystem<RungeKutta>(4);
+        // mEcs.createSystem<RungeKutta>(4);
+        mEcs.createSystem<RungeKutta2>();
+        mEcs.createSystem<KinematicSystem>();
         setup = true;
         std::cout << "Starting Physics\n";
     }
@@ -168,6 +172,9 @@ void Scene::onImguiUpdate()
         
         auto &velocity = mEcs.getComponent<Velocity>(mAlpha);
         ImGui::DragFloat3("Velocity", glm::value_ptr(velocity.value), 0.1f);
+        
+        auto &dynamicObject = mEcs.getComponent<DynamicObject>(mAlpha);
+        ImGui::DragFloat3("Force", glm::value_ptr(dynamicObject.force), 0.1f);
         
         ImGui::End();
     }

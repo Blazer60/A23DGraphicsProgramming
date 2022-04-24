@@ -6,11 +6,11 @@
 
 
 #include "Timers.h"
-#include "glfw3.h"
 
 namespace timers
 {
     double deltaTime_impl    { 0.16f };
+    double fixedTime_impl    { 0.01f };  // 100 Ticks per second.
     
     static double current           { 0 };
     static double last              { 0 };

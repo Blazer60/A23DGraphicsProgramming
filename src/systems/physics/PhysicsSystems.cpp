@@ -22,12 +22,12 @@ EulerIntegration::EulerIntegration()
 {
     mEntities.forEach([](DynamicObject &dynamicObject, Velocity &velocity, Transform &transform) {
         auto &[force, mass] = dynamicObject;
-        const float deltaTime = timers::deltaTime<float>();
+        const float fixedTime = timers::fixedTime<float>();
         
         const glm::vec3 acceleration = force / mass;
         
-        velocity.value      += acceleration   * deltaTime;
-        transform.position  += velocity.value * deltaTime;
+        velocity.value      += acceleration * fixedTime;
+        transform.position  += velocity.value * fixedTime;
     
         force = glm::vec3(0.f);
     });
@@ -37,17 +37,17 @@ RungeKutta2::RungeKutta2()
 {
     mEntities.forEach([](DynamicObject &dynamicObject, Velocity &velocity, Transform &transform) {
         auto &[force, mass] = dynamicObject;
-        const float deltaTime = timers::deltaTime<float>();
+        const float fixedTime = timers::fixedTime<float>();
         
         const glm::vec3 acceleration0 = force / mass;
-        const glm::vec3 k0 = deltaTime * acceleration0;
+        const glm::vec3 k0 = fixedTime * acceleration0;
         
         force *= 0.5f * k0;
         const glm::vec3 acceleration1 = force / mass;
-        const glm::vec3 k1 = deltaTime * deltaTime * acceleration1;
+        const glm::vec3 k1 = fixedTime * fixedTime * acceleration1;
         
         velocity.value += 0.5f * (k0 + k1);
-        transform.position += velocity.value * deltaTime;
+        transform.position += velocity.value * fixedTime;
         
         force = glm::vec3(0.f);
     });
@@ -57,25 +57,25 @@ RungeKutta4::RungeKutta4()
 {
     mEntities.forEach([](DynamicObject &dynamicObject, Velocity &velocity, Transform &transform) {
         auto &[force, mass] = dynamicObject;
-        const float deltaTime = timers::deltaTime<float>();
+        const float fixedTime = timers::fixedTime<float>();
         
         glm::vec3 acceleration = force / mass;
-        const glm::vec3 k0 = deltaTime * acceleration;
+        const glm::vec3 k0 = fixedTime * acceleration;
         
         force += k0 * 0.5f;
         acceleration = force / mass;
-        const glm::vec3 k1 = deltaTime * acceleration;
+        const glm::vec3 k1 = fixedTime * acceleration;
         
         force += k1 * 0.5f;
         acceleration = force / mass;
-        const glm::vec3 k2 = deltaTime * acceleration;
+        const glm::vec3 k2 = fixedTime * acceleration;
         
         force += k2 * 0.5f;
         acceleration = force / mass;
-        const glm::vec3 k3 = deltaTime * acceleration;
+        const glm::vec3 k3 = fixedTime * acceleration;
         
         velocity.value += (k0 + 2.f * k1 + 2.f * k2 + k3) / 6.f;
-        transform.position += velocity.value * deltaTime;
+        transform.position += velocity.value * fixedTime;
         
         force = glm::vec3(0.f);
     });
@@ -95,7 +95,7 @@ RungeKutta::RungeKutta(uint32_t degree)
     }
     
     mEntities.forEach([this](DynamicObject &dynamicObject, Velocity &velocity, Transform &transform) {
-        const float deltaTime = timers::deltaTime<float>();
+        const float deltaTime = timers::fixedTime<float>();
         auto &[force, mass]   = dynamicObject;
         
         for (const auto &binomial : mBinomials)
@@ -108,5 +108,12 @@ RungeKutta::RungeKutta(uint32_t degree)
         
         transform.position += velocity.value * deltaTime;
         force = glm::vec3(0.f);
+    });
+}
+
+KinematicSystem::KinematicSystem()
+{
+    mEntities.forEach([](const Kinematic &kinematic, const Velocity &velocity, Transform &transform) {
+        transform.position += velocity.value * timers::fixedTime<float>();
     });
 }

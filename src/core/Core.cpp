@@ -34,16 +34,23 @@ Core::~Core()
 
 void Core::run()
 {
+    double nextUpdateTick = 0.0;
+    
     while (mIsRunning)
     {
-        updateScene();
-        updateImgui();
-        
-        glfwSwapBuffers(mWindow);
-        
-        glfwPollEvents();
-        mIsRunning = !glfwWindowShouldClose(mWindow);
-        timers::update();
+        while (timers::getTicks<double>() > nextUpdateTick)
+        {
+            updateScene();
+            updateImgui();
+    
+            glfwSwapBuffers(mWindow);
+    
+            glfwPollEvents();
+            mIsRunning = !glfwWindowShouldClose(mWindow);
+            timers::update();
+            
+            nextUpdateTick += timers::fixedTime<double>();
+        }
     }
 }
 

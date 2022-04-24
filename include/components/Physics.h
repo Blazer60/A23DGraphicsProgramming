@@ -20,3 +20,8 @@ struct Velocity
 {
     glm::vec3 value { 0.f };
 };
+
+struct Kinematic
+{
+    // Only used for testing currently. Has no data assigned to it.
+};
