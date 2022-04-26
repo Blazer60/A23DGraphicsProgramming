@@ -52,28 +52,25 @@ void CollisionSystem::collisionRhs(
 {
     for (const auto &[boundingVolume, basicUniforms, velocity] : mCollisionEntities)
     {
-        const auto &modelMat = basicUniforms->modelMat;
+        const auto &rhsModelMat = basicUniforms->modelMat;
         const auto &rhsVelocity = velocity.value;
     
-        HitRecord hit;
         if (lhs.entity == boundingVolume->entity)
             continue;
     
         else if (auto rhsSphere = std::dynamic_pointer_cast<BoundingSphere>(boundingVolume))
-            hit = collisionCheck(lhs, lhsModelMat, lhsVelocity, *rhsSphere, modelMat, rhsVelocity);
+        {
+            HitRecord hit = collisionCheck(lhs, lhsModelMat, lhsVelocity, *rhsSphere, rhsModelMat, rhsVelocity);
+            if (hit.hit)
+                lhs.callbacks.broadcast(lhs.entity, boundingVolume->entity, hit.position, hit.normal);
+        }
     
         else if (auto rhsBox = std::dynamic_pointer_cast<BoundingBox>(boundingVolume))
         {
-            hit = collisionCheck(
-                *rhsBox, modelMat, rhsVelocity, lhs, lhsModelMat, lhsVelocity
-            );
-            hit.normal *= 1.f;
+            HitRecord hit = collisionCheck(*rhsBox, rhsModelMat, rhsVelocity, lhs, lhsModelMat, lhsVelocity);
+            if (hit.hit)
+                lhs.callbacks.broadcast(lhs.entity, boundingVolume->entity, hit.position, hit.normal);
         }
-            
-        
-            
-        if (hit.hit)
-            lhs.callbacks.broadcast(lhs.entity, boundingVolume->entity, hit.position, hit.normal);
     }
 }
 
@@ -97,29 +94,31 @@ void CollisionSystem::collisionRhs(const BoundingBox &lhs, const glm::mat4 &lhsM
     
         else if (auto rhsBox = std::dynamic_pointer_cast<BoundingBox>(boundingVolume))
         {
-            auto hits  = collisionCheck(lhs, lhsModelMat, lhsVelocity, *rhsBox, modelMat, rhsVelocity);
-            auto hits2 = collisionCheck(*rhsBox, modelMat, rhsVelocity, lhs, lhsModelMat, lhsVelocity);
+            // Test in both directions since we are using vertex collision tests.
+            auto lhsHits    = collisionCheck(lhs, lhsModelMat, lhsVelocity, *rhsBox, modelMat, rhsVelocity);
+            auto rhsHits    = collisionCheck(*rhsBox, modelMat, rhsVelocity, lhs, lhsModelMat, lhsVelocity);
         
-            if (hits.empty() && hits2.empty())
+            if (lhsHits.empty() && rhsHits.empty())
                 continue;
         
-            HitRecord theHit { true, glm::vec3(0.f), glm::vec3(0.f) };
-            for (const auto &hit : hits)
+            // Average out all the hits.
+            HitRecord hit { true, glm::vec3(0.f), glm::vec3(0.f) };
+            for (const auto &lhsHit : lhsHits)
             {
-                theHit.position += hit.position;
-                theHit.normal   -= hit.normal;  // Opposite direction
+                hit.position += lhsHit.position;
+                hit.normal   -= lhsHit.normal;  // Opposite direction
             }
         
-            for (const auto &hit : hits2)
+            for (const auto &rhsHit : rhsHits)
             {
-                theHit.position += hit.position;
-                theHit.normal   += hit.normal;
+                hit.position += rhsHit.position;
+                hit.normal   += rhsHit.normal;
             }
+    
+            hit.position /= lhsHits.size() + rhsHits.size();
+            hit.normal   /= lhsHits.size() + rhsHits.size();
         
-            theHit.position /= hits.size() + hits2.size();
-            theHit.normal   /= hits.size() + hits2.size();
-        
-            lhs.callbacks.broadcast(lhs.entity, rhsBox->entity, theHit.position, theHit.normal);
+            lhs.callbacks.broadcast(lhs.entity, rhsBox->entity, hit.position, hit.normal);
         }
     }
 }

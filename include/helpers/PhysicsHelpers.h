@@ -27,13 +27,25 @@ struct HitRecord
 
 namespace physics
 {
+    /**
+     * @returns -1 if < 0, 0 if 0, and 1 if > 0.
+     */
     template<typename T>
     T sign(const T &value)
     {
         return (T(0) < value) - (value < T(0));
     }
     
+    /**
+     * @brief Component-wise sign for vector 3 type.
+     * @returns The sign of each component.
+     */
     glm::vec3 sign3(const glm::vec3 &value);
+    
+    /**
+     * @returns The value normalised if length(value) > 0, zero vector otherwise.
+     */
+    glm::vec3 normalise(const glm::vec3 &value);
 }
 
 /**
@@ -42,21 +54,34 @@ namespace physics
 namespace sdf
 {
     /**
-     * @param point - A point in space
+     * @param point - A point in space (relative to the origin of the sphere).
      * @param radius - The radius of the sphere
      */
     float toSphere(const glm::vec3 &point, const float radius);
     
     /**
-     * @param point - A point in space
+     * @param point - A point in space (relative to the origin of the box).
      * @param halfSize - The half size of the box.
      */
     float toBox(const glm::vec3 &point, const glm::vec3 &halfSize);
     
+    /**
+     * @param point - A point in space (relative to the origin of the box).
+     * @param halfSize - The half size of the box.
+     * @returns The distance in each axis.
+     */
     glm::vec3 toBox3(const glm::vec3 &point, const glm::vec3 &halfSize);
     
+    /**
+     * @brief Determines the distance between to spheres in world space.
+     */
     float sphereToSphere(const glm::vec3 &pointA, const float radiusA, const glm::vec3 &pointB, const float radiusB);
     
+    /**
+     * @param point - A sphere's point in space (relative to the origin of the box).
+     * @param radius - The radius of the sphere.
+     * @param halfSize - The half size of the box.
+     */
     float sphereToBox(const glm::vec3 &point, const float radius, const glm::vec3 &halfSize);
     
     /**

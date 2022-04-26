@@ -22,60 +22,16 @@
 
 Scene::Scene()
 {
-    // const int count = 3;
-    // for (int i = 0; i < count; ++i)
-    // {
-    //     for (int j = 0; j < count; ++j)
-    //     {
-    //         for (int k = 0; k < count; ++k)
-    //         {
-    //             Entity parent = createPhongModel(glm::vec3(i, j + 10.f, k), mBanana);
-    //             mEcs.add(parent, DynamicObject { glm::vec3(0.f, 1.f, 0.f), 1.f });
-    //             mEcs.add(parent, Velocity());
-    //             std::shared_ptr<BoundingVolume> boundingBox = std::make_shared<BoundingSphere>(parent, 0.2f);
-    //             boundingBox->callbacks.subscribe([]() {
-    //                 std::cout << "Callback\n";
-    //             });
-    //             mEcs.add(parent, std::move(boundingBox));
-    //         }
-    //     }
-    // }
+    mAlpha = createPhongModel(glm::vec3(0.f, 9.f, 0.f), mStoneCladding);
+    mScenePhysics.makePhysicsObject(mAlpha, glm::vec3(0.f, 1.f, 0.f), 100.f, 0.1f);
+    mScenePhysics.makeBoundingBox(mAlpha, true);
     
-    const auto addImpulse = [this](Entity entity, Entity other, const glm::vec3 &position, const glm::vec3 &normal) {
-        auto &dynamicObject = mEcs.getComponent<DynamicObject>(entity);
-        auto &velocity      = mEcs.getComponent<Velocity>(entity);
-        auto &transform     = mEcs.getComponent<Transform>(entity);
-        
-        const float impulse = -(1.f + 0.8f) * glm::dot(velocity.value, normal) / (1.f / dynamicObject.mass);
-        velocity.value += normal * impulse / dynamicObject.mass;
-        
-        const glm::vec3 contactForce = dynamicObject.force * glm::dot(glm::normalize(dynamicObject.force), normal);
-        
-        dynamicObject.force += contactForce;
-    };
+    mBeta  = createPhongModel(glm::vec3(0.f, 6.f, 0.f), mStoneCladding);
+    mScenePhysics.makePhysicsObject(mBeta, glm::vec3(0.f, 0.f, 0.f), 100.f, 0.1f);
+    mScenePhysics.makeBoundingBox(mBeta, true);
     
-    mAlpha = createPhongModel(glm::vec3(1.1f, 4.f, 0.f), mStoneCladding);
-    std::shared_ptr<BoundingVolume> boundingSphereAlpha = std::make_shared<BoundingSphere>(mAlpha);
-    boundingSphereAlpha->callbacks.subscribe(addImpulse);
-    mEcs.add(mAlpha, DynamicObject { glm::vec3(0.f, -1.f, 0.f), 10.f });
-    mEcs.add(mAlpha, Velocity { glm::vec3(0.f, -2.f, 0.f) });
-    mEcs.add(mAlpha, boundingSphereAlpha);
-    
-    mBeta  = createPhongModel(glm::vec3(-1.f, 4.f, 5.f), mStoneCladding);
-    std::shared_ptr<BoundingVolume> boundingSphereBeta = std::make_shared<BoundingBox>(mBeta);
-    boundingSphereBeta->callbacks.subscribe([](Entity alpha, Entity other, const glm::vec3 &position, const glm::vec3 &normal) {
-        std::cout << position.x << ", " << position.y << ", " << position.z << " | Beta Hit\n";
-    });
-    mEcs.add(mBeta, Velocity());
-    mEcs.add(mBeta, boundingSphereBeta);
-    
-    // auto triangleFan = primitives::triangleFanCircle<PhongVertex, BlinnPhongMaterial>(20);
-    // createPhongModel(glm::vec3(0.f, 1.f, 0.f), triangleFan);
-    
-    // createPhongModel(glm::vec3(-5.f, 1.0f, 0.f), mStoneCladding);
-    
-    Entity floor = createPhongModel(glm::vec3(0.f, -1.f, 0.f), mFloor);
-    std::shared_ptr<BoundingVolume> floorHitBox = std::make_shared<BoundingBox>(floor, glm::vec3(2.f, 1.f, 2.f));  //
+    Entity floor = createPhongModel(glm::vec3(0.f), mFloor);
+    std::shared_ptr<BoundingVolume> floorHitBox = std::make_shared<BoundingBox>(floor, glm::vec3(50.f, 0.1f, 50.f));
     mEcs.add(floor, Velocity { glm::vec3(0.f, 0.0f, 0.f) });
     mEcs.add(floor, floorHitBox);
     mEcs.add(floor, Kinematic());
@@ -89,17 +45,10 @@ Scene::Scene()
         glm::vec4(5.f, 3.f, 0.f, 1.f)
     } ));
     
-    // Creation order of system still matters.
+    // Creation order of systems still matters.
     mEcs.createSystem<TextureBinderSystem>();
     mEcs.createSystem<BasicUniformUpdaterSystem>();
     mEcs.createSystem<RotatorSystem>();
-    
-    // mEcs.createSystem<Gravity>();  // Toggle with P
-    // mEcs.createSystem<RungeKutta>(4);
-    // mEcs.createSystem<CollisionSystem>();
-    // mEcs.createSystem<EulerIntegration>();
-    // mEcs.createSystem<RungeKutta2>();
-    // mEcs.createSystem<RungeKutta4>();
     
     mEcs.start();
 }

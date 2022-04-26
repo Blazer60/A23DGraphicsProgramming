@@ -107,7 +107,8 @@ add_executable(${PROJECT_NAME}
         src/helpers/PhysicsHelpers.cpp                          include/helpers/PhysicsHelpers.h
         src/systems/physics/CollisionSystem.cpp                 include/systems/physics/CollisionSystem.h
         src/components/BoundingVolumes.cpp                      include/components/BoundingVolumes.h
-        src/systems/physics/BoundingVolumeVisual.cpp include/systems/physics/BoundingVolumeVisual.h)
+        src/systems/physics/BoundingVolumeVisual.cpp            include/systems/physics/BoundingVolumeVisual.h
+        src/core/ScenePhysics.cpp src/core/ScenePhysics.h)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
 # Project Includes

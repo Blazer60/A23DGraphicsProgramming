@@ -21,7 +21,18 @@ struct Velocity
     glm::vec3 value { 0.f };
 };
 
+struct Accumulator
+{
+    glm::vec3 force     { 0.f };
+    glm::vec3 velocity  { 0.f };
+};
+
 struct Kinematic
 {
     // Only used for testing currently. Has no data assigned to it.
+};
+
+struct PhysicsMaterial
+{
+    float bounciness { 0.2f };
 };

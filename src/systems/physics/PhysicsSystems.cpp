@@ -12,7 +12,7 @@
 
 Gravity::Gravity()
 {
-    mEntities.forEach([this](DynamicObject &dynamicObject) {
+    mEntities.forEach([this](DynamicObject &dynamicObject, Accumulator &accumulator) {
         auto &[force, mass] = dynamicObject;
         force.y -= mass * gravitationalConstant;
     });
@@ -35,9 +35,13 @@ EulerIntegration::EulerIntegration()
 
 RungeKutta2::RungeKutta2()
 {
-    mEntities.forEach([](DynamicObject &dynamicObject, Velocity &velocity, Transform &transform) {
+    mEntities.forEach([](DynamicObject &dynamicObject, Velocity &velocity, Transform &transform, Accumulator &accumulator) {
         auto &[force, mass] = dynamicObject;
         const float fixedTime = timers::fixedTime<float>();
+        
+        force += accumulator.force;
+        velocity.value += accumulator.velocity;
+        accumulator = Accumulator();
         
         const glm::vec3 acceleration0 = force / mass;
         const glm::vec3 k0 = fixedTime * acceleration0;
@@ -48,8 +52,6 @@ RungeKutta2::RungeKutta2()
         
         velocity.value += 0.5f * (k0 + k1);
         transform.position += velocity.value * fixedTime;
-        
-        force = glm::vec3(0.f);
     });
 }
 

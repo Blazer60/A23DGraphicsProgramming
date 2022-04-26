@@ -15,6 +15,11 @@ namespace physics
     {
         return { sign(value.x), sign(value.y), sign(value.z) };
     }
+    
+    glm::vec3 normalise(const glm::vec3 &value)
+    {
+        return glm::min(glm::vec3(0.f), glm::normalize(value));
+    }
 }
 
 namespace sdf

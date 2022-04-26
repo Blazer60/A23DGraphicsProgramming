@@ -24,6 +24,8 @@
 #include "Renderer.h"
 #include "Primitives.h"
 
+#include "ScenePhysics.h"
+
 #include "Ecs.h"
 
 #include <memory>
@@ -67,6 +69,7 @@ protected:
     std::shared_ptr<MainCamera> mMainCamera { std::make_shared<MainCamera>(glm::vec3(0.f, 10.f, 15.f)) };
     
     Renderer mRenderer { mMainCamera, mEcs };
+    ScenePhysics mScenePhysics { mEcs };
     
     Entity mAlpha;
     Entity mBeta;
