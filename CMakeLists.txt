@@ -108,7 +108,8 @@ add_executable(${PROJECT_NAME}
         src/systems/physics/CollisionSystem.cpp                 include/systems/physics/CollisionSystem.h
         src/components/BoundingVolumes.cpp                      include/components/BoundingVolumes.h
         src/systems/physics/BoundingVolumeVisual.cpp            include/systems/physics/BoundingVolumeVisual.h
-        src/core/ScenePhysics.cpp src/core/ScenePhysics.h)
+        src/core/ScenePhysics.cpp src/core/ScenePhysics.h       include/octree/Node.h
+        src/octree/OctreeHelpers.cpp                            include/octree/OctreeHelpers.h include/octree/Tree.h)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
 # Project Includes
@@ -117,7 +118,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
         include/helpers   include/components/render-components
         include/loader    include/lighting
         include/rendering include/systems/lighting
-        include/systems/physics
+        include/systems/physics include/octree
 
 # ECS Includes
         entity-component-system                 entity-component-system/include

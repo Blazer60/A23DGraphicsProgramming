@@ -98,7 +98,9 @@ namespace sdf
  */
 namespace sat
 {
+    /**
+     * @brief Tests if the value is within range of all axis.
+     * @returns True if in range, false otherwise.
+     */
     bool inRange(const glm::vec3 &value, const glm::vec3 &lower, const glm::vec3 &upper);
-    
-    
 }
