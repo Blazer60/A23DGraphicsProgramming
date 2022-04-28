@@ -11,6 +11,7 @@
 
 #include "Node.h"
 #include "OctreeHelpers.h"
+#include "ext/matrix_transform.hpp"
 
 namespace octree
 {
@@ -29,9 +30,11 @@ namespace octree
         
         std::vector<T> getIntersecting(const AABB &bounds);
         
+        void debugDrawTree(const DebugDrawFunction &draw, bool drawElements=false);
+        
     protected:
-        Node<T> mRoot;
-        const uint32_t mMaxDepth { 50 };
+        Node<T>                 mRoot;
+        const uint32_t          mMaxDepth { 50 };
         std::vector<Package<T>> mUnboundItems;
     };
     
@@ -43,7 +46,7 @@ namespace octree
     template<typename T>
     void Tree<T>::insert(const T &data, const AABB &bounds)
     {
-        Package<T> package { data, bounds };
+        Package<T> package { bounds, data };
         if (mRoot.insert(package, mMaxDepth))
             mUnboundItems.push_back(package);
     }
@@ -60,6 +63,19 @@ namespace octree
         
         mRoot.getIntersecting(bounds, hitItems);
         return hitItems;
+    }
+    
+    template<typename T>
+    void Tree<T>::debugDrawTree(const DebugDrawFunction &draw, bool drawElements)
+    {
+        if (drawElements)
+        {
+            for (const auto &[bounds, _] : mUnboundItems)
+            {
+                draw(glm::translate(glm::mat4(1.f), bounds.position), bounds.halfSize);
+            }
+        }
+        
     }
 }
 

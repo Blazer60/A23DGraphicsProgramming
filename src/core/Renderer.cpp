@@ -13,28 +13,28 @@
 #include "BoundingVolumeVisual.h"
 
 
-Renderer::Renderer(std::weak_ptr<MainCamera> camera, ecs::Core &EntityComponentSystem) :
+Renderer::Renderer(std::shared_ptr<MainCamera> camera, ecs::Core &EntityComponentSystem) :
     mCamera(std::move(camera)),
     mEcs(EntityComponentSystem),
     mMainTexture(std::make_shared<TextureBufferObject>(mScreenSize)),
     mDeferredLightingShader(
-        camera.lock(), mRenderPipeline.mOutput,
+        camera, mRenderPipeline.mOutput,
         mRenderPipeline.mDiffuse, mRenderPipeline.mSpecular,
         mRenderPipeline.mAlbedo),
     mDirectionalLight(std::make_shared<DirectionalLight>())
 {
-    mEcs.createSystem<BlinnPhongGeometryShader> ({ geometryTag },   mCamera.lock(), mDirectionalLight);
+    mEcs.createSystem<BlinnPhongGeometryShader> ({ geometryTag },   mCamera, mDirectionalLight);
     mEcs.createSystem<DirectionalLightShaderSystem>(
-        mCamera.lock(), mRenderPipeline.mLightAccumulator,
+        mCamera, mRenderPipeline.mLightAccumulator,
         mRenderPipeline.mPosition, mRenderPipeline.mNormal,
         mRenderPipeline.mAlbedo);
     mEcs.createSystem<PointLightShader>(
-        mCamera.lock(), mRenderPipeline.mLightAccumulator,
+        mCamera, mRenderPipeline.mLightAccumulator,
         mRenderPipeline.mPosition, mRenderPipeline.mNormal,
         mRenderPipeline.mAlbedo);
     
     geometryFboName = mRenderPipeline.mGeometry->getFboName();
-    mEcs.createSystem<BoundingVolumeVisual>(mCamera.lock(), geometryFboName);
+    mEcs.createSystem<BoundingVolumeVisual>(mCamera, geometryFboName);
 }
 
 void Renderer::clear()
@@ -59,4 +59,18 @@ void Renderer::imguiUpdate()
     mDirectionalLight->onImguiUpdate();
     mMainTexture->imguiUpdate();
     mRenderPipeline.imguiUpdate();
+}
+
+void Renderer::drawBox(const glm::mat4 &modelMatrix, const glm::vec3 &halfSize)
+{
+    mBoxShader.bind();
+    glBindFramebuffer(GL_FRAMEBUFFER, geometryFboName);
+    glBindVertexArray(mBox.renderInformation.vao);
+    
+    mBoxShader.set("u_mvp", mCamera->getVpMatrix() * modelMatrix);
+    mBoxShader.set("u_model_matrix", modelMatrix);
+    mBoxShader.set("u_halfsize", halfSize);
+    mBoxShader.set("u_camera_position_ws", mCamera->getPosition());
+    
+    glDrawElements(GL_LINES, mBox.renderInformation.eboCount, GL_UNSIGNED_INT, 0);
 }

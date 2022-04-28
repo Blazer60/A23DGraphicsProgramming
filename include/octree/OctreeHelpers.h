@@ -9,6 +9,7 @@
 
 #include "Pch.h"
 #include <array>
+#include <functional>
 
 namespace octree
 {
@@ -34,4 +35,6 @@ namespace octree
     enum region : char {
         TopNorthWest,       TopSouthWest,       TopSouthEast,       TopNorthEast,
         BottomNorthWest,    BottomSouthWest,    BottomSouthEast,    BottomNorthEast };
+    
+    typedef std::function<void(const glm::mat4&, const glm::vec3&)> DebugDrawFunction;
 }

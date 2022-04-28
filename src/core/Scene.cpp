@@ -22,13 +22,13 @@
 
 Scene::Scene()
 {
-    mAlpha = createPhongModel(glm::vec3(0.f, 9.f, 0.f), mStoneCladding);
-    mScenePhysics.makePhysicsObject(mAlpha, glm::vec3(0.f, 1.f, 0.f), 100.f, 0.1f);
-    mScenePhysics.makeBoundingBox(mAlpha, true);
+    mAlpha = createPhongModel(glm::vec3(2.f, 9.f, 0.f), mStoneCladding);
+    // mScenePhysics.makePhysicsObject(mAlpha, glm::vec3(0.f, 1.f, 0.f), 100.f, 0.1f);
+    mScenePhysics.makeBoundingBox(mAlpha, false);
     
-    mBeta  = createPhongModel(glm::vec3(0.f, 6.f, 0.f), mStoneCladding);
-    mScenePhysics.makePhysicsObject(mBeta, glm::vec3(0.f, 0.f, 0.f), 100.f, 0.1f);
-    mScenePhysics.makeBoundingBox(mBeta, true);
+    // mBeta  = createPhongModel(glm::vec3(0.f, 6.f, 0.f), mStoneCladding);
+    // mScenePhysics.makePhysicsObject(mBeta, glm::vec3(0.f, 0.f, 0.f), 100.f, 0.1f);
+    // mScenePhysics.makeBoundingBox(mBeta, false);
     
     Entity floor = createPhongModel(glm::vec3(0.f), mFloor);
     std::shared_ptr<BoundingVolume> floorHitBox = std::make_shared<BoundingBox>(floor, glm::vec3(50.f, 0.1f, 50.f));
@@ -92,8 +92,8 @@ void Scene::onUpdate()
     if (!setup && glfwGetKey(glfwGetCurrentContext(), GLFW_KEY_P))
     {
         mEcs.createSystem<Gravity>();
-        mEcs.createSystem<CollisionSystem>();
-        // mEcs.createSystem<RungeKutta>(4);
+        mEcs.createSystem<CollisionSystem>(mRenderer);
+        mEcs.createSystem<RungeKutta>(4);
         mEcs.createSystem<RungeKutta2>();
         mEcs.createSystem<KinematicSystem>();
         setup = true;
@@ -122,8 +122,8 @@ void Scene::onImguiUpdate()
         auto &velocity = mEcs.getComponent<Velocity>(mAlpha);
         ImGui::DragFloat3("Velocity", glm::value_ptr(velocity.value), 0.1f);
         
-        auto &dynamicObject = mEcs.getComponent<DynamicObject>(mAlpha);
-        ImGui::DragFloat3("Force", glm::value_ptr(dynamicObject.force), 0.1f);
+        // auto &dynamicObject = mEcs.getComponent<DynamicObject>(mAlpha);
+        // ImGui::DragFloat3("Force", glm::value_ptr(dynamicObject.force), 0.1f);
         
         ImGui::End();
     }

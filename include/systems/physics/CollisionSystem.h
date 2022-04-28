@@ -13,6 +13,9 @@
 #include "UniformComponents.h"
 #include "PhysicsHelpers.h"
 #include "Physics.h"
+#include "Tree.h"
+
+class Renderer;
 
 /**
  * @author Ryan Purse
@@ -29,7 +32,7 @@ class CollisionSystem
     };
     
 public:
-    CollisionSystem();
+    explicit CollisionSystem(Renderer &renderer);
 
     void onUpdate() override;
     
@@ -54,8 +57,8 @@ public:
     
 protected:
     std::vector<CollisionEntity> mCollisionEntities;
-    // std::vector<std::shared_ptr<BoundingVolume>>    mBoundingVolumes;
-    // std::vector<std::shared_ptr<BasicUniforms>>     mBasicUniforms;
+    octree::Tree<std::shared_ptr<BoundingVolume>> mTree { octree::AABB { glm::vec3(0.f), glm::vec3(1'000.f) } };
+    Renderer &mRenderer;
 };
 
 

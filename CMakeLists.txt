@@ -71,7 +71,7 @@ add_executable(${PROJECT_NAME}
         src/core/DebugLogger.cpp                                include/core/DebugLogger.h
         src/core/MainCamera.cpp                                 include/core/MainCamera.h
         src/core/PostProcessingShader.cpp                       include/core/PostProcessingShader.h
-        src/core/Renderer.cpp                                   src/core/Renderer.h
+        src/core/Renderer.cpp include/core/Renderer.h
 
         src/helpers/Primitives.cpp                              include/helpers/Primitives.h
         src/helpers/Timers.cpp                                  include/helpers/Timers.h

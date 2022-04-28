@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <array>
 #include "Pch.h"
 #include "Common.h"
 
@@ -46,6 +47,8 @@ namespace physics
      * @returns The value normalised if length(value) > 0, zero vector otherwise.
      */
     glm::vec3 normalise(const glm::vec3 &value);
+    
+    std::array<glm::vec3, 8> boxToVertex(const glm::mat4 &modelMatrix, const glm::vec3 &halfSize);
 }
 
 /**

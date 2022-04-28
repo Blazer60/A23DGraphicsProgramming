@@ -20,6 +20,20 @@ namespace physics
     {
         return glm::min(glm::vec3(0.f), glm::normalize(value));
     }
+    
+    std::array<glm::vec3, 8> boxToVertex(const glm::mat4 &modelMatrix, const glm::vec3 &halfSize)
+    {
+        return {
+            modelMatrix * glm::vec4(+halfSize.x, +halfSize.y, +halfSize.z, 1.f),
+            modelMatrix * glm::vec4(+halfSize.x, +halfSize.y, -halfSize.z, 1.f),
+            modelMatrix * glm::vec4(-halfSize.x, +halfSize.y, -halfSize.z, 1.f),
+            modelMatrix * glm::vec4(-halfSize.x, +halfSize.y, +halfSize.z, 1.f),
+            modelMatrix * glm::vec4(+halfSize.x, -halfSize.y, +halfSize.z, 1.f),
+            modelMatrix * glm::vec4(+halfSize.x, -halfSize.y, -halfSize.z, 1.f),
+            modelMatrix * glm::vec4(-halfSize.x, -halfSize.y, -halfSize.z, 1.f),
+            modelMatrix * glm::vec4(-halfSize.x, -halfSize.y, +halfSize.z, 1.f),
+        };
+    }
 }
 
 namespace sdf

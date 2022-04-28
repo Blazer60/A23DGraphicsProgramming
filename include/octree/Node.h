@@ -11,6 +11,7 @@
 
 #include "OctreeHelpers.h"
 #include "PhysicsHelpers.h"
+#include "ext/matrix_transform.hpp"
 #include <array>
 
 namespace octree
@@ -29,13 +30,15 @@ namespace octree
         bool insert(Package<T> item, int depth=0);
         
         void getIntersecting(const AABB &bounds, std::vector<T> &hitItems) const;
+        
+        void debugDrawNode(const DebugDrawFunction &draw, bool drawElements);
 
     protected:
         void subdivide(int depth);
         
         const AABB                              mBounds;
         const uint32_t                          mSplitThreshold { 10 };
-        std::unique_ptr<std::array<Node, sRegionCount>>    mSubRegions     { nullptr };
+        std::vector<Node<T>>                    mSubRegions     { };
         std::vector<Package<T>>                 mItems;
     };
     
@@ -50,7 +53,7 @@ namespace octree
     {
         if (!contains(mBounds, item.bounds))
             return false;
-        if (mSubRegions)
+        if (!mSubRegions.empty())
         {
             bool success = false;
             for (auto &region : mSubRegions)
@@ -90,9 +93,9 @@ namespace octree
             mBounds.position + glm::vec3(-quarterSize.x, -quarterSize.y, +quarterSize.z)
         };
         
-        mSubRegions = std::make_unique<std::array<Node<T>, sRegionCount>>();
+        mSubRegions.reserve(sRegionCount);
         for (int i = 0; i < sRegionCount; ++i)
-            mSubRegions[i] = Node<T>(AABB { positions[i], quarterSize }, mSplitThreshold);
+            mSubRegions.emplace_back(AABB { positions[i], quarterSize }, mSplitThreshold);
         
         std::vector<Package<T>> tmp = mItems;
         mItems.clear();
@@ -112,10 +115,23 @@ namespace octree
                 hitItems.emplace_back(item.data);
         }
         
-        if (mSubRegions)
+        if (!mSubRegions.empty())
         {
-            for (const auto &region : *mSubRegions)
+            for (const auto &region : mSubRegions)
                 region.getIntersecting(bounds, hitItems);
+        }
+    }
+    
+    template<typename T>
+    void Node<T>::debugDrawNode(const DebugDrawFunction &draw, bool drawElements)
+    {
+        draw(glm::translate(glm::mat4(1.f), mBounds.position), mBounds.halfSize);
+        for (const auto &region : mSubRegions)
+            debugDrawNode(draw, drawElements);
+        if (drawElements)
+        {
+            for (const auto &[bounds, _] : mItems)
+                draw(glm::translate(glm::mat4(1.f), bounds.position), bounds.halfSize);
         }
     }
 }

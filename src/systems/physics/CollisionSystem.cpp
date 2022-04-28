@@ -7,26 +7,51 @@
 
 #include "CollisionSystem.h"
 #include "PhysicsHelpers.h"
+#include "Renderer.h"
 #include "Timers.h"
 
 #include <numeric>
 #include <gtx/component_wise.hpp>
 #include <unordered_set>
 
-CollisionSystem::CollisionSystem()
+CollisionSystem::CollisionSystem(Renderer &renderer) :
+    mRenderer(renderer)
 {
     mEntities.forEach([this](
         std::shared_ptr<BoundingVolume> &boundingVolume,
         std::shared_ptr<BasicUniforms> &basicUniforms,
         const Velocity &velocity)
     {
-        mCollisionEntities.push_back({ boundingVolume, basicUniforms, velocity });
+        CollisionEntity entity = { boundingVolume, basicUniforms, velocity };
+        mCollisionEntities.push_back(entity);
+        
+        const glm::vec3 center = basicUniforms->modelMat * glm::vec4(velocity.value, 1.f);
+        if (auto sphere = std::dynamic_pointer_cast<BoundingSphere>(boundingVolume))
+        {
+            const glm::vec3 axisAlignedHalfSize = velocity.value + glm::vec3(sphere->radius);
+            
+            mTree.insert(boundingVolume, octree::AABB { center, axisAlignedHalfSize } );
+        }
+        if (auto box = std::dynamic_pointer_cast<BoundingBox>(boundingVolume))
+        {
+            auto points = physics::boxToVertex(basicUniforms->modelMat, box->halfSize);
+            glm::vec3 max = glm::vec3(0.f);
+            
+            for (auto &point : points)
+            {
+                point += velocity.value;
+                max = glm::max(max, glm::abs(point));
+            }
+            mTree.insert(boundingVolume, octree::AABB { center, max });
+        }
     });
 }
 
 void CollisionSystem::onUpdate()
 {
     collisionLhs(); // O(n^2)
+    
+    mTree.debugDrawTree([this](const glm::mat4 &m, const glm::vec3 &h) { mRenderer.drawBox(m, h); }, true);
     
     // Reset for next round.
     mCollisionEntities.clear();
@@ -36,7 +61,7 @@ void CollisionSystem::collisionLhs()
 {
     for (const auto &[boundingVolume, basicUniforms, velocity] : mCollisionEntities)
     {
-        const auto modelMat = basicUniforms->modelMat;
+        const auto &modelMat = basicUniforms->modelMat;
         
         if (auto lhsSphere = std::dynamic_pointer_cast<BoundingSphere>(boundingVolume))
             collisionRhs(*lhsSphere, modelMat, velocity.value);

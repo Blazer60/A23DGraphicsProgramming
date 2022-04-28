@@ -14,6 +14,9 @@
 #include "Ecs.h"
 #include "RenderComponents.h"
 #include "DirectionalLight.h"
+#include "Mesh.h"
+#include "MaterialComponents.h"
+#include "ModelLoader.h"
 
 /**
  * Sets up the rendering pipeline for a single scene. Used to setup deferred rendering and deferred lighting.
@@ -23,11 +26,13 @@
 class Renderer
 {
 public:
-    Renderer(std::weak_ptr<MainCamera> camera, ecs::Core &EntityComponentSystem);
+    Renderer(std::shared_ptr<MainCamera> camera, ecs::Core &EntityComponentSystem);
     
     void clear();
     void update();
     void imguiUpdate();
+    
+    void drawBox(const glm::mat4 &modelMatrix, const glm::vec3 &halfSize);
     
     unsigned int geometryFboName   { 0 };
     
@@ -42,7 +47,7 @@ public:
     const Component phongTag    { mEcs.create<RenderInformation>() };
     const Component geometryTag { mEcs.create<RenderInformation>() };
     
-    std::weak_ptr<MainCamera>               mCamera;  // Must be declared first. Other object rely on this being set.
+    std::shared_ptr<MainCamera>             mCamera;  // Must be declared first. Other object rely on this being set.
     glm::ivec2                              mScreenSize { 1920, 1080 };
     RenderPipeline                          mRenderPipeline;
     std::shared_ptr<TextureBufferObject>    mMainTexture;
@@ -50,7 +55,9 @@ public:
     
     std::shared_ptr<DirectionalLight>       mDirectionalLight;
     
-    
+    // Debug Helpers
+    Mesh<UvVertex, NoMaterial> mBox { load::model<UvVertex, NoMaterial>(path::resources() + "models/physics/Box.obj")[0] };
+    Shader mBoxShader { path::shaders() + "physics/BoxVolume.vert",       path::shaders() + "physics/BoxVolume.frag" };
 };
 
 
