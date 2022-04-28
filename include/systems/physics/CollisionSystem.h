@@ -31,11 +31,20 @@ class CollisionSystem
         Velocity                        velocity;
     };
     
+    struct BoundedCollisionEntity
+    {
+        std::shared_ptr<BoundingVolume> boundingVolume;
+        std::shared_ptr<BasicUniforms>  basicUniforms;
+        Velocity                        velocity;
+        octree::AABB                    bounds;
+    };
+    
 public:
     explicit CollisionSystem(Renderer &renderer);
 
     void onUpdate() override;
     
+    void treeCollision();
     void collisionLhs();
     void collisionRhs(const BoundingSphere &lhs, const glm::mat4 &lhsModelMat, const glm::vec3 &lhsVelocity);
     void collisionRhs(const BoundingBox &lhs, const glm::mat4 &lhsModelMat, const glm::vec3 &lhsVelocity);
@@ -56,8 +65,8 @@ public:
         const BoundingBox &rhs, const glm::mat4 &rhsModelMat, const glm::vec3 &rhsVelocity);
     
 protected:
-    std::vector<CollisionEntity> mCollisionEntities;
-    octree::Tree<std::shared_ptr<BoundingVolume>> mTree { octree::AABB { glm::vec3(0.f), glm::vec3(1'000.f) } };
+    std::vector<BoundedCollisionEntity> mCollisionEntities;
+    octree::Tree<CollisionEntity> mTree { octree::AABB { glm::vec3(0.f), glm::vec3(52.f) }, 2 };
     Renderer &mRenderer;
 };
 

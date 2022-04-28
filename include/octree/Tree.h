@@ -32,22 +32,26 @@ namespace octree
         
         void debugDrawTree(const DebugDrawFunction &draw, bool drawElements=false);
         
+        void reset();
+        
     protected:
         Node<T>                 mRoot;
         const uint32_t          mMaxDepth { 50 };
         std::vector<Package<T>> mUnboundItems;
+        AABB                    mBounds;
+        uint32_t                mSplitThreshold { 10 };
     };
     
     template<typename T>
     Tree<T>::Tree(const AABB &bounds, const uint32_t splitThreshold, const uint32_t maxDepth) :
-        mRoot(bounds, splitThreshold), mMaxDepth(maxDepth)
+        mRoot(bounds, splitThreshold), mMaxDepth(maxDepth), mBounds(bounds), mSplitThreshold(splitThreshold)
     {}
     
     template<typename T>
     void Tree<T>::insert(const T &data, const AABB &bounds)
     {
         Package<T> package { bounds, data };
-        if (mRoot.insert(package, mMaxDepth))
+        if (!mRoot.insert(package, mMaxDepth))
             mUnboundItems.push_back(package);
     }
     
@@ -75,7 +79,15 @@ namespace octree
                 draw(glm::translate(glm::mat4(1.f), bounds.position), bounds.halfSize);
             }
         }
-        
+        mRoot.debugDrawNode(draw, drawElements);
+    }
+    
+    template<typename T>
+    void Tree<T>::reset()
+    {
+        mUnboundItems.clear();
+        mRoot.mItems.clear();
+        mRoot.mSubRegions.clear();
     }
 }
 

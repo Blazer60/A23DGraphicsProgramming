@@ -22,13 +22,19 @@
 
 Scene::Scene()
 {
-    mAlpha = createPhongModel(glm::vec3(2.f, 9.f, 0.f), mStoneCladding);
-    // mScenePhysics.makePhysicsObject(mAlpha, glm::vec3(0.f, 1.f, 0.f), 100.f, 0.1f);
-    mScenePhysics.makeBoundingBox(mAlpha, false);
+    mAlpha = createPhongModel(glm::vec3(0.f, 9.f, 0.f), mStoneCladding);
+    mScenePhysics.makePhysicsObject(mAlpha, glm::vec3(0.f, 5.f, 0.f), 100.f, 0.1f);
+    mScenePhysics.makeBoundingBox(mAlpha, true);
     
-    // mBeta  = createPhongModel(glm::vec3(0.f, 6.f, 0.f), mStoneCladding);
-    // mScenePhysics.makePhysicsObject(mBeta, glm::vec3(0.f, 0.f, 0.f), 100.f, 0.1f);
-    // mScenePhysics.makeBoundingBox(mBeta, false);
+    mBeta  = createPhongModel(glm::vec3(0.f, 6.f, 0.f), mStoneCladding);
+    mScenePhysics.makePhysicsObject(mBeta, glm::vec3(0.f, 0.f, 0.f), 100.f, 0.1f);
+    mScenePhysics.makeBoundingBox(mBeta, true);
+    
+    for (int i = 0; i < 30; ++i)
+    {
+        Entity entity = createPhongModel(glm::vec3(-40.f + i * 2.1f, 5.f, 3.f), mStoneCladding);
+        mScenePhysics.makeBoundingBox(entity, false);
+    }
     
     Entity floor = createPhongModel(glm::vec3(0.f), mFloor);
     std::shared_ptr<BoundingVolume> floorHitBox = std::make_shared<BoundingBox>(floor, glm::vec3(50.f, 0.1f, 50.f));
@@ -93,7 +99,6 @@ void Scene::onUpdate()
     {
         mEcs.createSystem<Gravity>();
         mEcs.createSystem<CollisionSystem>(mRenderer);
-        mEcs.createSystem<RungeKutta>(4);
         mEcs.createSystem<RungeKutta2>();
         mEcs.createSystem<KinematicSystem>();
         setup = true;

@@ -34,7 +34,7 @@ Renderer::Renderer(std::shared_ptr<MainCamera> camera, ecs::Core &EntityComponen
         mRenderPipeline.mAlbedo);
     
     geometryFboName = mRenderPipeline.mGeometry->getFboName();
-    mEcs.createSystem<BoundingVolumeVisual>(mCamera, geometryFboName);
+    // mEcs.createSystem<BoundingVolumeVisual>(mCamera, geometryFboName);
 }
 
 void Renderer::clear()

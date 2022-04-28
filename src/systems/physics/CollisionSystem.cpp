@@ -22,15 +22,15 @@ CollisionSystem::CollisionSystem(Renderer &renderer) :
         std::shared_ptr<BasicUniforms> &basicUniforms,
         const Velocity &velocity)
     {
-        CollisionEntity entity = { boundingVolume, basicUniforms, velocity };
-        mCollisionEntities.push_back(entity);
         
-        const glm::vec3 center = basicUniforms->modelMat * glm::vec4(velocity.value, 1.f);
+        const glm::vec3 center = basicUniforms->modelMat * glm::vec4(velocity.value * timers::fixedTime<float>(), 1.f);
         if (auto sphere = std::dynamic_pointer_cast<BoundingSphere>(boundingVolume))
         {
-            const glm::vec3 axisAlignedHalfSize = velocity.value + glm::vec3(sphere->radius);
-            
-            mTree.insert(boundingVolume, octree::AABB { center, axisAlignedHalfSize } );
+            const glm::vec3 axisAlignedHalfSize = glm::vec3(sphere->radius);
+    
+            octree::AABB bounds { center, axisAlignedHalfSize };
+            mTree.insert({ boundingVolume, basicUniforms, velocity }, bounds);
+            mCollisionEntities.push_back({ boundingVolume, basicUniforms, velocity, bounds });
         }
         if (auto box = std::dynamic_pointer_cast<BoundingBox>(boundingVolume))
         {
@@ -39,27 +39,113 @@ CollisionSystem::CollisionSystem(Renderer &renderer) :
             
             for (auto &point : points)
             {
-                point += velocity.value;
                 max = glm::max(max, glm::abs(point));
             }
-            mTree.insert(boundingVolume, octree::AABB { center, max });
+            max = (max - glm::abs(center));
+            octree::AABB bounds { center, max };
+            mTree.insert({ boundingVolume, basicUniforms, velocity }, bounds);
+            mCollisionEntities.push_back({ boundingVolume, basicUniforms, velocity, bounds });
         }
     });
 }
 
 void CollisionSystem::onUpdate()
 {
-    collisionLhs(); // O(n^2)
+    // collisionLhs(); // O(n^2)
+    treeCollision();
     
-    mTree.debugDrawTree([this](const glm::mat4 &m, const glm::vec3 &h) { mRenderer.drawBox(m, h); }, true);
+    mTree.debugDrawTree([this](const glm::mat4 &m, const glm::vec3 &h) { mRenderer.drawBox(m, h); }, false);
     
+    mTree.reset();
     // Reset for next round.
     mCollisionEntities.clear();
 }
 
+void CollisionSystem::treeCollision()
+{
+    for (const auto &entity : mCollisionEntities)
+    {
+        std::vector<CollisionEntity> collidedEntities = mTree.getIntersecting(entity.bounds);
+        const glm::mat4 &lhsModelMatrix = entity.basicUniforms->modelMat;
+        const glm::vec3 &lhsVelocity = entity.velocity.value;
+        
+        if (auto lhsSphere = std::dynamic_pointer_cast<BoundingSphere>(entity.boundingVolume))
+        {
+            for (auto &rhsEntity : collidedEntities)
+            {
+                if (rhsEntity.boundingVolume->entity == lhsSphere->entity)
+                    continue;
+                
+                const glm::mat4 &rhsModelMatrix = rhsEntity.basicUniforms->modelMat;
+                const glm::vec3 &rhsVelocity = rhsEntity.velocity.value;
+                
+                if (auto rhsSphere = std::dynamic_pointer_cast<BoundingSphere>(rhsEntity.boundingVolume))
+                {
+                    HitRecord record = collisionCheck(*lhsSphere, lhsModelMatrix, lhsVelocity, *rhsSphere, rhsModelMatrix, rhsVelocity);
+                    if (record.hit)
+                        lhsSphere->callbacks.broadcast(lhsSphere->entity, rhsSphere->entity, record.position, record.normal);
+                }
+                if (auto rhsBox = std::dynamic_pointer_cast<BoundingBox>(rhsEntity.boundingVolume))
+                {
+                    HitRecord record = collisionCheck(*rhsBox, rhsModelMatrix, rhsVelocity, *lhsSphere, lhsModelMatrix, lhsVelocity);
+                    if (record.hit)
+                        lhsSphere->callbacks.broadcast(lhsSphere->entity, rhsBox->entity, record.position, record.normal);
+                }
+            }
+        }
+        if (auto lhsBox = std::dynamic_pointer_cast<BoundingBox>(entity.boundingVolume))
+        {
+            for (auto &rhsEntity : collidedEntities)
+            {
+                if (rhsEntity.boundingVolume->entity == lhsBox->entity)
+                    continue;
+                
+                const glm::mat4 &rhsModelMatrix = rhsEntity.basicUniforms->modelMat;
+                const glm::vec3 &rhsVelocity = rhsEntity.velocity.value;
+                
+                if (auto rhsSphere = std::dynamic_pointer_cast<BoundingSphere>(rhsEntity.boundingVolume))
+                {
+                    HitRecord record = collisionCheck(*lhsBox, lhsModelMatrix, lhsVelocity, *rhsSphere, rhsModelMatrix, rhsVelocity);
+                    record.normal *= -1.f;
+                    if (record.hit)
+                        lhsBox->callbacks.broadcast(lhsBox->entity, rhsSphere->entity, record.position, record.normal);
+                }
+                if (auto rhsBox = std::dynamic_pointer_cast<BoundingBox>(rhsEntity.boundingVolume))
+                {
+                    // Test in both directions since we are using vertex collision tests.
+                    std::vector<HitRecord> lhsHits = collisionCheck(*lhsBox, lhsModelMatrix, lhsVelocity, *rhsBox, rhsModelMatrix, rhsVelocity);
+                    std::vector<HitRecord> rhsHits = collisionCheck(*rhsBox, rhsModelMatrix, rhsVelocity, *lhsBox, lhsModelMatrix, lhsVelocity);
+                    
+                    if (lhsHits.empty() && rhsHits.empty())
+                        continue;
+                    
+                    // Average out all the hits.
+                    HitRecord hit { true, glm::vec3(0.f), glm::vec3(0.f) };
+                    for (const HitRecord &record : lhsHits)
+                    {
+                        hit.position += record.position;
+                        hit.normal   -= record.normal;  // Opposite direction
+                    }
+                    for (const HitRecord &record : rhsHits)
+                    {
+                        hit.position += record.position;
+                        hit.normal   += record.normal;
+                    }
+                    
+                    const float count = static_cast<float>((lhsHits.size() + rhsHits.size()));
+                    hit.position /= count;
+                    hit.normal   /= count;
+                    
+                    lhsBox->callbacks.broadcast(lhsBox->entity, rhsBox->entity, hit.position, hit.normal);
+                }
+            }
+        }
+    }
+}
+
 void CollisionSystem::collisionLhs()
 {
-    for (const auto &[boundingVolume, basicUniforms, velocity] : mCollisionEntities)
+    for (const auto &[boundingVolume, basicUniforms, velocity, _] : mCollisionEntities)
     {
         const auto &modelMat = basicUniforms->modelMat;
         
@@ -75,7 +161,7 @@ void CollisionSystem::collisionRhs(
     const glm::mat4 &lhsModelMat,
     const glm::vec3 &lhsVelocity)
 {
-    for (const auto &[boundingVolume, basicUniforms, velocity] : mCollisionEntities)
+    for (const auto &[boundingVolume, basicUniforms, velocity, _] : mCollisionEntities)
     {
         const auto &rhsModelMat = basicUniforms->modelMat;
         const auto &rhsVelocity = velocity.value;
@@ -101,7 +187,7 @@ void CollisionSystem::collisionRhs(
 
 void CollisionSystem::collisionRhs(const BoundingBox &lhs, const glm::mat4 &lhsModelMat, const glm::vec3 &lhsVelocity)
 {
-    for (const auto &[boundingVolume, basicUniforms, velocity] : mCollisionEntities)
+    for (const auto &[boundingVolume, basicUniforms, velocity, _] : mCollisionEntities)
     {
         const auto &modelMat = basicUniforms->modelMat;
         const auto &rhsVelocity = velocity.value;

@@ -23,6 +23,7 @@ namespace octree
     template<typename T>
     class Node
     {
+        template<typename> friend class Tree;
         static constexpr uint32_t sRegionCount { 8 };
     public:
         explicit Node(const AABB &bounds, const uint32_t splitThreshold=10);
@@ -126,8 +127,8 @@ namespace octree
     void Node<T>::debugDrawNode(const DebugDrawFunction &draw, bool drawElements)
     {
         draw(glm::translate(glm::mat4(1.f), mBounds.position), mBounds.halfSize);
-        for (const auto &region : mSubRegions)
-            debugDrawNode(draw, drawElements);
+        for (auto &region : mSubRegions)
+            region.debugDrawNode(draw, drawElements);
         if (drawElements)
         {
             for (const auto &[bounds, _] : mItems)
