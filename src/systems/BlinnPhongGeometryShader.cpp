@@ -7,10 +7,8 @@
 
 #include "BlinnPhongGeometryShader.h"
 
-BlinnPhongGeometryShader::BlinnPhongGeometryShader(
-    std::shared_ptr<MainCamera> camera, std::shared_ptr<DirectionalLight> directionalLight
-)
-    : mCamera(std::move(camera)), mDirectionalLight(std::move(directionalLight))
+BlinnPhongGeometryShader::BlinnPhongGeometryShader(std::shared_ptr<MainCamera> camera)
+    : mCamera(std::move(camera))
 {
     mEntities.forEach([this](
         const RenderInformation &renderCoreElements,

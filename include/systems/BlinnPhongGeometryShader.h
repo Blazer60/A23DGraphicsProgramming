@@ -27,7 +27,7 @@ class BlinnPhongGeometryShader
     : public ecs::BaseSystem<RenderInformation, std::shared_ptr<BasicUniforms>, BlinnPhongMaterial>
 {
 public:
-    BlinnPhongGeometryShader(std::shared_ptr<MainCamera> camera, std::shared_ptr<DirectionalLight> directionalLight);
+    explicit BlinnPhongGeometryShader(std::shared_ptr<MainCamera> camera);
     
     void onStart() override;
     
@@ -36,7 +36,6 @@ public:
 protected:
     Shader mShader { path::shaders() + "/blinn-phong/BlinnPhong.vert", path::shaders() + "/blinn-phong/BlinnPhongGeometry.frag" };
     std::shared_ptr<MainCamera> mCamera;
-    std::shared_ptr<DirectionalLight> mDirectionalLight;
 };
 
 

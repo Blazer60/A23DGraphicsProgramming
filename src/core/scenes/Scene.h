@@ -43,6 +43,8 @@ public:
     virtual void onUpdate();
     
     virtual void onImguiUpdate();
+    
+    virtual void onImguiMenuUpdate();
 
 protected:
     Entity createPhongModel(const glm::vec3 position, Model<PhongVertex, BlinnPhongMaterial> &meshes);

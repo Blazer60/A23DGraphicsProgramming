@@ -32,6 +32,7 @@ protected:
     Model<PhongVertex, BlinnPhongMaterial> mStoneCladding {
         load::model<PhongVertex, BlinnPhongMaterial>(
             path::resources() + "models/pbr-spheres/StoneCladding.obj") };
+    
     Model<PhongVertex, BlinnPhongMaterial> mFloor {
         load::model<PhongVertex, BlinnPhongMaterial>(
             path::resources() + "models/floor/Floor.obj") };

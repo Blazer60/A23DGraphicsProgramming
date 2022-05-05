@@ -163,6 +163,7 @@ void Core::updateImgui()
             ImGui::MenuItem("Scene C");
             ImGui::EndMenu();
         }
+        mScene->onImguiMenuUpdate();
         const std::string text = "Application average %.3f ms/frame (%.1f FPS)";
         ImGui::SetCursorPosX(
             ImGui::GetCursorPosX() + ImGui::GetColumnWidth() - ImGui::CalcTextSize(text.c_str()).x

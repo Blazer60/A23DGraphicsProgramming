@@ -31,6 +31,7 @@ public:
     void clear();
     void update();
     void imguiUpdate();
+    void imguiMenuUpdate();
     
     void drawBox(const glm::mat4 &modelMatrix, const glm::vec3 &halfSize);
     
@@ -53,7 +54,7 @@ public:
     std::shared_ptr<TextureBufferObject>    mMainTexture;
     DeferredLightShader                     mDeferredLightingShader;
     
-    std::shared_ptr<DirectionalLight>       mDirectionalLight;
+    // std::shared_ptr<DirectionalLight>       mDirectionalLight;
     
     // Debug Helpers
     Mesh<UvVertex, NoMaterial> mBox { load::model<UvVertex, NoMaterial>(path::resources() + "models/physics/Box.obj")[0] };

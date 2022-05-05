@@ -24,6 +24,8 @@ public:
     
     void imguiUpdate();
     
+    void imguiMenuUpdate();
+    
     glm::ivec2 mSize { 1920, 1080 };
     
     std::shared_ptr<FrameBufferObject> mGeometry;

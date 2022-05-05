@@ -32,23 +32,6 @@ RenderPipeline::RenderPipeline() :
 
 void RenderPipeline::imguiUpdate()
 {
-    if (ImGui::Begin("ViewPorts", nullptr))
-    {
-        if (ImGui::Button("Show Position Buffer"))
-            mShowPositionBuffer = true;
-        if (ImGui::Button("Show Normal Buffer"))
-            mShowNormalBuffer = true;
-        if (ImGui::Button("Show Albedo Buffer"))
-            mShowAlbedoBuffer = true;
-        if (ImGui::Button("Show Diffuse Buffer"))
-            mShowDiffuseBuffer = true;
-        if (ImGui::Button("Show Specular Buffer"))
-            mShowSpecularBuffer = true;
-        if (ImGui::Button("Show Target Buffer"))
-            mShowTargetBuffer = true;
-    }
-    ImGui::End();
-    
     if (mShowPositionBuffer)
         mPosition->imguiUpdate(&mShowPositionBuffer);
     if (mShowNormalBuffer)
@@ -61,4 +44,24 @@ void RenderPipeline::imguiUpdate()
         mSpecular->imguiUpdate(&mShowSpecularBuffer);
     if (mShowTargetBuffer)
         mTarget->imguiUpdate(&mShowTargetBuffer);
+}
+
+void RenderPipeline::imguiMenuUpdate()
+{
+    if (ImGui::BeginMenu("Viewports"))
+    {
+        if (ImGui::MenuItem("Show Position Buffer"))
+            mShowPositionBuffer = true;
+        if (ImGui::MenuItem("Show Normal Buffer"))
+            mShowNormalBuffer = true;
+        if (ImGui::MenuItem("Show Albedo Buffer"))
+            mShowAlbedoBuffer = true;
+        if (ImGui::MenuItem("Show Diffuse Buffer"))
+            mShowDiffuseBuffer = true;
+        if (ImGui::MenuItem("Show Specular Buffer"))
+            mShowSpecularBuffer = true;
+        if (ImGui::MenuItem("Show Target Buffer"))
+            mShowTargetBuffer = true;
+        ImGui::EndMenu();
+    }
 }
