@@ -63,16 +63,24 @@ void TestingScene::onUpdate()
 void TestingScene::onImguiUpdate()
 {
     Scene::onImguiUpdate();
-    if(ImGui::Begin("Alpha Settings"))
+    if (ImGui::CollapsingHeader("Alpha Settings"))
     {
-        auto &transform = mEcs.getComponent<Transform>(mAlpha);
-        ImGui::DragFloat3("Position", glm::value_ptr(transform.position), 0.1f);
-        ImGui::DragFloat4("Rotation", glm::value_ptr(transform.rotation), 0.1f);
-        ImGui::DragFloat3("Scale", glm::value_ptr(transform.scale), 0.1f);
-        
-        auto &velocity = mEcs.getComponent<Velocity>(mAlpha);
-        ImGui::DragFloat3("Velocity", glm::value_ptr(velocity.value), 0.1f);
-        
-        ImGui::End();
+        if (ImGui::TreeNode("Transform"))
+        {
+            auto &transform = mEcs.getComponent<Transform>(mAlpha);
+            ImGui::DragFloat3("Position", glm::value_ptr(transform.position), 0.1f);
+            ImGui::DragFloat4("Rotation", glm::value_ptr(transform.rotation), 0.1f);
+            ImGui::DragFloat3("Scale", glm::value_ptr(transform.scale), 0.1f);
+            
+            ImGui::TreePop();
+        }
+
+        if (ImGui::TreeNode("Misc."))
+        {
+            auto &velocity = mEcs.getComponent<Velocity>(mAlpha);
+            ImGui::DragFloat3("Velocity", glm::value_ptr(velocity.value), 0.1f);
+            
+            ImGui::TreePop();
+        }
     }
 }

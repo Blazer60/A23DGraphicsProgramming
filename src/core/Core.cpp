@@ -172,7 +172,9 @@ void Core::updateImgui()
         ImGui::EndMainMenuBar();
     }
     
+    ImGui::Begin("Scene Settings");
     mScene->onImguiUpdate();
+    ImGui::End();
     
     ImGui::Render();
     int display_w, display_h;

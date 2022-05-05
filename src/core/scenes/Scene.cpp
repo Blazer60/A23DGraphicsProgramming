@@ -65,7 +65,6 @@ void Scene::onImguiUpdate()
 {
     mRenderer.imguiUpdate();
     mMainCamera->imguiUpdate();
-    ImGui::ShowDemoWindow();
 }
 
 void Scene::onImguiMenuUpdate()

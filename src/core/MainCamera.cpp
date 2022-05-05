@@ -120,11 +120,24 @@ const glm::mat4 &MainCamera::getViewMatrix() const
 
 void MainCamera::imguiUpdate()
 {
-    if (ImGui::Begin("Camera Details"))
+    if (ImGui::CollapsingHeader("Camera Details"))
     {
-        ImGui::Text("Pos: %f, %f, %f", mPosition.x, mPosition.y, mPosition.z);
-        ImGui::Text("Rot: %f, %f, %f, %f,", mRotation.w, mRotation.x, mRotation.y, mRotation.z);
-        ImGui::End();
+        if (ImGui::TreeNode("Controls"))
+        {
+            ImGui::Text("Move  - WASD");
+            ImGui::Text("Ctrl  - Fly Down");
+            ImGui::Text("Space - Fly Up");
+            ImGui::Text("Look  - Mouse");
+            
+            ImGui::TreePop();
+        }
+        if (ImGui::TreeNode("Transform"))
+        {
+            ImGui::Text("Pos: %f, %f, %f", mPosition.x, mPosition.y, mPosition.z);
+            ImGui::Text("Rot: %f, %f, %f, %f,", mRotation.w, mRotation.x, mRotation.y, mRotation.z);
+            
+            ImGui::TreePop();
+        }
     }
 }
 
