@@ -7,7 +7,7 @@
 
 #include "glew.h"
 #include "Core.h"
-#include "Scene.h"
+#include "scenes/TestingScene.h"
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 #include "glfw3.h"
@@ -22,11 +22,12 @@ Core::Core(const glm::ivec2 &resolution)
         return;
     }
     
-    mScene = std::make_unique<Scene>();  // Scenes must be made after the initialisation of underlying architectures.
+    mScene = std::make_unique<TestingScene>();  // Scenes must be made after the initialisation of underlying architectures.
 }
 
 Core::~Core()
 {
+    mScene.reset();
     glfwTerminate();
     ImGui_ImplGlfw_Shutdown();
     ImGui_ImplOpenGL3_Shutdown();
@@ -148,6 +149,27 @@ void Core::updateImgui()
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
+    
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBindVertexArray(0);
+    ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
+    
+    if (ImGui::BeginMainMenuBar())
+    {
+        if (ImGui::BeginMenu("Scenes"))
+        {
+            ImGui::MenuItem("Scene A");
+            ImGui::MenuItem("Scene B");
+            ImGui::MenuItem("Scene C");
+            ImGui::EndMenu();
+        }
+        const std::string text = "Application average %.3f ms/frame (%.1f FPS)";
+        ImGui::SetCursorPosX(
+            ImGui::GetCursorPosX() + ImGui::GetColumnWidth() - ImGui::CalcTextSize(text.c_str()).x
+            - ImGui::GetScrollX() - 2 * ImGui::GetStyle().ItemSpacing.x);
+        ImGui::Text(text.c_str(), 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+        ImGui::EndMainMenuBar();
+    }
     
     mScene->onImguiUpdate();
     

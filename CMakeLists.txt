@@ -66,7 +66,7 @@ add_executable(${PROJECT_NAME}
         include/Pch.h
 
         src/core/Core.cpp                                       src/core/Core.h
-        src/core/Scene.cpp                                      src/core/Scene.h
+        src/core/scenes/Scene.cpp src/core/scenes/Scene.h
         src/core/Shader.cpp                                     include/core/Shader.h
         src/core/DebugLogger.cpp                                include/core/DebugLogger.h
         src/core/MainCamera.cpp                                 include/core/MainCamera.h
@@ -109,7 +109,7 @@ add_executable(${PROJECT_NAME}
         src/components/BoundingVolumes.cpp include/physics/components/BoundingVolumes.h
         src/physics/BoundingVolumeVisual.cpp include/physics/BoundingVolumeVisual.h
         src/physics/CollisionResponse.cpp include/physics/CollisionResponse.h include/physics/octree/Node.h
-        src/physics/octree/OctreeHelpers.cpp include/physics/octree/OctreeHelpers.h include/physics/octree/Tree.h)
+        src/physics/octree/OctreeHelpers.cpp include/physics/octree/OctreeHelpers.h include/physics/octree/Tree.h src/core/scenes/TestingScene.cpp src/core/scenes/TestingScene.h)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
 # Project Includes
