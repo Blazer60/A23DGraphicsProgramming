@@ -6,6 +6,7 @@
 
 
 #include "RenderPipeline.h"
+#include "imgui.h"
 
 RenderPipeline::RenderPipeline() :
     mGeometry(std::make_shared<FrameBufferObject>(mSize)),
@@ -31,10 +32,33 @@ RenderPipeline::RenderPipeline() :
 
 void RenderPipeline::imguiUpdate()
 {
-    mPosition->imguiUpdate();
-    mNormal->imguiUpdate();
-    mAlbedo->imguiUpdate();
-    mDiffuse->imguiUpdate();
-    mSpecular->imguiUpdate();
-    mTarget->imguiUpdate();
+    if (ImGui::Begin("ViewPorts", nullptr))
+    {
+        if (ImGui::Button("Show Position Buffer"))
+            mShowPositionBuffer = true;
+        if (ImGui::Button("Show Normal Buffer"))
+            mShowNormalBuffer = true;
+        if (ImGui::Button("Show Albedo Buffer"))
+            mShowAlbedoBuffer = true;
+        if (ImGui::Button("Show Diffuse Buffer"))
+            mShowDiffuseBuffer = true;
+        if (ImGui::Button("Show Specular Buffer"))
+            mShowSpecularBuffer = true;
+        if (ImGui::Button("Show Target Buffer"))
+            mShowTargetBuffer = true;
+    }
+    ImGui::End();
+    
+    if (mShowPositionBuffer)
+        mPosition->imguiUpdate(&mShowPositionBuffer);
+    if (mShowNormalBuffer)
+        mNormal->imguiUpdate(&mShowNormalBuffer);
+    if (mShowAlbedoBuffer)
+        mAlbedo->imguiUpdate(&mShowAlbedoBuffer);
+    if (mShowDiffuseBuffer)
+        mDiffuse->imguiUpdate(&mShowDiffuseBuffer);
+    if (mShowSpecularBuffer)
+        mSpecular->imguiUpdate(&mShowSpecularBuffer);
+    if (mShowTargetBuffer)
+        mTarget->imguiUpdate(&mShowTargetBuffer);
 }

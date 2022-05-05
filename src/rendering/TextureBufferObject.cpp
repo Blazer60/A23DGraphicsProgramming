@@ -47,13 +47,11 @@ void TextureBufferObject::changeSize(const glm::ivec2 &size)
     init();
 }
 
-void TextureBufferObject::imguiUpdate()
+void TextureBufferObject::imguiUpdate(bool *show)
 {
-    const std::string name = "Buffer Object: " + std::to_string(mName) + " | " + mDebugName;
-    auto &style = ImGui::GetStyle();
-    const auto temp = style.WindowPadding;
-    style.WindowPadding = ImVec2(0.f, 0.f);
-    if (ImGui::Begin(name.c_str(), nullptr))
+    const std::string name = mDebugName + " | Id: " + std::to_string(mName);
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.f, 0.f));
+    if (ImGui::Begin(name.c_str(), show))
     {
         ImVec2 regionSize = ImGui::GetContentRegionAvail();
         ImGui::Image(reinterpret_cast<void *>(mName), regionSize, ImVec2(0, 1), ImVec2(1, 0));
@@ -65,7 +63,7 @@ void TextureBufferObject::imguiUpdate()
         }
     }
     ImGui::End();
-    style.WindowPadding = temp;
+    ImGui::PopStyleVar();
 }
 
 void TextureBufferObject::setClearColour(const glm::vec4 &clearColour)

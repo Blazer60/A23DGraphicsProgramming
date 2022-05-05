@@ -16,7 +16,7 @@
 Renderer::Renderer(std::shared_ptr<MainCamera> camera, ecs::Core &EntityComponentSystem) :
     mCamera(std::move(camera)),
     mEcs(EntityComponentSystem),
-    mMainTexture(std::make_shared<TextureBufferObject>(mScreenSize)),
+    mMainTexture(std::make_shared<TextureBufferObject>(mScreenSize, GL_RGB8, "Main Texture")),
     mDeferredLightingShader(
         camera, mRenderPipeline.mOutput,
         mRenderPipeline.mDiffuse, mRenderPipeline.mSpecular,
@@ -57,7 +57,7 @@ void Renderer::imguiUpdate()
     glBindVertexArray(0);
     
     mDirectionalLight->onImguiUpdate();
-    mMainTexture->imguiUpdate();
+    mMainTexture->imguiUpdate(nullptr);
     mRenderPipeline.imguiUpdate();
 }
 

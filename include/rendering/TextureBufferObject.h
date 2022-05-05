@@ -30,7 +30,7 @@ public:
     
     ~TextureBufferObject();
     
-    void imguiUpdate();
+    void imguiUpdate(bool *show);
     
     void changeSize(const glm::ivec2 &size);
     

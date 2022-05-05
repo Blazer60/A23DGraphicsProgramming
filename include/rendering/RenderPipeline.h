@@ -40,6 +40,13 @@ public:
     std::shared_ptr<FrameBufferObject> mOutput;
     
     std::shared_ptr<TextureBufferObject> mTarget;
+    
+    bool mShowPositionBuffer    { false };
+    bool mShowNormalBuffer      { false };
+    bool mShowAlbedoBuffer      { false };
+    bool mShowDiffuseBuffer     { false };
+    bool mShowSpecularBuffer    { false };
+    bool mShowTargetBuffer      { true  };
 };
 
 
