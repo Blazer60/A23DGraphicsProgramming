@@ -14,9 +14,9 @@
 #include "ModelLoader.h"
 #include "systems/lighting/DirectionalLightShaderSystem.h"
 
-#include "Physics.h"
+#include "physics/components/Physics.h"
 #include "PhysicsSystems.h"
-#include "CollisionSystem.h"
+#include "CollisionDetection.h"
 #include "BoundingVolumeVisual.h"
 #include "gtc/type_ptr.hpp"
 
@@ -98,7 +98,7 @@ void Scene::onUpdate()
     if (!setup && glfwGetKey(glfwGetCurrentContext(), GLFW_KEY_P))
     {
         mEcs.createSystem<Gravity>();
-        mEcs.createSystem<CollisionSystem>(mRenderer);
+        mEcs.createSystem<CollisionDetection>(mRenderer);
         mEcs.createSystem<RungeKutta2>();
         mEcs.createSystem<KinematicSystem>();
         setup = true;

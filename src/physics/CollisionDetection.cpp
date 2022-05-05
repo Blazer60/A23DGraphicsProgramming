@@ -5,16 +5,16 @@
  */
 
 
-#include "CollisionSystem.h"
+#include "CollisionDetection.h"
 #include "PhysicsHelpers.h"
 #include "Renderer.h"
 #include "Timers.h"
 
 #include <numeric>
-#include <gtx/component_wise.hpp>
+#include "gtx/component_wise.hpp"
 #include <unordered_set>
 
-CollisionSystem::CollisionSystem(Renderer &renderer) :
+CollisionDetection::CollisionDetection(Renderer &renderer) :
     mRenderer(renderer)
 {
     mEntities.forEach([this](
@@ -49,7 +49,7 @@ CollisionSystem::CollisionSystem(Renderer &renderer) :
     });
 }
 
-void CollisionSystem::onUpdate()
+void CollisionDetection::onUpdate()
 {
     // collisionLhs(); // O(n^2)
     treeCollision();
@@ -61,7 +61,7 @@ void CollisionSystem::onUpdate()
     mCollisionEntities.clear();
 }
 
-void CollisionSystem::treeCollision()
+void CollisionDetection::treeCollision()
 {
     for (const auto &entity : mCollisionEntities)
     {
@@ -143,7 +143,7 @@ void CollisionSystem::treeCollision()
     }
 }
 
-void CollisionSystem::collisionLhs()
+void CollisionDetection::collisionLhs()
 {
     for (const auto &[boundingVolume, basicUniforms, velocity, _] : mCollisionEntities)
     {
@@ -156,7 +156,7 @@ void CollisionSystem::collisionLhs()
     }
 }
 
-void CollisionSystem::collisionRhs(
+void CollisionDetection::collisionRhs(
     const BoundingSphere &lhs,
     const glm::mat4 &lhsModelMat,
     const glm::vec3 &lhsVelocity)
@@ -185,7 +185,7 @@ void CollisionSystem::collisionRhs(
     }
 }
 
-void CollisionSystem::collisionRhs(const BoundingBox &lhs, const glm::mat4 &lhsModelMat, const glm::vec3 &lhsVelocity)
+void CollisionDetection::collisionRhs(const BoundingBox &lhs, const glm::mat4 &lhsModelMat, const glm::vec3 &lhsVelocity)
 {
     for (const auto &[boundingVolume, basicUniforms, velocity, _] : mCollisionEntities)
     {
@@ -234,7 +234,7 @@ void CollisionSystem::collisionRhs(const BoundingBox &lhs, const glm::mat4 &lhsM
     }
 }
 
-HitRecord CollisionSystem::collisionCheck(
+HitRecord CollisionDetection::collisionCheck(
     const BoundingSphere &lhs, const glm::mat4 &lhsModelMat, const glm::vec3 &lhsVelocity,
     const BoundingSphere &rhs, const glm::mat4 &rhsModelMat, const glm::vec3 &rhsVelocity)
 {
@@ -252,7 +252,7 @@ HitRecord CollisionSystem::collisionCheck(
     return { distance <= 0, position, normal };
 }
 
-HitRecord CollisionSystem::collisionCheck(
+HitRecord CollisionDetection::collisionCheck(
     const BoundingBox &lhs,    const glm::mat4 &lhsModelMat, const glm::vec3 &lhsVelocity,
     const BoundingSphere &rhs, const glm::mat4 &rhsModelMat, const glm::vec3 &rhsVelocity)
 {
@@ -270,7 +270,7 @@ HitRecord CollisionSystem::collisionCheck(
     return { distance <= 0, position, normal };
 }
 
-std::vector<HitRecord> CollisionSystem::collisionCheck(
+std::vector<HitRecord> CollisionDetection::collisionCheck(
     const BoundingBox &lhs, const glm::mat4 &lhsModelMat, const glm::vec3 &lhsVelocity,
     const BoundingBox &rhs, const glm::mat4 &rhsModelMat, const glm::vec3 &rhsVelocity)
 {

@@ -15,10 +15,10 @@
  * @author Ryan Purse
  * @date 24/04/2022
  */
-class ScenePhysics
+class CollisionResponse
 {
 public:
-    explicit ScenePhysics(ecs::Core &ecs);
+    explicit CollisionResponse(ecs::Core &ecs);
     
     void makePhysicsObject(
         const Entity entity, const glm::vec3 &velocity=glm::vec3{0.f},
@@ -27,7 +27,7 @@ public:
     void makeBoundingBox(const Entity entity, const bool isDynamic = true, const glm::vec3 &halfSize = glm::vec3(1.f));
     void makeBoundingSphere(const Entity entity, const bool isDynamic = true, const float radius = 1.f);
     
-    void CollisionResponse(Entity entity, Entity other, const glm::vec3 &position, const glm::vec3 &normal);
+    void response(Entity entity, Entity other, const glm::vec3 &position, const glm::vec3 &normal);
     
     void staticCollision(Entity entity, Entity other, const glm::vec3 &position, const glm::vec3 &normal);
     

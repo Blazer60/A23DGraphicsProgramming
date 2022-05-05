@@ -6,7 +6,7 @@
 
 
 #include "PhysicsHelpers.h"
-#include <gtx/component_wise.hpp>
+#include "gtx/component_wise.hpp"
 
 
 namespace physics

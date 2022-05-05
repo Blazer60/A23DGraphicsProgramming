@@ -5,7 +5,7 @@
  */
 
 
-#include "OctreeHelpers.h"
+#include "physics/octree/OctreeHelpers.h"
 #include "PhysicsHelpers.h"
 
 namespace octree

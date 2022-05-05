@@ -9,11 +9,11 @@
 
 #include "Pch.h"
 #include "Ecs.h"
-#include "BoundingVolumes.h"
+#include "physics/components/BoundingVolumes.h"
 #include "UniformComponents.h"
 #include "PhysicsHelpers.h"
-#include "Physics.h"
-#include "Tree.h"
+#include "physics/components/Physics.h"
+#include "physics/octree/Tree.h"
 
 class Renderer;
 
@@ -21,7 +21,7 @@ class Renderer;
  * @author Ryan Purse
  * @date 20/04/2022
  */
-class CollisionSystem
+class CollisionDetection
     : public ecs::BaseSystem<std::shared_ptr<BoundingVolume>, std::shared_ptr<BasicUniforms>, Velocity>
 {
     struct CollisionEntity
@@ -40,7 +40,7 @@ class CollisionSystem
     };
     
 public:
-    explicit CollisionSystem(Renderer &renderer);
+    explicit CollisionDetection(Renderer &renderer);
 
     void onUpdate() override;
     

@@ -101,15 +101,15 @@ add_executable(${PROJECT_NAME}
         src/rendering/RenderBufferObject.cpp                    include/rendering/RenderBufferObject.h
         src/rendering/RenderPipeline.cpp                        include/rendering/RenderPipeline.h
         src/rendering/DeferredLightShader.cpp                   include/rendering/DeferredLightShader.h
-        include/components/Physics.h
-        src/systems/physics/PhysicsSystems.cpp                  include/systems/physics/PhysicsSystems.h
+        include/physics/components/Physics.h
+        src/physics/PhysicsSystems.cpp include/physics/PhysicsSystems.h
         include/helpers/Callback.h
-        src/helpers/PhysicsHelpers.cpp                          include/helpers/PhysicsHelpers.h
-        src/systems/physics/CollisionSystem.cpp                 include/systems/physics/CollisionSystem.h
-        src/components/BoundingVolumes.cpp                      include/components/BoundingVolumes.h
-        src/systems/physics/BoundingVolumeVisual.cpp            include/systems/physics/BoundingVolumeVisual.h
-        src/core/ScenePhysics.cpp src/core/ScenePhysics.h       include/octree/Node.h
-        src/octree/OctreeHelpers.cpp                            include/octree/OctreeHelpers.h include/octree/Tree.h)
+        src/physics/PhysicsHelpers.cpp include/physics/PhysicsHelpers.h
+        src/physics/CollisionDetection.cpp include/physics/CollisionDetection.h
+        src/components/BoundingVolumes.cpp include/physics/components/BoundingVolumes.h
+        src/physics/BoundingVolumeVisual.cpp include/physics/BoundingVolumeVisual.h
+        src/physics/CollisionResponse.cpp include/physics/CollisionResponse.h include/physics/octree/Node.h
+        src/physics/octree/OctreeHelpers.cpp include/physics/octree/OctreeHelpers.h include/physics/octree/Tree.h)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
 # Project Includes
@@ -119,6 +119,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC
         include/loader    include/lighting
         include/rendering include/systems/lighting
         include/systems/physics include/octree
+        include/physics     include/physics/components
+        include/physics/octree
 
 # ECS Includes
         entity-component-system                 entity-component-system/include

@@ -5,18 +5,18 @@
  */
 
 
-#include "ScenePhysics.h"
-#include "Physics.h"
+#include "CollisionResponse.h"
+#include "physics/components/Physics.h"
 #include "PhysicsHelpers.h"
 #include "Components.h"
-#include "BoundingVolumes.h"
+#include "physics/components/BoundingVolumes.h"
 #include "Timers.h"
 
-ScenePhysics::ScenePhysics(ecs::Core &ecs) :
+CollisionResponse::CollisionResponse(ecs::Core &ecs) :
     mEcs(ecs)
 {}
 
-void ScenePhysics::makePhysicsObject(
+void CollisionResponse::makePhysicsObject(
     const Entity entity, const glm::vec3 &velocity,
     const float mass, const float bounciness)
 {
@@ -36,7 +36,7 @@ void ScenePhysics::makePhysicsObject(
         mEcs.add(entity, Accumulator());
 }
 
-void ScenePhysics::makeBoundingBox(const Entity entity, const bool isDynamic, const glm::vec3 &halfSize)
+void CollisionResponse::makeBoundingBox(const Entity entity, const bool isDynamic, const glm::vec3 &halfSize)
 {
     if (!mEcs.hasComponent<std::shared_ptr<BoundingVolume>>(entity))
     {
@@ -44,7 +44,7 @@ void ScenePhysics::makeBoundingBox(const Entity entity, const bool isDynamic, co
         if (isDynamic)
             boundingVolume->callbacks.subscribe([this](
                 Entity entity, Entity other, const glm::vec3 &position, const glm::vec3 &normal) {
-                CollisionResponse(entity, other, position, normal);
+                response(entity, other, position, normal);
             });
         
         mEcs.add(entity, boundingVolume);
@@ -53,7 +53,7 @@ void ScenePhysics::makeBoundingBox(const Entity entity, const bool isDynamic, co
         mEcs.add(entity, Velocity {  } );
 }
 
-void ScenePhysics::makeBoundingSphere(const Entity entity, const bool isDynamic, const float radius)
+void CollisionResponse::makeBoundingSphere(const Entity entity, const bool isDynamic, const float radius)
 {
     if (!mEcs.hasComponent<std::shared_ptr<BoundingVolume>>(entity))
     {
@@ -61,14 +61,14 @@ void ScenePhysics::makeBoundingSphere(const Entity entity, const bool isDynamic,
         if (isDynamic)
             boundingVolume->callbacks.subscribe([this](
                 Entity entity, Entity other, const glm::vec3 &position, const glm::vec3 &normal) {
-                CollisionResponse(entity, other, position, normal);
+                response(entity, other, position, normal);
             });
         
         mEcs.add(entity, boundingVolume);
     }
 }
 
-void ScenePhysics::CollisionResponse(Entity entity, Entity other, const glm::vec3 &position, const glm::vec3 &normal)
+void CollisionResponse::response(Entity entity, Entity other, const glm::vec3 &position, const glm::vec3 &normal)
 {
     if (mEcs.hasComponent<DynamicObject>(other))
         dynamicCollision(entity, other, position, normal);
@@ -76,7 +76,7 @@ void ScenePhysics::CollisionResponse(Entity entity, Entity other, const glm::vec
         staticCollision(entity, other, position, normal);
 }
 
-void ScenePhysics::staticCollision(Entity entity, Entity other, const glm::vec3 &position, const glm::vec3 &normal)
+void CollisionResponse::staticCollision(Entity entity, Entity other, const glm::vec3 &position, const glm::vec3 &normal)
 {
     const auto &dynamicObject     = mEcs.getComponent<DynamicObject>(entity);
     const auto &velocity          = mEcs.getComponent<Velocity>(entity);
@@ -94,7 +94,7 @@ void ScenePhysics::staticCollision(Entity entity, Entity other, const glm::vec3 
 
 }
 
-void ScenePhysics::dynamicCollision(Entity entity, Entity other, const glm::vec3 &position, const glm::vec3 &normal)
+void CollisionResponse::dynamicCollision(Entity entity, Entity other, const glm::vec3 &position, const glm::vec3 &normal)
 {
     const auto &lhsDynamicObject     = mEcs.getComponent<DynamicObject>(entity);
     const auto &lhsVelocity          = mEcs.getComponent<Velocity>(entity);

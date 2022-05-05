@@ -5,5 +5,5 @@
  */
 
 
-#include "BoundingVolumes.h"
+#include "physics/components/BoundingVolumes.h"
 

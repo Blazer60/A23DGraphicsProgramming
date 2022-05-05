@@ -9,7 +9,7 @@
 
 #include "Pch.h"
 #include "Ecs.h"
-#include "BoundingVolumes.h"
+#include "physics/components/BoundingVolumes.h"
 #include "UniformComponents.h"
 #include "Vertices.h"
 #include "ModelLoader.h"
