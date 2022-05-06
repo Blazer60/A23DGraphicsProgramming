@@ -22,7 +22,6 @@ class TextureBinderSystem
 public:
     TextureBinderSystem();
     
-    void onStart() override;
     void onUpdate() override;
 };
 

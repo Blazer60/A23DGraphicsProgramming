@@ -34,8 +34,3 @@ void BasicShaderSystem::onUpdate()
     
     // mSphereShader.set("u_mvp", mCamera->getVpMatrix());
 }
-
-void BasicShaderSystem::onStart()
-{
-    mShader.bind();
-}

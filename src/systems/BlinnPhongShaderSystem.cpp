@@ -33,11 +33,6 @@ BlinnPhongShaderSystem::BlinnPhongShaderSystem(
     });
 }
 
-void BlinnPhongShaderSystem::onStart()
-{
-    mShader.bind();
-}
-
 void BlinnPhongShaderSystem::onUpdate()
 {
     mShader.bind();

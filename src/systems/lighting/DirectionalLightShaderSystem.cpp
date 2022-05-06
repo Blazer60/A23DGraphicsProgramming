@@ -40,11 +40,6 @@ DirectionalLightShaderSystem::~DirectionalLightShaderSystem()
     // todo: clean up opengl stuff.
 }
 
-void DirectionalLightShaderSystem::onStart()
-{
-    bind();
-}
-
 void DirectionalLightShaderSystem::onUpdate()
 {
     bind();

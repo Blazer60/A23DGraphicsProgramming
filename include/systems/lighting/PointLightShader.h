@@ -34,7 +34,6 @@ public:
     
     ~PointLightShader();
     
-    void onStart() override;
     void onUpdate() override;
 protected:
     void bind();

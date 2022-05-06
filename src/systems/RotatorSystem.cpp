@@ -8,7 +8,7 @@
 #include "RotatorSystem.h"
 #include "Timers.h"
 
-void RotatorSystem::onStart()
+RotatorSystem::RotatorSystem()
 {
     mEntities.forEach([](Rotator &rotator, Transform &transform) {
         rotator.originalHeight = transform.position;

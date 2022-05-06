@@ -20,7 +20,7 @@ class RotatorSystem
         : public ecs::BaseSystem<Rotator, Transform>
 {
 public:
-    void onStart() override;
+    RotatorSystem();
     
     void onUpdate() override;
 };

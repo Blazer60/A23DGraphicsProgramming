@@ -30,11 +30,6 @@ UvShaderSystem::UvShaderSystem(std::shared_ptr<MainCamera> camera)
     });
 }
 
-void UvShaderSystem::onStart()
-{
-    mShader.bind();
-}
-
 void UvShaderSystem::onUpdate()
 {
     mShader.bind();

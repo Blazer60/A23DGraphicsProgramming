@@ -21,8 +21,6 @@ Scene::Scene()
     mEcs.createSystem<TextureBinderSystem>();
     mEcs.createSystem<BasicUniformUpdaterSystem>();
     mEcs.createSystem<RotatorSystem>();
-    
-    mEcs.start();
 }
 
 Entity Scene::createPhongModel(const glm::vec3 position, Model<PhongVertex, BlinnPhongMaterial> &meshes)

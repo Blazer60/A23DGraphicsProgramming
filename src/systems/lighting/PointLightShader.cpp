@@ -42,11 +42,6 @@ PointLightShader::~PointLightShader()
 
 }
 
-void PointLightShader::onStart()
-{
-    bind();
-}
-
 void PointLightShader::onUpdate()
 {
     bind();

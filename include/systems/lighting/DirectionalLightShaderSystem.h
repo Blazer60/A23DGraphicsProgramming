@@ -34,7 +34,6 @@ public:
     
     ~DirectionalLightShaderSystem();
     
-    void onStart() override;
     void onUpdate() override;
 
 protected:

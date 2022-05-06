@@ -29,8 +29,6 @@ class BlinnPhongGeometryShader
 public:
     explicit BlinnPhongGeometryShader(std::shared_ptr<MainCamera> camera);
     
-    void onStart() override;
-    
     void onUpdate() override;
 
 protected:

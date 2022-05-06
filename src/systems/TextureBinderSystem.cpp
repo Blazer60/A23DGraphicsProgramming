@@ -11,13 +11,9 @@
 TextureBinderSystem::TextureBinderSystem()
 {
     stbi_set_flip_vertically_on_load(true);
-}
-
-void TextureBinderSystem::onStart()
-{
     mEntities.forEach([](Texture &texture, TexturePath &texturePath) {
         glCreateTextures(GL_TEXTURE_2D, 1, &texture.id);
-    
+        
         int width;
         int height;
         int colourChannels;
@@ -40,9 +36,9 @@ void TextureBinderSystem::onStart()
         const int lod = 0;
         const int xOffSet = 0;
         const int yOffSet = 0;
-    
+        
         glTextureStorage2D(texture.id, levels, GL_RGBA8, width, height);
-    
+        
         if (colourChannels == 3)
             glTextureSubImage2D(texture.id, lod, xOffSet, yOffSet, width, height, GL_RGB, GL_UNSIGNED_BYTE, bytes);
         else if (colourChannels == 4)
@@ -50,14 +46,14 @@ void TextureBinderSystem::onStart()
         else
         {
             debug::log("File " + texturePath.path.string()
-                + " does not contain the correct amount of channels. Cannot generate textures",
-                debug::severity::Warning);
+                       + " does not contain the correct amount of channels. Cannot generate textures",
+                       debug::severity::Warning);
             stbi_image_free(bytes);
             return;
         }
         
         glGenerateTextureMipmap(texture.id);
-    
+        
         stbi_image_free(bytes);
     });
 }

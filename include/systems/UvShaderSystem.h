@@ -28,8 +28,6 @@ class UvShaderSystem
 public:
     explicit UvShaderSystem(std::shared_ptr<MainCamera> camera);
     
-    void onStart() override;
-    
     void onUpdate() override;
 
 protected:

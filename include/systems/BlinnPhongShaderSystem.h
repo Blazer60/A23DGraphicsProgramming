@@ -30,8 +30,6 @@ class BlinnPhongShaderSystem
 public:
     BlinnPhongShaderSystem(std::shared_ptr<MainCamera> camera, std::shared_ptr<DirectionalLight> directionalLight);
     
-    void onStart() override;
-    
     void onUpdate() override;
 
 protected:

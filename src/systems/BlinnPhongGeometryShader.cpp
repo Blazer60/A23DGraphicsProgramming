@@ -27,11 +27,6 @@ BlinnPhongGeometryShader::BlinnPhongGeometryShader(std::shared_ptr<MainCamera> c
     });
 }
 
-void BlinnPhongGeometryShader::onStart()
-{
-    mShader.bind();
-}
-
 void BlinnPhongGeometryShader::onUpdate()
 {
     mShader.bind();
