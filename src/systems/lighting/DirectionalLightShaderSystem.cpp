@@ -33,6 +33,7 @@ DirectionalLightShaderSystem::DirectionalLightShaderSystem(
     
         glDrawElements(GL_TRIANGLES, mEboCount, GL_UNSIGNED_INT, 0);
     });
+    scheduleFor(ecs::Render);
 }
 
 DirectionalLightShaderSystem::~DirectionalLightShaderSystem()

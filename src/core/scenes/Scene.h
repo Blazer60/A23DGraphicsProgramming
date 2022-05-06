@@ -42,6 +42,8 @@ public:
     
     virtual void onUpdate();
     
+    virtual void onRender();
+    
     virtual void onImguiUpdate();
     
     virtual void onImguiMenuUpdate();

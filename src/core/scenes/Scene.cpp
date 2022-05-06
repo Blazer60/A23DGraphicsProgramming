@@ -18,7 +18,6 @@
 Scene::Scene()
 {
     // Creation order of systems still matters.
-    mEcs.createSystem<TextureBinderSystem>();
     mEcs.createSystem<BasicUniformUpdaterSystem>();
     mEcs.createSystem<RotatorSystem>();
 }
@@ -53,14 +52,20 @@ Entity Scene::createPhongModel(const glm::vec3 position, Model<PhongVertex, Blin
 
 void Scene::onUpdate()
 {
-    mRenderer.clear();
     mMainCamera->update();
     mEcs.update();
+}
+
+void Scene::onRender()
+{
+    mRenderer.clear();
+    mEcs.render();
     mRenderer.update();
 }
 
 void Scene::onImguiUpdate()
 {
+    mEcs.imGui();
     mRenderer.imguiUpdate();
     mMainCamera->imguiUpdate();
 }

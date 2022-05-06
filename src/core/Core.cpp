@@ -39,19 +39,23 @@ void Core::run()
     
     while (mIsRunning)
     {
-        while (timers::getTicks<double>() > nextUpdateTick)
+        unsigned int loopAmount = 0;
+        
+        while (timers::getTicks<double>() > nextUpdateTick && loopAmount < mMaxLoopCount)
         {
-            updateScene();
-            updateImgui();
-    
-            glfwSwapBuffers(mWindow);
+            mScene->onUpdate();
     
             glfwPollEvents();
             mIsRunning = !glfwWindowShouldClose(mWindow);
-            timers::update();
             
             nextUpdateTick += timers::fixedTime<double>();
+            ++loopAmount;
         }
+        
+        mScene->onRender();
+        updateImgui();
+        glfwSwapBuffers(mWindow);
+        timers::update();
     }
 }
 
@@ -139,11 +143,6 @@ bool Core::initImGui()
     return true;
 }
 
-void Core::updateScene()
-{
-    mScene->onUpdate();
-}
-
 void Core::updateImgui()
 {
     ImGui_ImplOpenGL3_NewFrame();
@@ -164,11 +163,11 @@ void Core::updateImgui()
             ImGui::EndMenu();
         }
         mScene->onImguiMenuUpdate();
-        const std::string text = "Application average %.3f ms/frame (%.1f FPS)";
+        const std::string text = "TPS: %.0f | Frame Rate: %.3f s/frame (%.1f FPS)";
         ImGui::SetCursorPosX(
             ImGui::GetCursorPosX() + ImGui::GetColumnWidth() - ImGui::CalcTextSize(text.c_str()).x
             - ImGui::GetScrollX() - 2 * ImGui::GetStyle().ItemSpacing.x);
-        ImGui::Text(text.c_str(), 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+        ImGui::Text(text.c_str(), 1.f / timers::fixedTime<float>(), timers::deltaTime<float>(), ImGui::GetIO().Framerate);
         ImGui::EndMainMenuBar();
     }
     

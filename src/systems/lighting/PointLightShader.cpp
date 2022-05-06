@@ -35,6 +35,7 @@ PointLightShader::PointLightShader(
         
         glDrawElements(GL_TRIANGLES, mEboCount, GL_UNSIGNED_INT, 0);
     });
+    scheduleFor(ecs::Render);
 }
 
 PointLightShader::~PointLightShader()

@@ -25,6 +25,7 @@ BlinnPhongGeometryShader::BlinnPhongGeometryShader(std::shared_ptr<MainCamera> c
         
         glDrawElements(GL_TRIANGLES, renderCoreElements.eboCount, GL_UNSIGNED_INT, 0);
     });
+    scheduleFor(ecs::Render);
 }
 
 void BlinnPhongGeometryShader::onUpdate()
