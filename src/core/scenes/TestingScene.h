@@ -9,6 +9,7 @@
 
 #include "Pch.h"
 #include "Scene.h"
+#include "Tree.h"
 
 /**
  * @author Ryan Purse
@@ -22,6 +23,7 @@ public:
     ~TestingScene() = default;
     
     void onUpdate() override;
+    void onRender() override;
     void onImguiUpdate() override;
     
 protected:
@@ -39,4 +41,10 @@ protected:
     
     Entity mAlpha;
     Entity mBeta;
+    
+    std::shared_ptr<octree::Tree<CollisionEntity>> mTree {
+        std::make_shared<octree::Tree<CollisionEntity>>(octree::AABB { glm::vec3(0.f), glm::vec3(52.f) }, 2) };
+    
+    bool mShowBounds        { false };
+    bool mShowElementBounds { false };
 };

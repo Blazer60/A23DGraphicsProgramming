@@ -13,6 +13,7 @@
 #include "CollisionDetection.h"
 #include "gtc/type_ptr.hpp"
 #include "imgui.h"
+#include "physics/TreeBuilder.h"
 
 TestingScene::TestingScene()
 {
@@ -52,7 +53,8 @@ void TestingScene::onUpdate()
     if (!setup && glfwGetKey(glfwGetCurrentContext(), GLFW_KEY_P))
     {
         mEcs.createSystem<Gravity>();
-        mEcs.createSystem<CollisionDetection>(mRenderer);
+        mEcs.createSystem<TreeBuilder>(mTree);
+        mEcs.createSystem<CollisionDetection>(mRenderer, mTree);
         mEcs.createSystem<RungeKutta2>();
         mEcs.createSystem<KinematicSystem>();
         setup = true;
@@ -83,4 +85,31 @@ void TestingScene::onImguiUpdate()
             ImGui::TreePop();
         }
     }
+    if (ImGui::CollapsingHeader("Octree Debugging"))
+    {
+        ImGui::TextWrapped("The tree will only be updated once the physics simulation has started.");
+        
+        ImGui::Checkbox("Tree Bounds", &mShowBounds);
+        ImGui::Checkbox("Tree Element Bounds", &mShowElementBounds);
+        ImGui::SameLine();
+        ImGui::TextDisabled("(?)");
+        if (ImGui::IsItemHovered())
+        {
+            ImGui::BeginTooltip();
+            ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+            ImGui::TextUnformatted("Tree elements can only be shown if Toggle Tree Bounds is set true.");
+            ImGui::PopTextWrapPos();
+            ImGui::EndTooltip();
+        }
+    }
+}
+
+void TestingScene::onRender()
+{
+    // Scene::onRender() has been completely overridden to let the tree render.
+    mRenderer.clear();
+    if (mShowBounds)
+        mTree->debugDrawTree([this](const glm::mat4 &m, const glm::vec3 &h) { mRenderer.drawBox(m, h); }, mShowElementBounds);
+    mEcs.render();
+    mRenderer.update();
 }

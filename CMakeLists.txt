@@ -109,7 +109,7 @@ add_executable(${PROJECT_NAME}
         src/components/BoundingVolumes.cpp include/physics/components/BoundingVolumes.h
         src/physics/BoundingVolumeVisual.cpp include/physics/BoundingVolumeVisual.h
         src/physics/CollisionResponse.cpp include/physics/CollisionResponse.h include/physics/octree/Node.h
-        src/physics/octree/OctreeHelpers.cpp include/physics/octree/OctreeHelpers.h include/physics/octree/Tree.h src/core/scenes/TestingScene.cpp src/core/scenes/TestingScene.h)
+        src/physics/octree/OctreeHelpers.cpp include/physics/octree/OctreeHelpers.h include/physics/octree/Tree.h src/core/scenes/TestingScene.cpp src/core/scenes/TestingScene.h src/physics/TreeBuilder.cpp include/physics/TreeBuilder.h)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
 # Project Includes

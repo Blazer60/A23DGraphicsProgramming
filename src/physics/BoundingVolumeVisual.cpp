@@ -22,6 +22,7 @@ BoundingVolumeVisual::BoundingVolumeVisual(std::shared_ptr<MainCamera> camera, c
         else if (const auto box = std::dynamic_pointer_cast<BoundingBox>(boundingVolume))
             drawBox(*box, basicUniforms->modelMat);
     });
+    scheduleFor(ecs::Render);
 }
 
 void BoundingVolumeVisual::drawSphere(const BoundingSphere &boundingSphere, const glm::mat4 &modelMatrix)

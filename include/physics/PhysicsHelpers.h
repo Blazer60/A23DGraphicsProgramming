@@ -10,6 +10,9 @@
 #include <array>
 #include "Pch.h"
 #include "Common.h"
+#include "BoundingVolumes.h"
+#include "UniformComponents.h"
+#include "Physics.h"
 
 struct HitRecord
 {
@@ -24,6 +27,13 @@ struct HitRecord
     bool        hit       { false };
     glm::vec3   position  { 0.f };
     glm::vec3   normal    { 1.f, 0.f, 0.f };
+};
+
+struct CollisionEntity
+{
+    std::shared_ptr<BoundingVolume> boundingVolume;
+    std::shared_ptr<BasicUniforms>  basicUniforms;
+    Velocity                        velocity;
 };
 
 namespace physics

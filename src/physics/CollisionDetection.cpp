@@ -14,23 +14,20 @@
 #include "gtx/component_wise.hpp"
 #include <unordered_set>
 
-CollisionDetection::CollisionDetection(Renderer &renderer) :
-    mRenderer(renderer)
+CollisionDetection::CollisionDetection(Renderer &renderer, std::shared_ptr<octree::Tree<CollisionEntity>> tree) :
+    mRenderer(renderer), mTree(std::move(tree))
 {
     mEntities.forEach([this](
         std::shared_ptr<BoundingVolume> &boundingVolume,
         std::shared_ptr<BasicUniforms> &basicUniforms,
         const Velocity &velocity)
     {
-        
         const glm::vec3 center = basicUniforms->modelMat * glm::vec4(velocity.value * timers::fixedTime<float>(), 1.f);
         if (auto sphere = std::dynamic_pointer_cast<BoundingSphere>(boundingVolume))
         {
-            const glm::vec3 axisAlignedHalfSize = glm::vec3(sphere->radius);
-    
-            octree::AABB bounds { center, axisAlignedHalfSize };
-            mTree.insert({ boundingVolume, basicUniforms, velocity }, bounds);
-            mCollisionEntities.push_back({ boundingVolume, basicUniforms, velocity, bounds });
+            octree::AABB bounds { center, glm::vec3(sphere->radius) };
+            
+            traverseTree(sphere, basicUniforms, velocity, bounds);
         }
         if (auto box = std::dynamic_pointer_cast<BoundingBox>(boundingVolume))
         {
@@ -38,13 +35,12 @@ CollisionDetection::CollisionDetection(Renderer &renderer) :
             glm::vec3 max = glm::vec3(0.f);
             
             for (auto &point : points)
-            {
                 max = glm::max(max, glm::abs(point));
-            }
+            
             max = (max - glm::abs(center));
             octree::AABB bounds { center, max };
-            mTree.insert({ boundingVolume, basicUniforms, velocity }, bounds);
-            mCollisionEntities.push_back({ boundingVolume, basicUniforms, velocity, bounds });
+            
+            traverseTree(box, basicUniforms, velocity, bounds);
         }
     });
     scheduleFor(ecs::FixedUpdate);
@@ -52,21 +48,14 @@ CollisionDetection::CollisionDetection(Renderer &renderer) :
 
 void CollisionDetection::onUpdate()
 {
-    // collisionLhs(); // O(n^2)
-    treeCollision();
-    
-    mTree.debugDrawTree([this](const glm::mat4 &m, const glm::vec3 &h) { mRenderer.drawBox(m, h); }, false);
-    
-    mTree.reset();
-    // Reset for next round.
-    mCollisionEntities.clear();
+
 }
 
 void CollisionDetection::treeCollision()
 {
     for (const auto &entity : mCollisionEntities)
     {
-        std::vector<CollisionEntity> collidedEntities = mTree.getIntersecting(entity.bounds);
+        std::vector<CollisionEntity> collidedEntities = mTree->getIntersecting(entity.bounds);
         const glm::mat4 &lhsModelMatrix = entity.basicUniforms->modelMat;
         const glm::vec3 &lhsVelocity = entity.velocity.value;
         
@@ -305,4 +294,93 @@ std::vector<HitRecord> CollisionDetection::collisionCheck(
     }
     
     return hitRecords;
+}
+
+void CollisionDetection::traverseTree(
+    std::shared_ptr<BoundingSphere> lhsEntity,
+    std::shared_ptr<BasicUniforms> &uniforms,
+    const Velocity &velocity,
+    octree::AABB bounds)
+{
+    const glm::mat4 &lhsModelMatrix = uniforms->modelMat;
+    const glm::vec3 &lhsVelocity = velocity.value;
+    
+    std::vector<CollisionEntity> intersectingEntities = mTree->getIntersecting(bounds);
+    for (const auto &rhsEntity : intersectingEntities)
+    {
+        if (rhsEntity.boundingVolume->entity == lhsEntity->entity)
+            continue;
+    
+        const glm::mat4 &rhsModelMatrix = rhsEntity.basicUniforms->modelMat;
+        const glm::vec3 &rhsVelocity = rhsEntity.velocity.value;
+    
+        if (auto rhsSphere = std::dynamic_pointer_cast<BoundingSphere>(rhsEntity.boundingVolume))
+        {
+            HitRecord record = collisionCheck(*lhsEntity, lhsModelMatrix, lhsVelocity, *rhsSphere, rhsModelMatrix, rhsVelocity);
+            if (record.hit)
+                lhsEntity->callbacks.broadcast(lhsEntity->entity, rhsSphere->entity, record.position, record.normal);
+        }
+        if (auto rhsBox = std::dynamic_pointer_cast<BoundingBox>(rhsEntity.boundingVolume))
+        {
+            HitRecord record = collisionCheck(*rhsBox, rhsModelMatrix, rhsVelocity, *lhsEntity, lhsModelMatrix, lhsVelocity);
+            if (record.hit)
+                lhsEntity->callbacks.broadcast(lhsEntity->entity, rhsBox->entity, record.position, record.normal);
+        }
+    }
+}
+
+void CollisionDetection::traverseTree(
+    std::shared_ptr<BoundingBox> lhsEntity,
+    std::shared_ptr<BasicUniforms> &uniforms,
+    const Velocity &velocity,
+    octree::AABB bounds)
+{
+    const glm::mat4 &lhsModelMatrix = uniforms->modelMat;
+    const glm::vec3 &lhsVelocity = velocity.value;
+    
+    std::vector<CollisionEntity> intersectingEntities = mTree->getIntersecting(bounds);
+    for (const auto &rhsEntity : intersectingEntities)
+    {
+        if (rhsEntity.boundingVolume->entity == lhsEntity->entity)
+            continue;
+    
+        const glm::mat4 &rhsModelMatrix = rhsEntity.basicUniforms->modelMat;
+        const glm::vec3 &rhsVelocity = rhsEntity.velocity.value;
+    
+        if (auto rhsSphere = std::dynamic_pointer_cast<BoundingSphere>(rhsEntity.boundingVolume))
+        {
+            HitRecord record = collisionCheck(*lhsEntity, lhsModelMatrix, lhsVelocity, *rhsSphere, rhsModelMatrix, rhsVelocity);
+            record.normal *= -1.f;
+            if (record.hit)
+                lhsEntity->callbacks.broadcast(lhsEntity->entity, rhsSphere->entity, record.position, record.normal);
+        }
+        if (auto rhsBox = std::dynamic_pointer_cast<BoundingBox>(rhsEntity.boundingVolume))
+        {
+            // Test in both directions since we are using vertex collision tests.
+            std::vector<HitRecord> lhsHits = collisionCheck(*lhsEntity, lhsModelMatrix, lhsVelocity, *rhsBox, rhsModelMatrix, rhsVelocity);
+            std::vector<HitRecord> rhsHits = collisionCheck(*rhsBox, rhsModelMatrix, rhsVelocity, *lhsEntity, lhsModelMatrix, lhsVelocity);
+        
+            if (lhsHits.empty() && rhsHits.empty())
+                continue;
+        
+            // Average out all the hits.
+            HitRecord hit { true, glm::vec3(0.f), glm::vec3(0.f) };
+            for (const HitRecord &record : lhsHits)
+            {
+                hit.position += record.position;
+                hit.normal   -= record.normal;  // Opposite direction
+            }
+            for (const HitRecord &record : rhsHits)
+            {
+                hit.position += record.position;
+                hit.normal   += record.normal;
+            }
+        
+            const float count = static_cast<float>((lhsHits.size() + rhsHits.size()));
+            hit.position /= count;
+            hit.normal   /= count;
+        
+            lhsEntity->callbacks.broadcast(lhsEntity->entity, rhsBox->entity, hit.position, hit.normal);
+        }
+    }
 }
