@@ -40,6 +40,8 @@ public:
     Scene();
     virtual ~Scene() = default;
     
+    virtual void onFixedUpdate();
+    
     virtual void onUpdate();
     
     virtual void onRender();

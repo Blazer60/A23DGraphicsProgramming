@@ -50,6 +50,11 @@ Entity Scene::createPhongModel(const glm::vec3 position, Model<PhongVertex, Blin
     return parent;
 }
 
+void Scene::onFixedUpdate()
+{
+    mEcs.fixedUpdate();
+}
+
 void Scene::onUpdate()
 {
     mMainCamera->update();

@@ -43,7 +43,7 @@ void Core::run()
         
         while (timers::getTicks<double>() > nextUpdateTick && loopAmount < mMaxLoopCount)
         {
-            mScene->onUpdate();
+            mScene->onFixedUpdate();
     
             glfwPollEvents();
             mIsRunning = !glfwWindowShouldClose(mWindow);
@@ -52,8 +52,10 @@ void Core::run()
             ++loopAmount;
         }
         
+        mScene->onUpdate();
         mScene->onRender();
         updateImgui();
+        
         glfwSwapBuffers(mWindow);
         timers::update();
     }
