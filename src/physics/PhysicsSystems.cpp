@@ -16,6 +16,7 @@ Gravity::Gravity()
         auto &[force, mass] = dynamicObject;
         force.y -= mass * gravitationalConstant;
     });
+    scheduleFor(ecs::FixedUpdate);
 }
 
 EulerIntegration::EulerIntegration()
@@ -31,6 +32,7 @@ EulerIntegration::EulerIntegration()
     
         force = glm::vec3(0.f);
     });
+    scheduleFor(ecs::FixedUpdate);
 }
 
 RungeKutta2::RungeKutta2()
@@ -53,6 +55,7 @@ RungeKutta2::RungeKutta2()
         velocity.value += 0.5f * (k0 + k1);
         transform.position += velocity.value * fixedTime;
     });
+    scheduleFor(ecs::FixedUpdate);
 }
 
 RungeKutta4::RungeKutta4()
@@ -81,6 +84,7 @@ RungeKutta4::RungeKutta4()
         
         force = glm::vec3(0.f);
     });
+    scheduleFor(ecs::FixedUpdate);
 }
 
 RungeKutta::RungeKutta(uint32_t degree)
@@ -111,6 +115,7 @@ RungeKutta::RungeKutta(uint32_t degree)
         transform.position += velocity.value * deltaTime;
         force = glm::vec3(0.f);
     });
+    scheduleFor(ecs::FixedUpdate);
 }
 
 KinematicSystem::KinematicSystem()
@@ -118,4 +123,5 @@ KinematicSystem::KinematicSystem()
     mEntities.forEach([](const Kinematic &kinematic, const Velocity &velocity, Transform &transform) {
         transform.position += velocity.value * timers::fixedTime<float>();
     });
+    scheduleFor(ecs::FixedUpdate);
 }

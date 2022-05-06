@@ -47,6 +47,7 @@ CollisionDetection::CollisionDetection(Renderer &renderer) :
             mCollisionEntities.push_back({ boundingVolume, basicUniforms, velocity, bounds });
         }
     });
+    scheduleFor(ecs::FixedUpdate);
 }
 
 void CollisionDetection::onUpdate()
