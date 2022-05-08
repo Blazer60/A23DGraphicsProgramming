@@ -31,9 +31,6 @@ void CollisionResponse::makePhysicsObject(
     
     if (!mEcs.hasComponent<PhysicsMaterial>(entity))
         mEcs.add(entity, PhysicsMaterial { bounciness } );
-    
-    if (!mEcs.hasComponent<Accumulator>(entity))
-        mEcs.add(entity, Accumulator());
 }
 
 void CollisionResponse::makeBoundingBox(const Entity entity, const bool isDynamic, const glm::vec3 &halfSize)
@@ -78,28 +75,28 @@ void CollisionResponse::response(Entity entity, Entity other, const glm::vec3 &p
 
 void CollisionResponse::staticCollision(Entity entity, Entity other, const glm::vec3 &position, const glm::vec3 &normal)
 {
-    const auto &dynamicObject     = mEcs.getComponent<DynamicObject>(entity);
-    const auto &velocity          = mEcs.getComponent<Velocity>(entity);
+    auto &dynamicObject           = mEcs.getComponent<DynamicObject>(entity);
+    auto &velocity                = mEcs.getComponent<Velocity>(entity);
     const auto &transform         = mEcs.getComponent<Transform>(entity);
     const auto &physicsMaterial   = mEcs.getComponent<PhysicsMaterial>(entity);
-    auto       &accumulator       = mEcs.getComponent<Accumulator>(entity);
     
     const float impulse = -(1.f + physicsMaterial.bounciness) * glm::dot(velocity.value, normal) / (1.f / dynamicObject.mass);
-    accumulator.velocity += normal * impulse / dynamicObject.mass;
+    velocity.value += normal * impulse / dynamicObject.mass;
     
  
     const glm::vec3 contactForce = dynamicObject.force * glm::dot(physics::normalise(dynamicObject.force), normal);
 
-    accumulator.force += contactForce;
+    dynamicObject.force += contactForce;
 
 }
 
 void CollisionResponse::dynamicCollision(Entity entity, Entity other, const glm::vec3 &position, const glm::vec3 &normal)
 {
+    return;
     const auto &lhsDynamicObject     = mEcs.getComponent<DynamicObject>(entity);
     const auto &lhsVelocity          = mEcs.getComponent<Velocity>(entity);
     const auto &lhsPhysicsMaterial   = mEcs.getComponent<PhysicsMaterial>(entity);
-    auto       &lhsAccumulator       = mEcs.getComponent<Accumulator>(entity);
+    // auto       &lhsAccumulator       = mEcs.getComponent<Accumulator>(entity);
     
     const auto &rhsDynamicObject     = mEcs.getComponent<DynamicObject>(other);
     const auto &rhsVelocity          = mEcs.getComponent<Velocity>(other);
@@ -118,5 +115,5 @@ void CollisionResponse::dynamicCollision(Entity entity, Entity other, const glm:
     const glm::vec3 lhsContactForce = lhsDynamicObject.force * glm::dot(physics::normalise(lhsDynamicObject.force), normal) * timers::fixedTime<float>();
     const glm::vec3 rhsContactForce = rhsDynamicObject.force * glm::dot(physics::normalise(rhsDynamicObject.force), normal) * timers::fixedTime<float>();
 
-    lhsAccumulator.force += lhsContactForce + rhsContactForce;
+    // lhsAccumulator.force += lhsContactForce + rhsContactForce;
 }

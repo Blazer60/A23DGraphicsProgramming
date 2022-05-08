@@ -21,15 +21,12 @@ TestingScene::TestingScene()
     mCollisionResponse.makePhysicsObject(mAlpha, glm::vec3(0.f, 5.f, 0.f), 100.f, 0.1f);
     mCollisionResponse.makeBoundingBox(mAlpha, true);
     
-    mBeta  = createPhongModel(glm::vec3(0.f, 6.f, 0.f), mStoneCladding);
-    mCollisionResponse.makePhysicsObject(mBeta, glm::vec3(0.f, 0.f, 0.f), 100.f, 0.1f);
-    mCollisionResponse.makeBoundingBox(mBeta, true);
-    
-    for (int i = 0; i < 30; ++i)
-    {
-        Entity entity = createPhongModel(glm::vec3(-40.f + i * 2.1f, 5.f, 3.f), mStoneCladding);
-        mCollisionResponse.makeBoundingBox(entity, false);
-    }
+    mBeta  = createPhongModel(glm::vec3(5.f, 10.f, 0.f), mStoneCladding);
+    const float betaMass = 100.f;
+    mCollisionResponse.makePhysicsObject(mBeta, glm::vec3(0.f, -2.f, 0.f), betaMass, 0.8f);
+    mCollisionResponse.makeBoundingSphere(mBeta, true, 1.f);
+    mEcs.add(mBeta, Torque { glm::vec3(20.f, 0.f, 0.f) });
+    mEcs.add(mBeta, AngularObject { glm::mat3(2.f / 5.f * betaMass) });
     
     Entity floor = createPhongModel(glm::vec3(0.f), mFloor);
     std::shared_ptr<BoundingVolume> floorHitBox = std::make_shared<BoundingBox>(floor, glm::vec3(50.f, 0.1f, 50.f));
@@ -57,6 +54,7 @@ void TestingScene::onUpdate()
         mEcs.createSystem<CollisionDetection>(mRenderer, mTree);
         mEcs.createSystem<RungeKutta2>();
         mEcs.createSystem<KinematicSystem>();
+        mEcs.createSystem<AngularEulerIntegration>();
         setup = true;
         std::cout << "Starting Physics\n";
     }
@@ -73,7 +71,7 @@ void TestingScene::onImguiUpdate()
             ImGui::DragFloat3("Position", glm::value_ptr(transform.position), 0.1f);
             ImGui::DragFloat4("Rotation", glm::value_ptr(transform.rotation), 0.1f);
             ImGui::DragFloat3("Scale", glm::value_ptr(transform.scale), 0.1f);
-            
+
             ImGui::TreePop();
         }
 
@@ -81,9 +79,20 @@ void TestingScene::onImguiUpdate()
         {
             auto &velocity = mEcs.getComponent<Velocity>(mAlpha);
             ImGui::DragFloat3("Velocity", glm::value_ptr(velocity.value), 0.1f);
-            
+
             ImGui::TreePop();
         }
+    }
+    if (ImGui::CollapsingHeader("Beta Settings"))
+    {
+        auto &transform = mEcs.getComponent<Transform>(mBeta);
+        ImGui::DragFloat3("Position", glm::value_ptr(transform.position), 0.1f);
+        ImGui::DragFloat4("Rotation", glm::value_ptr(transform.rotation), 0.1f);
+        ImGui::DragFloat3("Scale", glm::value_ptr(transform.scale), 0.1f);
+        auto &torque = mEcs.getComponent<Torque>(mBeta);
+        ImGui::DragFloat3("Torque", glm::value_ptr(torque.tau), 0.1f);
+        auto &angularObject = mEcs.getComponent<AngularObject>(mBeta);
+        ImGui::DragFloat3("Angular Momentum", glm::value_ptr(angularObject.angularMomentum), 0.1f);
     }
     if (ImGui::CollapsingHeader("Octree Debugging"))
     {

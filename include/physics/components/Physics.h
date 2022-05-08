@@ -21,10 +21,15 @@ struct Velocity
     glm::vec3 value { 0.f };
 };
 
-struct Accumulator
+struct Torque
 {
-    glm::vec3 force     { 0.f };
-    glm::vec3 velocity  { 0.f };
+    glm::vec3 tau { 0.f };
+};
+
+struct AngularObject
+{
+    glm::mat3 inverseBodyInertia { 1.f };
+    glm::vec3 angularMomentum { 0.f };
 };
 
 struct Kinematic

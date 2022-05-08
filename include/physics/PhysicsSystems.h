@@ -15,7 +15,9 @@ class DynamicObject;
 class Velocity;
 class Transform;
 class Kinematic;
-class Accumulator;
+class AngularVelocity;
+class Torque;
+class AngularObject;
 
 /**
  * Applies gravity to all dynamic objects within the scene.
@@ -23,7 +25,7 @@ class Accumulator;
  * @date 13/04/2022
  */
 class Gravity
-    : public ecs::BaseSystem<DynamicObject, Accumulator>
+    : public ecs::BaseSystem<DynamicObject>
 {
 public:
     Gravity();
@@ -49,7 +51,7 @@ public:
  * @date 13/04/2022
  */
 class RungeKutta2
-    : public ecs::BaseSystem<DynamicObject, Velocity, Transform, Accumulator>
+    : public ecs::BaseSystem<DynamicObject, Velocity, Transform>
 {
 public:
     RungeKutta2();
@@ -77,5 +79,12 @@ class KinematicSystem
 {
 public:
     KinematicSystem();
+};
+
+class AngularEulerIntegration
+    : public ecs::BaseSystem<Torque, AngularObject, Transform>
+{
+public:
+    AngularEulerIntegration();
 };
 

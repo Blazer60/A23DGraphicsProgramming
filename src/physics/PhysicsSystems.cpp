@@ -9,10 +9,11 @@
 #include "physics/components/Physics.h"
 #include "Components.h"
 #include "Timers.h"
+#include "gtc/quaternion.hpp"
 
 Gravity::Gravity()
 {
-    mEntities.forEach([this](DynamicObject &dynamicObject, Accumulator &accumulator) {
+    mEntities.forEach([this](DynamicObject &dynamicObject) {
         auto &[force, mass] = dynamicObject;
         force.y -= mass * gravitationalConstant;
     });
@@ -37,13 +38,9 @@ EulerIntegration::EulerIntegration()
 
 RungeKutta2::RungeKutta2()
 {
-    mEntities.forEach([](DynamicObject &dynamicObject, Velocity &velocity, Transform &transform, Accumulator &accumulator) {
+    mEntities.forEach([](DynamicObject &dynamicObject, Velocity &velocity, Transform &transform) {
         auto &[force, mass] = dynamicObject;
         const float fixedTime = timers::fixedTime<float>();
-        
-        force += accumulator.force;
-        velocity.value += accumulator.velocity;
-        accumulator = Accumulator();
         
         const glm::vec3 acceleration0 = force / mass;
         const glm::vec3 k0 = fixedTime * acceleration0;
@@ -122,6 +119,34 @@ KinematicSystem::KinematicSystem()
 {
     mEntities.forEach([](const Kinematic &kinematic, const Velocity &velocity, Transform &transform) {
         transform.position += velocity.value * timers::fixedTime<float>();
+    });
+    scheduleFor(ecs::FixedUpdate);
+}
+
+AngularEulerIntegration::AngularEulerIntegration()
+{
+    mEntities.forEach([](Torque &torque, AngularObject &angularObject, Transform &transform) {
+        angularObject.angularMomentum += torque.tau * timers::fixedTime<float>();
+        
+        glm::mat3 rotation = glm::mat3_cast(transform.rotation);
+        glm::mat3 inverseInertia = rotation * angularObject.inverseBodyInertia * glm::transpose(rotation);
+        
+        // omega is angular velocity.
+        const glm::vec3 omega = inverseInertia * angularObject.angularMomentum;
+        const glm::mat3 omegaStar = glm::mat3(
+            0.f,      -omega.z, omega.y,
+            omega.z,  0.f,      -omega.x,
+            -omega.y, omega.x,  0.f);
+
+        rotation = rotation + omegaStar * rotation * timers::fixedTime<float>();
+
+        transform.rotation = glm::normalize(glm::quat(rotation));
+        
+        // transform.rotation += 0.5f * timers::fixedTime<float>()
+        //                     * glm::quat(0.f, -angularVelocity.omega)
+        //                     * transform.rotation;
+        // transform.rotation = glm::normalize(transform.rotation);
+        torque.tau = glm::vec3(0.f);
     });
     scheduleFor(ecs::FixedUpdate);
 }
