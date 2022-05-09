@@ -21,8 +21,6 @@ class RotatorSystem
 {
 public:
     RotatorSystem();
-    
-    void onUpdate() override;
 };
 
 

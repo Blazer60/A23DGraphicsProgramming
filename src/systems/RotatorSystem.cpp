@@ -11,13 +11,6 @@
 RotatorSystem::RotatorSystem()
 {
     mEntities.forEach([](Rotator &rotator, Transform &transform) {
-        rotator.originalHeight = transform.position;
-    });
-}
-
-void RotatorSystem::onUpdate()
-{
-    mEntities.forEach([](Rotator &rotator, Transform &transform) {
         rotator.time += timers::deltaTime<float>();
         const auto timeSin = glm::sin(rotator.time);
         

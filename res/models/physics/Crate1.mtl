@@ -1,0 +1,13 @@
+# Blender MTL File: 'Crate1.blend'
+# Material Count: 1
+
+newmtl Crate
+Ns 52.010398
+Ka 0.684729 0.684729 0.684729
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd TexturesCom_CastleDoor_New_1K_albedo.png

@@ -13,6 +13,7 @@
 #include "glfw3.h"
 #include "Timers.h"
 #include "scenes/ImpulseScene.h"
+#include "scenes/OctreeDemoScene.h"
 
 Core::Core(const glm::ivec2 &resolution)
 {
@@ -23,7 +24,7 @@ Core::Core(const glm::ivec2 &resolution)
         return;
     }
     
-    mScene = std::make_unique<ImpulseScene>();  // Scenes must be made after the initialisation of underlying architectures.
+    mScene = std::make_unique<OctreeDemoScene>();  // Scenes must be made after the initialisation of underlying architectures.
 }
 
 Core::~Core()
@@ -163,7 +164,9 @@ void Core::updateImgui()
             if (ImGui::MenuItem("Impulse Demo"))
                 mScene = std::make_unique<ImpulseScene>();
             
-            ImGui::MenuItem("Scene B");
+            if (ImGui::MenuItem("Octree Demo"))
+                mScene = std::make_unique<OctreeDemoScene>();
+                
             ImGui::MenuItem("Scene C");
             ImGui::EndMenu();
         }
