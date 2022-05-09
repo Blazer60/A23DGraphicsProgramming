@@ -254,7 +254,7 @@ HitRecord CollisionDetection::collisionCheck(
     const float     distance            = sdf::sphereToBox(point, rhs.radius, lhs.halfSize);
     
     const glm::vec3 signs  = physics::sign3(point);
-    const glm::vec3 normal = physics::normalise(lhsModelMat * glm::vec4(signs * sdf::toBox3(point, lhs.halfSize), 0.f));
+    const glm::vec3 normal = glm::normalize(lhsModelMat * glm::vec4(signs * sdf::toBox3(point, lhs.halfSize), 0.f));
     
     const glm::vec3 position = rhsModelMat * relativeVelocity + glm::vec4(rhs.radius * -normal, 1.f);
     return { distance <= 0, position, normal };
