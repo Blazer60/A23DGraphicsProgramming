@@ -17,7 +17,7 @@
 
 TestingScene::TestingScene()
 {
-    mAlpha = createPhongModel(glm::vec3(4.f, 9.f, 0.f), mStoneCladding);
+    mAlpha = createPhongModel(glm::vec3(1.f, 9.f, 0.f), mStoneCladding);
     mCollisionResponse.makePhysicsObject(mAlpha, glm::vec3(0.f, 0.f, 0.f), 100.f, 0.2f);
     mCollisionResponse.makeBoundingBox(mAlpha, true);
     auto &alphaDynamicObject = mEcs.getComponent<DynamicObject>(mAlpha);

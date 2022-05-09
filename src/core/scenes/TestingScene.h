@@ -37,7 +37,7 @@ protected:
     
     Model<PhongVertex, BlinnPhongMaterial> mFloor {
         load::model<PhongVertex, BlinnPhongMaterial>(
-            path::resources() + "models/floor/Floor.obj") };
+            path::resources() + "models/thick-floor/ThickFloor.obj") };
     
     Entity mAlpha;
     Entity mBeta;

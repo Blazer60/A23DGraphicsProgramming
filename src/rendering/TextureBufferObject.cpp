@@ -49,7 +49,7 @@ void TextureBufferObject::changeSize(const glm::ivec2 &size)
 
 void TextureBufferObject::imguiUpdate(bool *show)
 {
-    const std::string name = mDebugName + " | Id: " + std::to_string(mName);
+    const std::string name = mDebugName;
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.f, 0.f));
     if (ImGui::Begin(name.c_str(), show))
     {
