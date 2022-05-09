@@ -82,7 +82,7 @@ public:
 };
 
 class AngularEulerIntegration
-    : public ecs::BaseSystem<Torque, AngularObject, Transform>
+    : public ecs::BaseSystem<Torque, AngularObject, AngularVelocity, Transform>
 {
 public:
     AngularEulerIntegration();

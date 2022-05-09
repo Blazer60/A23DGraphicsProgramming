@@ -18,15 +18,18 @@
 TestingScene::TestingScene()
 {
     mAlpha = createPhongModel(glm::vec3(0.f, 9.f, 0.f), mStoneCladding);
-    mCollisionResponse.makePhysicsObject(mAlpha, glm::vec3(0.f, 5.f, 0.f), 100.f, 0.1f);
+    mCollisionResponse.makePhysicsObject(mAlpha, glm::vec3(0.f, 5.f, 0.f), 100.f, 1.f);
     mCollisionResponse.makeBoundingBox(mAlpha, true);
     
-    mBeta  = createPhongModel(glm::vec3(5.f, 10.f, 0.f), mStoneCladding);
-    const float betaMass = 100.f;
-    mCollisionResponse.makePhysicsObject(mBeta, glm::vec3(0.f, -2.f, 0.f), betaMass, 0.8f);
+    mBeta  = createPhongModel(glm::vec3(5.f, 10.f, 6.f), mStoneCladding);
+    const float betaMass = 10.f;
+    mCollisionResponse.makePhysicsObject(mBeta, glm::vec3(0.f, 0.f, 0.f), betaMass, 1.f);
     mCollisionResponse.makeBoundingSphere(mBeta, true, 1.f);
-    mEcs.add(mBeta, Torque { glm::vec3(20.f, 0.f, 0.f) });
+    auto &dynamicObject = mEcs.getComponent<DynamicObject>(mBeta);
+    dynamicObject.momentum = glm::vec3(0.f, 0.f, 0.f);
+    mEcs.add(mBeta, Torque { glm::vec3(1.f, 0.f, 0.f) });
     mEcs.add(mBeta, AngularObject { glm::mat3(2.f / 5.f * betaMass) });
+    mEcs.add(mBeta, AngularVelocity { });
     
     Entity floor = createPhongModel(glm::vec3(0.f), mFloor);
     std::shared_ptr<BoundingVolume> floorHitBox = std::make_shared<BoundingBox>(floor, glm::vec3(50.f, 0.1f, 50.f));
@@ -52,7 +55,7 @@ void TestingScene::onUpdate()
         mEcs.createSystem<Gravity>();
         mEcs.createSystem<TreeBuilder>(mTree);
         mEcs.createSystem<CollisionDetection>(mRenderer, mTree);
-        mEcs.createSystem<RungeKutta2>();
+        mEcs.createSystem<EulerIntegration>();
         mEcs.createSystem<KinematicSystem>();
         mEcs.createSystem<AngularEulerIntegration>();
         setup = true;

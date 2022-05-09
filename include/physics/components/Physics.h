@@ -14,11 +14,17 @@ struct DynamicObject
 {
     glm::vec3   force   { 0.f };
     float       mass    { 10.f };
+    glm::vec3   momentum { 0.f };
 };
 
 struct Velocity
 {
     glm::vec3 value { 0.f };
+};
+
+struct AngularVelocity
+{
+    glm::vec3 omega { 0.f };
 };
 
 struct Torque
@@ -30,6 +36,7 @@ struct AngularObject
 {
     glm::mat3 inverseBodyInertia { 1.f };
     glm::vec3 angularMomentum { 0.f };
+    glm::mat3 inverseInertia { 1.f };
 };
 
 struct Kinematic

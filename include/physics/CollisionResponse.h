@@ -34,4 +34,6 @@ public:
     void dynamicCollision(Entity entity, Entity other, const glm::vec3 &position, const glm::vec3 &normal);
 protected:
     ecs::Core &mEcs;
+    
+    void staticRotationalCollision(Entity entity, Entity other, const glm::vec3 &position, const glm::vec3 &normal);
 };

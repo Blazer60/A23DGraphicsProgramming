@@ -67,7 +67,11 @@ void CollisionResponse::makeBoundingSphere(const Entity entity, const bool isDyn
 
 void CollisionResponse::response(Entity entity, Entity other, const glm::vec3 &position, const glm::vec3 &normal)
 {
-    if (mEcs.hasComponent<DynamicObject>(other))
+    if (mEcs.hasComponent<AngularObject>(entity))
+    {
+        staticRotationalCollision(entity, other, position, normal);
+    }
+    else if (mEcs.hasComponent<DynamicObject>(other))
         dynamicCollision(entity, other, position, normal);
     else
         staticCollision(entity, other, position, normal);
@@ -81,13 +85,14 @@ void CollisionResponse::staticCollision(Entity entity, Entity other, const glm::
     const auto &physicsMaterial   = mEcs.getComponent<PhysicsMaterial>(entity);
     
     const float impulse = -(1.f + physicsMaterial.bounciness) * glm::dot(velocity.value, normal) / (1.f / dynamicObject.mass);
-    velocity.value += normal * impulse / dynamicObject.mass;
+    const glm::vec3 contactForce = dynamicObject.force * glm::min(glm::dot(physics::normalise(dynamicObject.force), normal), 0.f);
     
- 
-    const glm::vec3 contactForce = dynamicObject.force * glm::dot(physics::normalise(dynamicObject.force), normal);
-
+    const glm::vec3 velocityAfter = normal * (impulse / dynamicObject.mass);
+    const glm::vec3 delta = velocityAfter - velocity.value;
+    const glm::vec3 force = dynamicObject.mass * delta / timers::fixedTime<float>();
+    
+    dynamicObject.force += force;
     dynamicObject.force += contactForce;
-
 }
 
 void CollisionResponse::dynamicCollision(Entity entity, Entity other, const glm::vec3 &position, const glm::vec3 &normal)
@@ -116,4 +121,38 @@ void CollisionResponse::dynamicCollision(Entity entity, Entity other, const glm:
     const glm::vec3 rhsContactForce = rhsDynamicObject.force * glm::dot(physics::normalise(rhsDynamicObject.force), normal) * timers::fixedTime<float>();
 
     // lhsAccumulator.force += lhsContactForce + rhsContactForce;
+}
+
+void CollisionResponse::staticRotationalCollision(
+    Entity entity, Entity other,
+    const glm::vec3 &position, const glm::vec3 &normal)
+{
+    auto &dynamicObject           = mEcs.getComponent<DynamicObject>(entity);
+    auto &velocity                = mEcs.getComponent<Velocity>(entity);
+    const auto &transform         = mEcs.getComponent<Transform>(entity);
+    const auto &physicsMaterial   = mEcs.getComponent<PhysicsMaterial>(entity);
+    auto &angularObject           = mEcs.getComponent<AngularObject>(entity);
+    auto &angularVelocity         = mEcs.getComponent<AngularVelocity>(entity);
+    auto &torque                  = mEcs.getComponent<Torque>(entity);
+    
+    debug::log("Position: " + std::to_string(position.x) + ", " + std::to_string(position.y) + ", " + std::to_string(position.z));
+    
+    const glm::vec3 &omega = angularVelocity.omega;
+    const glm::vec3 paDot = velocity.value + glm::cross(omega, position - transform.position);
+    const glm::vec3 ra    = position - transform.position;
+    const float     vRel  = glm::dot(normal, paDot);
+    
+    const float numerator = -(1.f + physicsMaterial.bounciness) * vRel;
+    const float term1     = 1.f / dynamicObject.mass;
+    const float term3     = glm::dot(normal, glm::cross(angularObject.inverseInertia * glm::cross(ra, normal), ra));
+    const float         j = numerator / (term1 + term3);
+    const glm::vec3 force = j * normal;
+    
+    // Applying Impulse
+    dynamicObject.momentum += force;
+    angularObject.angularMomentum += glm::cross(ra, force);
+    
+    // Recomputing auxiliaries in response
+    velocity.value = dynamicObject.momentum / dynamicObject.mass;
+    angularVelocity.omega = angularObject.inverseInertia * angularObject.angularMomentum;
 }

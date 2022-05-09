@@ -14,7 +14,7 @@
 Gravity::Gravity()
 {
     mEntities.forEach([this](DynamicObject &dynamicObject) {
-        auto &[force, mass] = dynamicObject;
+        auto &[force, mass, _] = dynamicObject;
         force.y -= mass * gravitationalConstant;
     });
     scheduleFor(ecs::FixedUpdate);
@@ -23,15 +23,16 @@ Gravity::Gravity()
 EulerIntegration::EulerIntegration()
 {
     mEntities.forEach([](DynamicObject &dynamicObject, Velocity &velocity, Transform &transform) {
-        auto &[force, mass] = dynamicObject;
+        auto &[force, mass, momentum] = dynamicObject;
         const float fixedTime = timers::fixedTime<float>();
-        
-        const glm::vec3 acceleration = force / mass;
-        
-        velocity.value      += acceleration * fixedTime;
-        transform.position  += velocity.value * fixedTime;
     
-        force = glm::vec3(0.f);
+        // Update the position first. Collision responses can update auxiliary values.
+        transform.position += velocity.value * fixedTime;
+        
+        // Calculate the forces for the next frame.
+        momentum        += force * fixedTime;
+        velocity.value  = momentum / mass;
+        force           = glm::vec3(0.f);  // Reset the forces for the next frame.
     });
     scheduleFor(ecs::FixedUpdate);
 }
@@ -39,7 +40,7 @@ EulerIntegration::EulerIntegration()
 RungeKutta2::RungeKutta2()
 {
     mEntities.forEach([](DynamicObject &dynamicObject, Velocity &velocity, Transform &transform) {
-        auto &[force, mass] = dynamicObject;
+        auto &[force, mass, _] = dynamicObject;
         const float fixedTime = timers::fixedTime<float>();
         
         const glm::vec3 acceleration0 = force / mass;
@@ -51,6 +52,7 @@ RungeKutta2::RungeKutta2()
         
         velocity.value += 0.5f * (k0 + k1);
         transform.position += velocity.value * fixedTime;
+        force = glm::vec3(0.f);
     });
     scheduleFor(ecs::FixedUpdate);
 }
@@ -58,7 +60,7 @@ RungeKutta2::RungeKutta2()
 RungeKutta4::RungeKutta4()
 {
     mEntities.forEach([](DynamicObject &dynamicObject, Velocity &velocity, Transform &transform) {
-        auto &[force, mass] = dynamicObject;
+        auto &[force, mass, _] = dynamicObject;
         const float fixedTime = timers::fixedTime<float>();
         
         glm::vec3 acceleration = force / mass;
@@ -99,7 +101,7 @@ RungeKutta::RungeKutta(uint32_t degree)
     
     mEntities.forEach([this](DynamicObject &dynamicObject, Velocity &velocity, Transform &transform) {
         const float deltaTime = timers::fixedTime<float>();
-        auto &[force, mass]   = dynamicObject;
+        auto &[force, mass, _]   = dynamicObject;
         
         for (const auto &binomial : mBinomials)
         {
@@ -125,14 +127,13 @@ KinematicSystem::KinematicSystem()
 
 AngularEulerIntegration::AngularEulerIntegration()
 {
-    mEntities.forEach([](Torque &torque, AngularObject &angularObject, Transform &transform) {
+    mEntities.forEach([](Torque &torque, AngularObject &angularObject, AngularVelocity &angularVelocity, Transform &transform) {
         angularObject.angularMomentum += torque.tau * timers::fixedTime<float>();
         
         glm::mat3 rotation = glm::mat3_cast(transform.rotation);
-        glm::mat3 inverseInertia = rotation * angularObject.inverseBodyInertia * glm::transpose(rotation);
+        angularObject.inverseInertia = rotation * angularObject.inverseBodyInertia * glm::transpose(rotation);
         
-        // omega is angular velocity.
-        const glm::vec3 omega = inverseInertia * angularObject.angularMomentum;
+        const glm::vec3 &omega = angularVelocity.omega;
         const glm::mat3 omegaStar = glm::mat3(
             0.f,      -omega.z, omega.y,
             omega.z,  0.f,      -omega.x,
@@ -142,10 +143,8 @@ AngularEulerIntegration::AngularEulerIntegration()
 
         transform.rotation = glm::normalize(glm::quat(rotation));
         
-        // transform.rotation += 0.5f * timers::fixedTime<float>()
-        //                     * glm::quat(0.f, -angularVelocity.omega)
-        //                     * transform.rotation;
-        // transform.rotation = glm::normalize(transform.rotation);
+        angularVelocity.omega = angularObject.inverseInertia * angularObject.angularMomentum;
+        
         torque.tau = glm::vec3(0.f);
     });
     scheduleFor(ecs::FixedUpdate);
