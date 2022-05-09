@@ -84,43 +84,43 @@ void CollisionResponse::staticCollision(Entity entity, Entity other, const glm::
     const auto &transform         = mEcs.getComponent<Transform>(entity);
     const auto &physicsMaterial   = mEcs.getComponent<PhysicsMaterial>(entity);
     
-    const float impulse = -(1.f + physicsMaterial.bounciness) * glm::dot(velocity.value, normal) / (1.f / dynamicObject.mass);
-    const glm::vec3 contactForce = dynamicObject.force * glm::min(glm::dot(physics::normalise(dynamicObject.force), normal), 0.f);
+    const float vRel        = glm::dot(normal, velocity.value);
+    const float numerator   = -(1.f + physicsMaterial.bounciness) * vRel;
+    const float term1       = 1.f / dynamicObject.mass;
+    const float j           = numerator / term1;
+    const glm::vec3 force   = j * normal;
     
-    const glm::vec3 velocityAfter = normal * (impulse / dynamicObject.mass);
-    const glm::vec3 delta = velocityAfter - velocity.value;
-    const glm::vec3 force = dynamicObject.mass * delta / timers::fixedTime<float>();
-    
-    dynamicObject.force += force;
-    dynamicObject.force += contactForce;
+    dynamicObject.momentum += force;
+    velocity.value          = dynamicObject.momentum / dynamicObject.mass;
 }
 
 void CollisionResponse::dynamicCollision(Entity entity, Entity other, const glm::vec3 &position, const glm::vec3 &normal)
 {
-    return;
-    const auto &lhsDynamicObject     = mEcs.getComponent<DynamicObject>(entity);
-    const auto &lhsVelocity          = mEcs.getComponent<Velocity>(entity);
-    const auto &lhsPhysicsMaterial   = mEcs.getComponent<PhysicsMaterial>(entity);
-    // auto       &lhsAccumulator       = mEcs.getComponent<Accumulator>(entity);
+    auto &lhsDynamicObject          = mEcs.getComponent<DynamicObject>(entity);
+    auto &lhsVelocity               = mEcs.getComponent<Velocity>(entity);
+    const auto &lhsPhysicsMaterial  = mEcs.getComponent<PhysicsMaterial>(entity);
     
-    const auto &rhsDynamicObject     = mEcs.getComponent<DynamicObject>(other);
-    const auto &rhsVelocity          = mEcs.getComponent<Velocity>(other);
-    const auto &rhsPhysicsMaterial   = mEcs.getComponent<PhysicsMaterial>(other);
+    auto &rhsDynamicObject          = mEcs.getComponent<DynamicObject>(other);
+    auto &rhsVelocity               = mEcs.getComponent<Velocity>(other);
+    const auto &rhsPhysicsMaterial  = mEcs.getComponent<PhysicsMaterial>(other);
     
-    // const glm::vec3 relativeVelocity    = rhsVelocity.value - lhsVelocity.value;
-    const glm::vec3 relativeVelocity    = lhsVelocity.value - rhsVelocity.value;
-    const float     inverseMass         = (1.f / lhsDynamicObject.mass) + (1.f / rhsDynamicObject.mass);
-    const float     dot                 = glm::dot(relativeVelocity, normal);
-    const float     bounciness          = (lhsPhysicsMaterial.bounciness + rhsPhysicsMaterial.bounciness) / 2.f;
-    const float     impulse             = -(1.f + bounciness) * dot / inverseMass;
+    const float vRel        = glm::dot(normal, lhsVelocity.value - rhsVelocity.value);
     
-    // lhsAccumulator.velocity += normal * impulse / lhsDynamicObject.mass;
+    if (vRel < 0.f)
+        return;  // Both objects are separating from one another.
     
+    const float e           = (lhsPhysicsMaterial.bounciness + rhsPhysicsMaterial.bounciness) / 2.f;
+    const float numerator   = -(1.f + e) * vRel;
+    const float term1       = 1.f / lhsDynamicObject.mass;
+    const float term2       = 1.f / rhsDynamicObject.mass;
+    const float j           = numerator / (term1 + term2);
+    const glm::vec3 force   = j * normal;
     
-    const glm::vec3 lhsContactForce = lhsDynamicObject.force * glm::dot(physics::normalise(lhsDynamicObject.force), normal) * timers::fixedTime<float>();
-    const glm::vec3 rhsContactForce = rhsDynamicObject.force * glm::dot(physics::normalise(rhsDynamicObject.force), normal) * timers::fixedTime<float>();
-
-    // lhsAccumulator.force += lhsContactForce + rhsContactForce;
+    lhsDynamicObject.momentum += force;
+    rhsDynamicObject.momentum -= force;
+    
+    lhsVelocity.value = lhsDynamicObject.momentum / lhsDynamicObject.mass;
+    rhsVelocity.value = rhsDynamicObject.momentum / rhsDynamicObject.mass;
 }
 
 void CollisionResponse::staticRotationalCollision(

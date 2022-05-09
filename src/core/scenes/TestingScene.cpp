@@ -17,19 +17,22 @@
 
 TestingScene::TestingScene()
 {
-    mAlpha = createPhongModel(glm::vec3(0.f, 9.f, 0.f), mStoneCladding);
-    mCollisionResponse.makePhysicsObject(mAlpha, glm::vec3(0.f, 5.f, 0.f), 100.f, 1.f);
+    mAlpha = createPhongModel(glm::vec3(4.f, 9.f, 0.f), mStoneCladding);
+    mCollisionResponse.makePhysicsObject(mAlpha, glm::vec3(0.f, 0.f, 0.f), 100.f, 0.2f);
     mCollisionResponse.makeBoundingBox(mAlpha, true);
+    auto &alphaDynamicObject = mEcs.getComponent<DynamicObject>(mAlpha);
+    alphaDynamicObject.momentum = glm::vec3(0.f);
     
-    mBeta  = createPhongModel(glm::vec3(5.f, 10.f, 6.f), mStoneCladding);
+    
+    mBeta  = createPhongModel(glm::vec3(4.f, 14.f, 0.f), mStoneCladding);
     const float betaMass = 10.f;
     mCollisionResponse.makePhysicsObject(mBeta, glm::vec3(0.f, 0.f, 0.f), betaMass, 1.f);
     mCollisionResponse.makeBoundingSphere(mBeta, true, 1.f);
-    auto &dynamicObject = mEcs.getComponent<DynamicObject>(mBeta);
-    dynamicObject.momentum = glm::vec3(0.f, 0.f, 0.f);
-    mEcs.add(mBeta, Torque { glm::vec3(1.f, 0.f, 0.f) });
-    mEcs.add(mBeta, AngularObject { glm::mat3(2.f / 5.f * betaMass) });
-    mEcs.add(mBeta, AngularVelocity { });
+    auto &betaDynamicObject = mEcs.getComponent<DynamicObject>(mBeta);
+    betaDynamicObject.momentum = glm::vec3(0.f, 0.f, 0.f);
+    // mEcs.add(mBeta, Torque { glm::vec3(1.f, 0.f, 0.f) });
+    // mEcs.add(mBeta, AngularObject { glm::mat3(2.f / 5.f * betaMass) });
+    // mEcs.add(mBeta, AngularVelocity { });
     
     Entity floor = createPhongModel(glm::vec3(0.f), mFloor);
     std::shared_ptr<BoundingVolume> floorHitBox = std::make_shared<BoundingBox>(floor, glm::vec3(50.f, 0.1f, 50.f));
