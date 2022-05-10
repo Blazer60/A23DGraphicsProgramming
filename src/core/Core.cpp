@@ -15,6 +15,7 @@
 #include "scenes/ImpulseScene.h"
 #include "scenes/OctreeDemoScene.h"
 #include "scenes/PlatformDemoScene.h"
+#include "scenes/DynamicImpulseDemoScene.h"
 
 Core::Core(const glm::ivec2 &resolution)
 {
@@ -25,7 +26,7 @@ Core::Core(const glm::ivec2 &resolution)
         return;
     }
     
-    mScene = std::make_unique<PlatformDemoScene>();  // Scenes must be made after the initialisation of underlying architectures.
+    mScene = std::make_unique<DynamicImpulseDemoScene>();  // Scenes must be made after the initialisation of underlying architectures.
 }
 
 Core::~Core()
@@ -170,6 +171,9 @@ void Core::updateImgui()
                 
             if (ImGui::MenuItem("Platforms Demo"))
                 mScene = std::make_unique<PlatformDemoScene>();
+            
+            if (ImGui::MenuItem("Dynamic Impulse Demo"))
+                mScene = std::make_unique<DynamicImpulseDemoScene>();
                 
             ImGui::EndMenu();
         }

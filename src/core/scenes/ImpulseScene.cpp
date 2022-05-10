@@ -106,11 +106,11 @@ void ImpulseScene::onRender()
 
 void ImpulseScene::showSettings(Entity entity)
 {
-    auto &transform = mEcs.getComponent<Transform>(mRedBall);
-    auto &dynamicObject = mEcs.getComponent<DynamicObject>(mRedBall);
-    auto &physicsMaterial = mEcs.getComponent<PhysicsMaterial>(mRedBall);
+    auto &transform = mEcs.getComponent<Transform>(entity);
+    auto &dynamicObject = mEcs.getComponent<DynamicObject>(entity);
+    auto &physicsMaterial = mEcs.getComponent<PhysicsMaterial>(entity);
     
-    std::string hash = std::to_string(mRedBall);
+    std::string hash = std::to_string(entity);
     
     ImGui::DragFloat3(std::string("Position##" + hash).c_str(),     glm::value_ptr(transform.position), 0.1f);
     ImGui::DragFloat4(std::string("Rotation##" + hash).c_str(),     glm::value_ptr(transform.rotation), 0.1f);
