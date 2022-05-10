@@ -14,6 +14,7 @@
 #include "Timers.h"
 #include "scenes/ImpulseScene.h"
 #include "scenes/OctreeDemoScene.h"
+#include "scenes/PlatformDemoScene.h"
 
 Core::Core(const glm::ivec2 &resolution)
 {
@@ -24,7 +25,7 @@ Core::Core(const glm::ivec2 &resolution)
         return;
     }
     
-    mScene = std::make_unique<OctreeDemoScene>();  // Scenes must be made after the initialisation of underlying architectures.
+    mScene = std::make_unique<PlatformDemoScene>();  // Scenes must be made after the initialisation of underlying architectures.
 }
 
 Core::~Core()
@@ -167,7 +168,9 @@ void Core::updateImgui()
             if (ImGui::MenuItem("Octree Demo"))
                 mScene = std::make_unique<OctreeDemoScene>();
                 
-            ImGui::MenuItem("Scene C");
+            if (ImGui::MenuItem("Platforms Demo"))
+                mScene = std::make_unique<PlatformDemoScene>();
+                
             ImGui::EndMenu();
         }
         mScene->onImguiMenuUpdate();

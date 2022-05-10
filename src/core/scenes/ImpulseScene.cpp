@@ -106,14 +106,17 @@ void ImpulseScene::onRender()
 
 void ImpulseScene::showSettings(Entity entity)
 {
-    auto &transform = mEcs.getComponent<Transform>(entity);
-    ImGui::DragFloat3("Position", glm::value_ptr(transform.position), 0.1f);
-    ImGui::DragFloat4("Rotation", glm::value_ptr(transform.rotation), 0.1f);
-    ImGui::DragFloat3("Scale", glm::value_ptr(transform.scale), 0.1f);
-    auto &dynamicObject = mEcs.getComponent<DynamicObject>(entity);
-    ImGui::DragFloat3("Force", glm::value_ptr(dynamicObject.force), 0.1f);
-    ImGui::DragFloat("Mass", &dynamicObject.mass);
-    ImGui::DragFloat3("Momentum", glm::value_ptr(dynamicObject.momentum), 0.1f);
-    auto &physicsMaterial = mEcs.getComponent<PhysicsMaterial>(entity);
-    ImGui::DragFloat("Bounciness", &physicsMaterial.bounciness);
+    auto &transform = mEcs.getComponent<Transform>(mRedBall);
+    auto &dynamicObject = mEcs.getComponent<DynamicObject>(mRedBall);
+    auto &physicsMaterial = mEcs.getComponent<PhysicsMaterial>(mRedBall);
+    
+    std::string hash = std::to_string(mRedBall);
+    
+    ImGui::DragFloat3(std::string("Position##" + hash).c_str(),     glm::value_ptr(transform.position), 0.1f);
+    ImGui::DragFloat4(std::string("Rotation##" + hash).c_str(),     glm::value_ptr(transform.rotation), 0.1f);
+    ImGui::DragFloat3(std::string("Scale##" + hash).c_str(),        glm::value_ptr(transform.scale), 0.1f);
+    ImGui::DragFloat3(std::string("Force##" + hash).c_str(),        glm::value_ptr(dynamicObject.force), 0.1f);
+    ImGui::DragFloat( std::string("Mass##" + hash).c_str(),         &dynamicObject.mass);
+    ImGui::DragFloat3(std::string("Momentum##" + hash).c_str(),     glm::value_ptr(dynamicObject.momentum), 0.1f);
+    ImGui::DragFloat( std::string("Bounciness##" + hash).c_str(),   &physicsMaterial.bounciness);
 }
