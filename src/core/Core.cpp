@@ -26,7 +26,7 @@ Core::Core(const glm::ivec2 &resolution)
         return;
     }
     
-    mScene = std::make_unique<DynamicImpulseDemoScene>();  // Scenes must be made after the initialisation of underlying architectures.
+    mScene = std::make_unique<TestingScene>();  // Scenes must be made after the initialisation of underlying architectures.
 }
 
 Core::~Core()
@@ -174,6 +174,9 @@ void Core::updateImgui()
             
             if (ImGui::MenuItem("Dynamic Impulse Demo"))
                 mScene = std::make_unique<DynamicImpulseDemoScene>();
+            
+            if (ImGui::MenuItem("Testing Scene"))
+                mScene = std::make_unique<TestingScene>();
                 
             ImGui::EndMenu();
         }

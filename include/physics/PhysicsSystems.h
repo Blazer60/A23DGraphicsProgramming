@@ -88,3 +88,12 @@ public:
     AngularEulerIntegration();
 };
 
+class MomentumRk4
+    : public ecs::BaseSystem<DynamicObject, Velocity, Transform>
+{
+public:
+    MomentumRk4();
+    
+protected:
+    glm::vec3 calculateMomentum(const float time, const glm::vec3 &force);
+};

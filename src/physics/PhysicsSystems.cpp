@@ -149,3 +149,28 @@ AngularEulerIntegration::AngularEulerIntegration()
     });
     scheduleFor(ecs::FixedUpdate);
 }
+
+MomentumRk4::MomentumRk4()
+{
+    mEntities.forEach([this](DynamicObject &dynamicObject, Velocity &velocity, Transform &transform) {
+        auto &[force, mass, momentum] = dynamicObject;
+        const float fixedTime = timers::fixedTime<float>();
+        
+        transform.position += velocity.value * fixedTime;
+        
+        const glm::vec3 k1 = calculateMomentum(fixedTime,           force);
+        const glm::vec3 k2 = calculateMomentum(0.5f * fixedTime,    force + 0.5f * fixedTime * k1);
+        const glm::vec3 k3 = calculateMomentum(0.5f * fixedTime,    force + 0.5f * fixedTime * k2);
+        const glm::vec3 k4 = calculateMomentum(fixedTime,           force + fixedTime * k3);
+        
+        momentum += (k1 + 2.f * k2 + 2.f * k3 + k4) / 6.f;
+        velocity.value = momentum / mass;
+    
+        force = glm::vec3(0.f);
+    });
+}
+
+glm::vec3 MomentumRk4::calculateMomentum(const float time, const glm::vec3 &force)
+{
+    return force * time;
+}

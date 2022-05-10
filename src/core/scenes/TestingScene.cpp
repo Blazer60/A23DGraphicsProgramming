@@ -58,7 +58,7 @@ void TestingScene::onUpdate()
         mEcs.createSystem<Gravity>();
         mEcs.createSystem<TreeBuilder>(mTree);
         mEcs.createSystem<CollisionDetection>(mRenderer, mTree);
-        mEcs.createSystem<EulerIntegration>();
+        mEcs.createSystem<MomentumRk4>();
         mEcs.createSystem<KinematicSystem>();
         mEcs.createSystem<AngularEulerIntegration>();
         setup = true;
