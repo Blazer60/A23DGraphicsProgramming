@@ -61,9 +61,9 @@ void PlatformDemoScene::onImguiUpdate()
         mEcs.createSystem<Gravity>();
         mEcs.createSystem<TreeBuilder>(mTree);
         mEcs.createSystem<CollisionDetection>(mRenderer, mTree);
-        mEcs.createSystem<EulerIntegration>();
-        mEcs.createSystem<KinematicSystem>();
-        mEcs.createSystem<AngularEulerIntegration>();
+        mEcs.createSystem<LinearEulerMethod>();
+        mEcs.createSystem<LinearKinematicSystem>();
+        mEcs.createSystem<AngularEulerMethod>();
         mSetup = true;
     }
     Scene::onImguiUpdate();

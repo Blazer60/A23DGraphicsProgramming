@@ -21,7 +21,7 @@ Gravity::Gravity()
     scheduleFor(ecs::FixedUpdate);
 }
 
-EulerIntegration::EulerIntegration()
+LinearEulerMethod::LinearEulerMethod()
 {
     mEntities.forEach([](DynamicObject &dynamicObject, Velocity &velocity, Transform &transform) {
         auto &[force, mass, momentum] = dynamicObject;
@@ -38,87 +38,7 @@ EulerIntegration::EulerIntegration()
     scheduleFor(ecs::FixedUpdate);
 }
 
-RungeKutta2::RungeKutta2()
-{
-    mEntities.forEach([](DynamicObject &dynamicObject, Velocity &velocity, Transform &transform) {
-        auto &[force, mass, _] = dynamicObject;
-        const float fixedTime = timers::fixedTime<float>();
-        
-        const glm::vec3 acceleration0 = force / mass;
-        const glm::vec3 k0 = fixedTime * acceleration0;
-        
-        force *= 0.5f * k0;
-        const glm::vec3 acceleration1 = force / mass;
-        const glm::vec3 k1 = fixedTime * fixedTime * acceleration1;
-        
-        velocity.value += 0.5f * (k0 + k1);
-        transform.position += velocity.value * fixedTime;
-        force = glm::vec3(0.f);
-    });
-    scheduleFor(ecs::FixedUpdate);
-}
-
-RungeKutta4::RungeKutta4()
-{
-    mEntities.forEach([](DynamicObject &dynamicObject, Velocity &velocity, Transform &transform) {
-        auto &[force, mass, _] = dynamicObject;
-        const float fixedTime = timers::fixedTime<float>();
-        
-        glm::vec3 acceleration = force / mass;
-        const glm::vec3 k0 = fixedTime * acceleration;
-        
-        force += k0 * 0.5f;
-        acceleration = force / mass;
-        const glm::vec3 k1 = fixedTime * acceleration;
-        
-        force += k1 * 0.5f;
-        acceleration = force / mass;
-        const glm::vec3 k2 = fixedTime * acceleration;
-        
-        force += k2 * 0.5f;
-        acceleration = force / mass;
-        const glm::vec3 k3 = fixedTime * acceleration;
-        
-        velocity.value += (k0 + 2.f * k1 + 2.f * k2 + k3) / 6.f;
-        transform.position += velocity.value * fixedTime;
-        
-        force = glm::vec3(0.f);
-    });
-    scheduleFor(ecs::FixedUpdate);
-}
-
-RungeKutta::RungeKutta(uint32_t degree)
-    : mDegree(degree)
-{
-    float a = static_cast<float>(mDegree) - 1.f;
-    float b = 1.f;
-    float value = 1.f;
-    for (int i = 0; i < mDegree; ++i)
-    {
-        mBinomials.emplace_back(1.f / value);
-        value *= a--;
-        value /= b++;
-    }
-    
-    mEntities.forEach([this](DynamicObject &dynamicObject, Velocity &velocity, Transform &transform) {
-        const float deltaTime = timers::fixedTime<float>();
-        auto &[force, mass, _]   = dynamicObject;
-        
-        for (const auto &binomial : mBinomials)
-        {
-            const glm::vec3 kBi = binomial * deltaTime * force / mass;
-            
-            force          += kBi;
-            velocity.value += kBi;
-        }
-        
-        transform.position += velocity.value * deltaTime;
-        force = glm::vec3(0.f);
-    });
-    scheduleFor(ecs::FixedUpdate);
-}
-
-KinematicSystem::KinematicSystem()
+LinearKinematicSystem::LinearKinematicSystem()
 {
     mEntities.forEach([](const Kinematic &kinematic, const Velocity &velocity, Transform &transform) {
         transform.position += velocity.value * timers::fixedTime<float>();
@@ -126,7 +46,7 @@ KinematicSystem::KinematicSystem()
     scheduleFor(ecs::FixedUpdate);
 }
 
-AngularEulerIntegration::AngularEulerIntegration()
+AngularEulerMethod::AngularEulerMethod()
 {
     mEntities.forEach([](Torque &torque, AngularObject &angularObject, AngularVelocity &angularVelocity, Transform &transform) {
         angularObject.angularMomentum += torque.tau * timers::fixedTime<float>();
@@ -146,14 +66,12 @@ AngularEulerIntegration::AngularEulerIntegration()
 
         transform.rotation = glm::normalize(glm::quat_cast(rotation));
         
-        
-        
         torque.tau = glm::vec3(0.f);
     });
     scheduleFor(ecs::FixedUpdate);
 }
 
-MomentumRk4::MomentumRk4()
+LinearRk4::LinearRk4()
 {
     mEntities.forEach([](DynamicObject &dynamicObject, Velocity &velocity, Transform &transform) {
         auto &[force, mass, momentum] = dynamicObject;
@@ -178,7 +96,7 @@ MomentumRk4::MomentumRk4()
     scheduleFor(ecs::FixedUpdate);
 }
 
-MomentumRk2::MomentumRk2()
+LinearRk2::LinearRk2()
 {
     mEntities.forEach([](DynamicObject &dynamicObject, Velocity &velocity, Transform &transform) {
         auto &[force, mass, momentum] = dynamicObject;
@@ -186,7 +104,7 @@ MomentumRk2::MomentumRk2()
     
         // This is added on before as collision reactions can impact the velocity.
         // This makes everything slightly more stable as a tiny amount of energy is added rather than removed.
-        // Should ideally be moved to after rk4 has happened.
+        // Should ideally be moved to after rk2 has happened.
         transform.position += velocity.value * fixedTime;
         
         const glm::vec3 k1 = physics::calculateMomentum(fixedTime, force);
@@ -200,7 +118,7 @@ MomentumRk2::MomentumRk2()
     scheduleFor(ecs::FixedUpdate);
 }
 
-MomentumRk::MomentumRk(const uint32_t degree)
+LinearRk::LinearRk(const uint32_t degree)
     : mDegree(degree)
 {
     float a = static_cast<float>(mDegree) - 1.f;
@@ -223,14 +141,16 @@ MomentumRk::MomentumRk(const uint32_t degree)
         // Should ideally be moved to after rk(n) has happened.
         transform.position += velocity.value * fixedTime;
         
+        glm::vec3 momentumDelta = glm::vec3(0.f);
         glm::vec3 previousK = glm::vec3(0.f);
         for (const float binomial : mBinomials)
         {
-            momentum += previousK;
-            previousK = physics::calculateMomentum(binomial * fixedTime, force + binomial * fixedTime * previousK);
+            const glm::vec3 k = physics::calculateMomentum(binomial * fixedTime, force + binomial * fixedTime * previousK);
+            momentumDelta += (1.f / binomial) * k;
+            previousK = k;
         }
         
-        momentum /= mSum;
+        momentum += momentumDelta / mSum;
         velocity.value = momentum / mass;
         
         force = glm::vec3(0.f);

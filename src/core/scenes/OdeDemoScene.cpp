@@ -56,16 +56,16 @@ void OdeDemoScene::onImguiUpdate()
         mEcs.createSystem<CollisionDetection>(mRenderer, mTree);
         
         mEcs.createSystem<Gravity>({ mEulerTag });
-        mEcs.createSystem<EulerIntegration>({ mEulerTag });
+        mEcs.createSystem<LinearEulerMethod>({ mEulerTag });
     
         mEcs.createSystem<Gravity>({ mRk2Tag });
-        mEcs.createSystem<MomentumRk2>({ mRk2Tag });
+        mEcs.createSystem<LinearRk2>({ mRk2Tag });
     
         mEcs.createSystem<Gravity>({ mRk4Tag });
-        mEcs.createSystem<MomentumRk4>({ mRk4Tag });
+        mEcs.createSystem<LinearRk4>({ mRk4Tag });
     
         mEcs.createSystem<Gravity>({ mRkNTag });
-        mEcs.createSystem<MomentumRk>({ mRkNTag }, mRkNValue);
+        mEcs.createSystem<LinearRk>({ mRkNTag }, mRkNValue);
         
         mSetup = true;
     }

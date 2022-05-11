@@ -19,11 +19,7 @@ class AngularVelocity;
 class Torque;
 class AngularObject;
 
-/**
- * Applies gravity to all dynamic objects within the scene.
- * @author Ryan Purse
- * @date 13/04/2022
- */
+
 class Gravity
     : public ecs::BaseSystem<DynamicObject>
 {
@@ -33,80 +29,47 @@ protected:
     const float gravitationalConstant { 9.81f };
 };
 
-/**
- * Applies Euler's method to everything within the scene.
- * @author Ryan Purse
- * @date 13/04/2022
- */
-class EulerIntegration
+
+class LinearEulerMethod
     : public ecs::BaseSystem<DynamicObject, Velocity, Transform>
 {
 public:
-    EulerIntegration();
+    LinearEulerMethod();
 };
 
-/**
- * @brief Applies rk2's method to everything within the scene.
- * @author Ryan Purse
- * @date 13/04/2022
- */
-class RungeKutta2
-    : public ecs::BaseSystem<DynamicObject, Velocity, Transform>
-{
-public:
-    RungeKutta2();
-};
-
-class RungeKutta4
-    : public ecs::BaseSystem<DynamicObject, Velocity, Transform>
-{
-public:
-    RungeKutta4();
-};
-
-class RungeKutta
-    : public ecs::BaseSystem<DynamicObject, Velocity, Transform>
-{
-public:
-    explicit RungeKutta(uint32_t degree);
-protected:
-    std::vector<float>  mBinomials;
-    uint32_t            mDegree { 4 };
-};
-
-class KinematicSystem
+class LinearKinematicSystem
     : public ecs::BaseSystem<Kinematic, Velocity, Transform>
 {
 public:
-    KinematicSystem();
+    LinearKinematicSystem();
 };
 
-class AngularEulerIntegration
+class AngularEulerMethod
     : public ecs::BaseSystem<Torque, AngularObject, AngularVelocity, Transform>
 {
 public:
-    AngularEulerIntegration();
+    AngularEulerMethod();
 };
 
-class MomentumRk4
+class LinearRk4
     : public ecs::BaseSystem<DynamicObject, Velocity, Transform>
 {
 public:
-    MomentumRk4();
+    LinearRk4();
 };
 
-class MomentumRk2
+class LinearRk2
     : public ecs::BaseSystem<DynamicObject, Velocity, Transform>
 {
 public:
-    MomentumRk2();
+    LinearRk2();
 };
 
-class MomentumRk
+class LinearRk
     : public ecs::BaseSystem<DynamicObject, Velocity, Transform>
 {
 public:
-    explicit MomentumRk(const uint32_t degree);
+    explicit LinearRk(const uint32_t degree);
 protected:
     std::vector<float> mBinomials;
     float mSum { 0.f };
