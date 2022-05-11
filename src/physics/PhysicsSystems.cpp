@@ -10,6 +10,7 @@
 #include "Components.h"
 #include "Timers.h"
 #include "gtc/quaternion.hpp"
+#include "PhysicsHelpers.h"
 
 Gravity::Gravity()
 {
@@ -152,25 +153,85 @@ AngularEulerIntegration::AngularEulerIntegration()
 
 MomentumRk4::MomentumRk4()
 {
-    mEntities.forEach([this](DynamicObject &dynamicObject, Velocity &velocity, Transform &transform) {
+    mEntities.forEach([](DynamicObject &dynamicObject, Velocity &velocity, Transform &transform) {
         auto &[force, mass, momentum] = dynamicObject;
         const float fixedTime = timers::fixedTime<float>();
         
+        // This is added on before as collision reactions can impact the velocity.
+        // This makes everything slightly more stable as a tiny amount of energy is added rather than removed.
+        // Should ideally be moved to after rk4 has happened.
         transform.position += velocity.value * fixedTime;
         
-        const glm::vec3 k1 = calculateMomentum(fixedTime,           force);
-        const glm::vec3 k2 = calculateMomentum(0.5f * fixedTime,    force + 0.5f * fixedTime * k1);
-        const glm::vec3 k3 = calculateMomentum(0.5f * fixedTime,    force + 0.5f * fixedTime * k2);
-        const glm::vec3 k4 = calculateMomentum(fixedTime,           force + fixedTime * k3);
+        const glm::vec3 k1 = physics::calculateMomentum(fixedTime,           force);
+        const glm::vec3 k2 = physics::calculateMomentum(0.5f * fixedTime,    force + 0.5f * fixedTime * k1);
+        const glm::vec3 k3 = physics::calculateMomentum(0.5f * fixedTime,    force + 0.5f * fixedTime * k2);
+        const glm::vec3 k4 = physics::calculateMomentum(fixedTime,           force + fixedTime * k3);
         
+        // Weighted average of each K value to determine momentum.
         momentum += (k1 + 2.f * k2 + 2.f * k3 + k4) / 6.f;
         velocity.value = momentum / mass;
     
         force = glm::vec3(0.f);
     });
+    scheduleFor(ecs::FixedUpdate);
 }
 
-glm::vec3 MomentumRk4::calculateMomentum(const float time, const glm::vec3 &force)
+MomentumRk2::MomentumRk2()
 {
-    return force * time;
+    mEntities.forEach([](DynamicObject &dynamicObject, Velocity &velocity, Transform &transform) {
+        auto &[force, mass, momentum] = dynamicObject;
+        const float fixedTime = timers::fixedTime<float>();
+    
+        // This is added on before as collision reactions can impact the velocity.
+        // This makes everything slightly more stable as a tiny amount of energy is added rather than removed.
+        // Should ideally be moved to after rk4 has happened.
+        transform.position += velocity.value * fixedTime;
+        
+        const glm::vec3 k1 = physics::calculateMomentum(fixedTime, force);
+        const glm::vec3 k2 = physics::calculateMomentum(0.5f * fixedTime, force + 0.5f * fixedTime * k1);
+        
+        momentum += (k1 + k2) / 2.f;
+        velocity.value = momentum / mass;
+        
+        force = glm::vec3(0.f);
+    });
+    scheduleFor(ecs::FixedUpdate);
+}
+
+MomentumRk::MomentumRk(const uint32_t degree)
+    : mDegree(degree)
+{
+    float a = static_cast<float>(mDegree) - 1.f;
+    float b = 1.f;
+    float value = 1.f;
+    for (int i = 0; i < mDegree; ++i)
+    {
+        mBinomials.emplace_back(1.f / value);
+        mSum += value;
+        value *= a--;
+        value /= b++;
+    }
+    
+    mEntities.forEach([this](DynamicObject &dynamicObject, Velocity &velocity, Transform &transform) {
+        auto &[force, mass, momentum] = dynamicObject;
+        const float fixedTime = timers::fixedTime<float>();
+    
+        // This is added on before as collision reactions can impact the velocity.
+        // This makes everything slightly more stable as a tiny amount of energy is added rather than removed.
+        // Should ideally be moved to after rk(n) has happened.
+        transform.position += velocity.value * fixedTime;
+        
+        glm::vec3 previousK = glm::vec3(0.f);
+        for (const float binomial : mBinomials)
+        {
+            momentum += previousK;
+            previousK = physics::calculateMomentum(binomial * fixedTime, force + binomial * fixedTime * previousK);
+        }
+        
+        momentum /= mSum;
+        velocity.value = momentum / mass;
+        
+        force = glm::vec3(0.f);
+    });
+    scheduleFor(ecs::FixedUpdate);
 }

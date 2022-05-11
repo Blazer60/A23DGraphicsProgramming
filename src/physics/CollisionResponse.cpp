@@ -94,6 +94,23 @@ void CollisionResponse::staticCollision(Entity entity, Entity other, const glm::
     velocity.value          = dynamicObject.momentum / dynamicObject.mass;
 }
 
+void CollisionResponse::typedStaticCollision(Component dynamicType, Entity entity, Entity other, const glm::vec3 &position, const glm::vec3 &normal)
+{
+    auto &dynamicObject           = mEcs.getComponent<DynamicObject>(entity, dynamicType);
+    auto &velocity                = mEcs.getComponent<Velocity>(entity);
+    const auto &transform         = mEcs.getComponent<Transform>(entity);
+    const auto &physicsMaterial   = mEcs.getComponent<PhysicsMaterial>(entity);
+    
+    const float vRel        = glm::dot(normal, velocity.value);
+    const float numerator   = -(1.f + physicsMaterial.bounciness) * vRel;
+    const float term1       = 1.f / dynamicObject.mass;
+    const float j           = numerator / term1;
+    const glm::vec3 force   = j * normal;
+    
+    dynamicObject.momentum += force;
+    velocity.value          = dynamicObject.momentum / dynamicObject.mass;
+}
+
 void CollisionResponse::dynamicCollision(Entity entity, Entity other, const glm::vec3 &position, const glm::vec3 &normal)
 {
     auto &lhsDynamicObject          = mEcs.getComponent<DynamicObject>(entity);

@@ -31,6 +31,8 @@ public:
     
     void staticCollision(Entity entity, Entity other, const glm::vec3 &position, const glm::vec3 &normal);
     
+    void typedStaticCollision(Component dynamicType, Entity entity, Entity other, const glm::vec3 &position, const glm::vec3 &normal);
+    
     void dynamicCollision(Entity entity, Entity other, const glm::vec3 &position, const glm::vec3 &normal);
 protected:
     ecs::Core &mEcs;

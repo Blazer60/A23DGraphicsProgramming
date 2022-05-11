@@ -59,6 +59,8 @@ namespace physics
     glm::vec3 normalise(const glm::vec3 &value);
     
     std::array<glm::vec3, 8> boxToVertex(const glm::mat4 &modelMatrix, const glm::vec3 &halfSize);
+    
+    constexpr glm::vec3 calculateMomentum(const float time, const glm::vec3 &force) { return force * time; };
 }
 
 /**

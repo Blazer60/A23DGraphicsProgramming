@@ -30,7 +30,7 @@ class Gravity
 public:
     Gravity();
 protected:
-    float gravitationalConstant { 9.81f };
+    const float gravitationalConstant { 9.81f };
 };
 
 /**
@@ -93,7 +93,22 @@ class MomentumRk4
 {
 public:
     MomentumRk4();
-    
+};
+
+class MomentumRk2
+    : public ecs::BaseSystem<DynamicObject, Velocity, Transform>
+{
+public:
+    MomentumRk2();
+};
+
+class MomentumRk
+    : public ecs::BaseSystem<DynamicObject, Velocity, Transform>
+{
+public:
+    explicit MomentumRk(const uint32_t degree);
 protected:
-    glm::vec3 calculateMomentum(const float time, const glm::vec3 &force);
+    std::vector<float> mBinomials;
+    float mSum { 0.f };
+    const uint32_t mDegree;
 };
