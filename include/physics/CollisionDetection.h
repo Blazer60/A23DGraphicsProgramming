@@ -34,13 +34,6 @@ class CollisionDetection
     
 public:
     CollisionDetection(Renderer &renderer, std::shared_ptr<octree::Tree<CollisionEntity>> tree);
-
-    void onUpdate() override;
-    
-    void treeCollision();
-    void collisionLhs();
-    void collisionRhs(const BoundingSphere &lhs, const glm::mat4 &lhsModelMat, const glm::vec3 &lhsVelocity);
-    void collisionRhs(const BoundingBox &lhs, const glm::mat4 &lhsModelMat, const glm::vec3 &lhsVelocity);
     
     /** Sphere Vs. Sphere */
     HitRecord collisionCheck(
@@ -58,10 +51,6 @@ public:
         const BoundingBox &rhs, const glm::mat4 &rhsModelMat, const glm::vec3 &rhsVelocity);
     
 protected:
-    std::vector<BoundedCollisionEntity> mCollisionEntities;
-    std::shared_ptr<octree::Tree<CollisionEntity>> mTree;
-    Renderer &mRenderer;
-    
     void traverseTree(
         std::shared_ptr<BoundingSphere> lhsEntity, std::shared_ptr<BasicUniforms> &uniforms,
         const Velocity &velocity, octree::AABB bounds);
@@ -69,6 +58,10 @@ protected:
     void traverseTree(
         std::shared_ptr<BoundingBox> lhsEntity, std::shared_ptr<BasicUniforms> &uniforms,
         const Velocity &velocity, octree::AABB bounds);
+    
+    std::vector<BoundedCollisionEntity> mCollisionEntities;
+    std::shared_ptr<octree::Tree<CollisionEntity>> mTree;
+    Renderer &mRenderer;
 };
 
 

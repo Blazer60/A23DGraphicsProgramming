@@ -56,6 +56,7 @@ namespace physics
     /**
      * @returns The value normalised if length(value) > 0, zero vector otherwise.
      */
+    [[deprecated("Does not keep the signs for a value. Use glm::noramize directly.")]]
     glm::vec3 normalise(const glm::vec3 &value);
     
     std::array<glm::vec3, 8> boxToVertex(const glm::mat4 &modelMatrix, const glm::vec3 &halfSize);
