@@ -104,9 +104,9 @@ bool Core::initOpenGl()
         return false;
     
     // Debug Messaging.
-    glEnable(GL_DEBUG_OUTPUT);
-    glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-    glDebugMessageCallback(debug::openglCallBack, nullptr);
+    // glEnable(GL_DEBUG_OUTPUT);
+    // glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+    // glDebugMessageCallback(debug::openglCallBack, nullptr);
 
     debug::log(glGetString(GL_VERSION), debug::severity::Notification);
     
