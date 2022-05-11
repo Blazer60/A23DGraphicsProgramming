@@ -17,6 +17,7 @@
 #include "scenes/PlatformDemoScene.h"
 #include "scenes/DynamicImpulseDemoScene.h"
 #include "scenes/OdeDemoScene.h"
+#include "scenes/RotationDemoScene.h"
 
 Core::Core(const glm::ivec2 &resolution)
 {
@@ -27,7 +28,7 @@ Core::Core(const glm::ivec2 &resolution)
         return;
     }
     
-    mScene = std::make_unique<OdeDemoScene>();  // Scenes must be made after the initialisation of underlying architectures.
+    mScene = std::make_unique<RotationDemoScene>();  // Scenes must be made after the initialisation of underlying architectures.
 }
 
 Core::~Core()
@@ -178,6 +179,9 @@ void Core::updateImgui()
     
             if (ImGui::MenuItem("ODE Demo"))
                 mScene = std::make_unique<OdeDemoScene>();
+            
+            if (ImGui::MenuItem("Rotation Demo"))
+                mScene = std::make_unique<RotationDemoScene>();
             
             if (ImGui::MenuItem("Testing Scene"))
                 mScene = std::make_unique<TestingScene>();

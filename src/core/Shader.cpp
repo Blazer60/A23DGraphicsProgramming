@@ -11,6 +11,7 @@
 #include <sstream>
 
 Shader::Shader(const std::filesystem::path &vertexPath, const std::filesystem::path &fragmentPath)
+    : mDebugName(vertexPath.string() + " | " + fragmentPath.string())
 {
     mId = glCreateProgram();
     unsigned int vs = compile(GL_VERTEX_SHADER, vertexPath.string());
@@ -105,7 +106,7 @@ int Shader::getLocation(const std::string &name)
     
     int location = glGetUniformLocation(mId, name.data());
     if (location == -1)
-        debug::log("Uniform '" + name + "' does not exist!", debug::severity::Warning);
+        debug::log("Uniform '" + name + "' does not exist! (" + mDebugName +")", debug::severity::Warning);
     
     mCache[name] = location;
     return location;

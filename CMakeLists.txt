@@ -113,7 +113,7 @@ add_executable(${PROJECT_NAME}
         include/physics/octree/Tree.h
         src/core/scenes/TestingScene.cpp src/core/scenes/TestingScene.h
         src/physics/TreeBuilder.cpp include/physics/TreeBuilder.h
-        src/core/scenes/ImpulseScene.cpp src/core/scenes/ImpulseScene.h src/core/scenes/OctreeDemoScene.cpp src/core/scenes/OctreeDemoScene.h src/core/scenes/PlatformDemoScene.cpp src/core/scenes/PlatformDemoScene.h src/core/scenes/DynamicImpulseDemoScene.cpp src/core/scenes/DynamicImpulseDemoScene.h src/core/scenes/OdeDemoScene.cpp src/core/scenes/OdeDemoScene.h)
+        src/core/scenes/ImpulseScene.cpp src/core/scenes/ImpulseScene.h src/core/scenes/OctreeDemoScene.cpp src/core/scenes/OctreeDemoScene.h src/core/scenes/PlatformDemoScene.cpp src/core/scenes/PlatformDemoScene.h src/core/scenes/DynamicImpulseDemoScene.cpp src/core/scenes/DynamicImpulseDemoScene.h src/core/scenes/OdeDemoScene.cpp src/core/scenes/OdeDemoScene.h src/core/scenes/RotationDemoScene.cpp src/core/scenes/RotationDemoScene.h)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
 # Project Includes

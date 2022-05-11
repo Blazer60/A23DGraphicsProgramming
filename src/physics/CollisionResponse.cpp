@@ -152,22 +152,41 @@ void CollisionResponse::staticRotationalCollision(
     auto &angularVelocity         = mEcs.getComponent<AngularVelocity>(entity);
     auto &torque                  = mEcs.getComponent<Torque>(entity);
     
-    debug::log("Position: " + std::to_string(position.x) + ", " + std::to_string(position.y) + ", " + std::to_string(position.z));
-    
     const glm::vec3 &omega = angularVelocity.omega;
-    const glm::vec3 paDot = velocity.value + glm::cross(omega, position - transform.position);
     const glm::vec3 ra    = position - transform.position;
+    const glm::vec3 paDot = velocity.value;// + glm::cross(omega, ra);
     const float     vRel  = glm::dot(normal, paDot);
     
     const float numerator = -(1.f + physicsMaterial.bounciness) * vRel;
     const float term1     = 1.f / dynamicObject.mass;
-    const float term3     = glm::dot(normal, glm::cross(angularObject.inverseInertia * glm::cross(ra, normal), ra));
-    const float         j = numerator / (term1 + term3);
-    const glm::vec3 force = j * normal;
+    const float term3     = glm::dot(normal, angularObject.inverseInertia * (ra * normal));
+    const float jLinear   = numerator / term1;
+    const float jAngular  = numerator / (term1 + term3);
+    const glm::vec3 force = (jLinear + jAngular) * normal;
     
     // Applying Impulse
     dynamicObject.momentum += force;
-    angularObject.angularMomentum += glm::cross(ra, force);
+    // angularObject.angularMomentum += glm::cross(ra, force);;
+    
+    // // Wen's Frictional part. DynamicObject1.cpp
+    const glm::vec3 contactForce = -dynamicObject.force * normal;
+
+    dynamicObject.force += contactForce;
+
+    const glm::vec3 forwardRelativeVelocity = velocity.value - glm::dot(velocity.value, normal) * normal;
+    const glm::vec3 forwardRelativeDirection = glm::normalize(forwardRelativeVelocity);
+    const float mu = 0.5f;  // Drag coefficient.
+    const glm::vec3 frictionDirection = -forwardRelativeDirection;
+    const glm::vec3 frictionForce = frictionDirection * mu * glm::length(contactForce);
+
+    if (glm::length(forwardRelativeVelocity) - ((glm::length(frictionForce) / dynamicObject.mass) * timers::fixedTime<float>()) > 0.f)
+        dynamicObject.force += frictionForce;
+    else
+        dynamicObject.force += -forwardRelativeVelocity;
+    
+
+    torque.tau -= glm::cross(ra, contactForce) + glm::cross(ra, frictionForce);
+    // End Wen's Frictional Part. DynamicObject1.cpp
     
     // Recomputing auxiliaries in response
     velocity.value = dynamicObject.momentum / dynamicObject.mass;

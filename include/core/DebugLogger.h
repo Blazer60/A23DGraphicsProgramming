@@ -21,7 +21,7 @@
 
 namespace debug
 {
-    static std::set<uint64_t> blackList { 131185 };
+    static std::set<uint64_t> blackList { 131185, 131328 };
     
     /**
      * Severity types for when you want to log something.

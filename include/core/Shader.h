@@ -68,6 +68,7 @@ public:
     
 
 protected:
+    std::string mDebugName { "" };
     unsigned int mId { 0 };
     std::unordered_map<std::string , int> mCache;
     

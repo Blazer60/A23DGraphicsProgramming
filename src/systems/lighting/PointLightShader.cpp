@@ -58,10 +58,10 @@ void PointLightShader::bind()
     glBindTextureUnit(1, mNormals->getName());
     glBindTextureUnit(2, mAlbedo->getName());
     
-    mShader.set("u_positions", 0);
-    mShader.set("u_normals",   1);
-    mShader.set("u_albedo",    2);
+    // mShader.set("u_positions", 0);
+    // mShader.set("u_normals",   1);
+    // mShader.set("u_albedo",    2);
     
     mShader.set("u_model_matrix", glm::mat4(1.f));
-    mShader.set("u_camera_position_ws", mCamera->getPosition());
+    // mShader.set("u_camera_position_ws", mCamera->getPosition());
 }

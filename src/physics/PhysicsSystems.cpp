@@ -134,6 +134,8 @@ AngularEulerIntegration::AngularEulerIntegration()
         glm::mat3 rotation = glm::mat3_cast(transform.rotation);
         angularObject.inverseInertia = rotation * angularObject.inverseBodyInertia * glm::transpose(rotation);
         
+        angularVelocity.omega = angularObject.inverseInertia * angularObject.angularMomentum;
+        
         const glm::vec3 &omega = angularVelocity.omega;
         const glm::mat3 omegaStar = glm::mat3(
             0.f,      -omega.z, omega.y,
@@ -142,9 +144,9 @@ AngularEulerIntegration::AngularEulerIntegration()
 
         rotation = rotation + omegaStar * rotation * timers::fixedTime<float>();
 
-        transform.rotation = glm::normalize(glm::quat(rotation));
+        transform.rotation = glm::normalize(glm::quat_cast(rotation));
         
-        angularVelocity.omega = angularObject.inverseInertia * angularObject.angularMomentum;
+        
         
         torque.tau = glm::vec3(0.f);
     });
