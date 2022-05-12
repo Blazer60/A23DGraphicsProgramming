@@ -152,43 +152,52 @@ void CollisionResponse::staticRotationalCollision(
     auto &angularVelocity         = mEcs.getComponent<AngularVelocity>(entity);
     auto &torque                  = mEcs.getComponent<Torque>(entity);
     
-    const glm::vec3 &omega = angularVelocity.omega;
-    const glm::vec3 ra    = position - transform.position;
-    const glm::vec3 paDot = velocity.value;// + glm::cross(omega, ra);
-    const float     vRel  = glm::dot(normal, paDot);
+    float Jlinear = 0.0f;	// Linear impulse
+    float Jangular = 0.0f;	// Angular impulse
+    float e = physicsMaterial.bounciness;	// Friction
+    glm::vec3 r1 = glm::vec3(0.0f, 1.0f, 0.0f); // Lever between the COM and the point of contact
     
-    const float numerator = -(1.f + physicsMaterial.bounciness) * vRel;
-    const float term1     = 1.f / dynamicObject.mass;
-    const float term3     = glm::dot(normal, angularObject.inverseInertia * (ra * normal));
-    const float jLinear   = numerator / term1;
-    const float jAngular  = numerator / (term1 + term3);
-    const glm::vec3 force = (jLinear + jAngular) * normal;
+    float oneOverMass1 = 1.0f / dynamicObject.mass;	// 1/m of object 1
+    float oneOverMass2 = 0.0f;			// 1/m of object 2
+    glm::vec3 vA = velocity.value;			// velocity of object 1
+    glm::vec3 vB = glm::vec3(0.0f, 0.0f, 0.0f); // velocity of object 2
+    glm::vec3 relativeVelocity = vA - vB;	// The relative velocity of both objects
+    glm::vec3 contactNormal = glm::vec3(0.0f, 1.0f, 0.0f);
     
-    // Applying Impulse
-    dynamicObject.momentum += force;
-    // angularObject.angularMomentum += glm::cross(ra, force);;
+    Jlinear = (glm::dot(-(1.0f + e) * (vA), contactNormal)) / oneOverMass1 + oneOverMass2;
+    Jangular = (glm::dot(-(1.0f + e) * (relativeVelocity), contactNormal)) / (oneOverMass1 + oneOverMass2 + glm::dot(angularObject.inverseInertia * (r1 * contactNormal), contactNormal));
     
-    // // Wen's Frictional part. DynamicObject1.cpp
-    const glm::vec3 contactForce = -dynamicObject.force * normal;
-
-    dynamicObject.force += contactForce;
-
-    const glm::vec3 forwardRelativeVelocity = velocity.value - glm::dot(velocity.value, normal) * normal;
-    const glm::vec3 forwardRelativeDirection = glm::normalize(forwardRelativeVelocity);
-    const float mu = 0.5f;  // Drag coefficient.
-    const glm::vec3 frictionDirection = -forwardRelativeDirection;
-    const glm::vec3 frictionForce = frictionDirection * mu * glm::length(contactForce);
-
-    if (glm::length(forwardRelativeVelocity) - ((glm::length(frictionForce) / dynamicObject.mass) * timers::fixedTime<float>()) > 0.f)
-        dynamicObject.force += frictionForce;
-    else
-        dynamicObject.force += -forwardRelativeVelocity;
+    glm::vec3 impulseForce = (Jangular + Jlinear) * contactNormal; // Fi = (Jang + Jlin) * cN
+    glm::vec3 contactForce = (9.81f * dynamicObject.mass)* contactNormal;
     
-
-    torque.tau -= glm::cross(ra, contactForce) + glm::cross(ra, frictionForce);
-    // End Wen's Frictional Part. DynamicObject1.cpp
-    
-    // Recomputing auxiliaries in response
+    dynamicObject.force += impulseForce + contactForce;
+    dynamicObject.momentum += impulseForce; // Adding the impulse onto the velocity
     velocity.value = dynamicObject.momentum / dynamicObject.mass;
-    angularVelocity.omega = angularObject.inverseInertia * angularObject.angularMomentum;
+    
+    glm::vec3 forwardRelativeVelocity = relativeVelocity - glm::dot(relativeVelocity, contactNormal) * contactNormal; // Finding the relative velocity perpendicular to the contact normal
+    
+    glm::vec3 forwardRelativeDirection = glm::vec3(0.0f, 0.0f, 0.0f);
+    if (forwardRelativeVelocity != glm::vec3(0.0f, 0.0f, 0.0f))
+    {
+        forwardRelativeDirection = glm::normalize(forwardRelativeVelocity); // gets a normalized vector of the direction travelled perpendicular to the contact normal
+    }
+    
+    float mu = 0.3f;
+    glm::vec3 frictionDirection = forwardRelativeDirection * -1.0f; // friction direction acts in opposite direction of direction travelled
+    glm::vec3 frictionForce = frictionDirection * glm::length(contactForce) * mu; // friction = mu * normal force
+    
+    if (glm::length(forwardRelativeVelocity) - ((glm::length(frictionForce) / dynamicObject.mass) * timers::fixedTime<float>()) > 0.0f) // Checks to see if the friction force would reverse the direction of travel
+    {
+        dynamicObject.force += frictionForce;
+    }
+    else
+    {
+        frictionForce = forwardRelativeVelocity *-1.0f; // Adds enough friction to stop the object
+        dynamicObject.force += frictionForce;
+    }
+    
+    glm::vec3 tempTorque = (glm::cross(r1, contactForce)) + (glm::cross(r1, frictionForce));
+    tempTorque -= angularObject.angularMomentum * 5.f;
+    
+    torque.tau += tempTorque;
 }
