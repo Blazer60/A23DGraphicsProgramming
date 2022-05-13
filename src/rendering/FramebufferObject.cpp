@@ -20,9 +20,11 @@ FramebufferObject::FramebufferObject(const glm::ivec2 &size)
 }
 
 FramebufferObject::FramebufferObject(
-    const glm::ivec2 &size, GLenum sourceBlendFunction, GLenum destinationBlendFunction) :
+    const glm::ivec2 &size, GLenum sourceBlendFunction,
+    GLenum destinationBlendFunction, GLenum depthFunction) :
     mSize(size), mRenderBufferObject(size),
-    mSourceBlend(sourceBlendFunction), mDestinationBlend(destinationBlendFunction)
+    mSourceBlend(sourceBlendFunction), mDestinationBlend(destinationBlendFunction),
+    mDepthFunction(depthFunction)
 {
     glCreateFramebuffers(1, &mFboName);
     glNamedFramebufferRenderbuffer(
@@ -104,6 +106,6 @@ unsigned int FramebufferObject::getFboName() const
 void FramebufferObject::bind() const
 {
     glBlendFunc(mSourceBlend, mDestinationBlend);
-    glDepthFunc(GL_LESS);
+    glDepthFunc(mDepthFunction);
     glBindFramebuffer(GL_FRAMEBUFFER, mFboName);
 }

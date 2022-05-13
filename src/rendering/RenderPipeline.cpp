@@ -9,9 +9,9 @@
 #include "imgui.h"
 
 RenderPipeline::RenderPipeline() :
-    mGeometry(std::make_shared<FramebufferObject>(mSize, GL_ONE, GL_ZERO)),
-    mLightAccumulator(std::make_shared<FramebufferObject>(mSize, GL_ONE, GL_ONE)),
-    mOutput(std::make_shared<FramebufferObject>(mSize, GL_ONE, GL_ONE)),
+    mGeometry(std::make_shared<FramebufferObject>(mSize, GL_ONE, GL_ZERO, GL_LESS)),
+    mLightAccumulator(std::make_shared<FramebufferObject>(mSize, GL_ONE, GL_ONE, GL_ALWAYS)),
+    mOutput(std::make_shared<FramebufferObject>(mSize, GL_ONE, GL_ONE, GL_ALWAYS)),
     
     mPosition(  std::make_shared<TextureBufferObject>(mSize, GL_RGB16F,       "Position")),
     mNormal(    std::make_shared<TextureBufferObject>(mSize, GL_RGB16_SNORM,  "Normals")),

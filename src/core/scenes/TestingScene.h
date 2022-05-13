@@ -22,29 +22,16 @@ public:
     TestingScene();
     ~TestingScene() = default;
     
-    void onUpdate() override;
-    void onRender() override;
     void onImguiUpdate() override;
     
 protected:
-    Model<PhongVertex, BlinnPhongMaterial> mBanana {
+    Model<PhongVertex, BlinnPhongMaterial> mBananaModel {
         load::model<PhongVertex, BlinnPhongMaterial>(
             path::resources() + "models/Bole.obj") };
-    
-    Model<PhongVertex, BlinnPhongMaterial> mStoneCladding {
-        load::model<PhongVertex, BlinnPhongMaterial>(
-            path::resources() + "models/pbr-spheres/StoneCladding.obj") };
     
     Model<PhongVertex, BlinnPhongMaterial> mFloor {
         load::model<PhongVertex, BlinnPhongMaterial>(
             path::resources() + "models/thick-floor/ThickFloor.obj") };
     
-    Entity mAlpha;
-    Entity mBeta;
-    
-    std::shared_ptr<octree::Tree<CollisionEntity>> mTree {
-        std::make_shared<octree::Tree<CollisionEntity>>(octree::AABB { glm::vec3(0.f), glm::vec3(52.f) }, 2) };
-    
-    bool mShowBounds        { false };
-    bool mShowElementBounds { false };
+    Entity mBanana;
 };

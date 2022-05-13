@@ -28,7 +28,7 @@ Core::Core(const glm::ivec2 &resolution)
         return;
     }
     
-    mScene = std::make_unique<OctreeDemoScene>();  // Scenes must be made after the initialisation of underlying architectures.
+    mScene = std::make_unique<TestingScene>();  // Scenes must be made after the initialisation of underlying architectures.
 }
 
 Core::~Core()

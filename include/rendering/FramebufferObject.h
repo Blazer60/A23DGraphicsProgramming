@@ -20,7 +20,19 @@ class FramebufferObject
 {
 public:
     explicit FramebufferObject(const glm::ivec2 &size);
-    FramebufferObject(const glm::ivec2 &size, GLenum sourceBlendFunction, GLenum destinationBlendFunction);
+    
+    /**
+     * @brief Creates a framebuffer with a depth texture already attached to it.
+     * Blending equation: result = fragColour * sourceFunction + bufferColour * destinationColour.
+     * @param size - The size of the framebuffer.
+     * @param sourceBlendFunction - The amount of frag colour that will go through.
+     * @param destinationBlendFunction - The amount of buffer colour that will go through.
+     * @param depthFunction - Flag on how to pass the depth test (GL_ALWAYS to disable depth testing).
+     */
+    FramebufferObject(
+        const glm::ivec2 &size, GLenum sourceBlendFunction,
+        GLenum destinationBlendFunction, GLenum depthFunction);
+    
     ~FramebufferObject();
     
     void attach(std::shared_ptr<TextureBufferObject> &textureBufferObject, int bindPoint);
@@ -42,8 +54,9 @@ protected:
     glm::ivec2      mSize           { 1024 };
     RenderBufferObject mRenderBufferObject;
     
-    GLenum mSourceBlend         { GL_SRC_ALPHA };
-    GLenum mDestinationBlend    { GL_ONE_MINUS_SRC_ALPHA };
+    GLenum mSourceBlend         { GL_ONE };
+    GLenum mDestinationBlend    { GL_ZERO };
+    GLenum mDepthFunction       { GL_LESS };
 };
 
 
