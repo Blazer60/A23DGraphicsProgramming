@@ -15,6 +15,7 @@
 #include "FramebufferObject.h"
 #include "FilePaths.h"
 #include "MainCamera.h"
+#include "Components.h"
 
 /**
  * Renders all of the point lights within the scene.
@@ -22,7 +23,7 @@
  * @date 31/03/2022
  */
 class PointLightShader
-    : public ecs::BaseSystem<light::PointLight>
+    : public ecs::BaseSystem<light::PointLight, Position>
 {
 public:
     PointLightShader(

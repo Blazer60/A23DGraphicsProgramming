@@ -145,3 +145,8 @@ const glm::vec3 &MainCamera::getPosition() const
 {
     return mPosition;
 }
+
+const glm::quat &MainCamera::getRotation() const
+{
+    return mRotation;
+}

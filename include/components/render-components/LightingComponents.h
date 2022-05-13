@@ -23,20 +23,17 @@ namespace light
     
     /**
      * A light source that emits from a single point.
-     * Colour = Intensity / (1 + (x/distance)^power), where x is how far away you are from the light source.
+     * @see struct Position
      */
     struct PointLight
     {
-        /** Where the light is in world space */
-        glm::vec4   position    { 0.f };
-        
         /** Intensity of each colour channel. */
         glm::vec3   intensity   { 1.f };
         
-        /** How far the light will travel before falling off half its intensity. */
+        /** How far the light will travel before being completely cut off. */
         float       distance    { 10.f };
         
-        /** Determines the rate of which the light 'falls off'. */
+        /** Increases the overall brightness of the light. */
         float       power       { 1.f };
     };
 }

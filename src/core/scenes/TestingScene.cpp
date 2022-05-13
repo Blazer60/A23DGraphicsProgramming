@@ -30,12 +30,21 @@ TestingScene::TestingScene()
     //     glm::vec3(0.f, 1.f, 1.f)
     // });
     
-    Entity point = mEcs.create();
-    mEcs.add(point, light::PointLight({
-        glm::vec4(5.f, 3.f, 0.f, 1.f) }));
+    mPointLight = mEcs.create();
+    mEcs.add(mPointLight, light::PointLight());
+    mEcs.add(mPointLight, Position { glm::vec3(0.f, 4.f, 0.f) });
 }
 
 void TestingScene::onImguiUpdate()
 {
     Scene::onImguiUpdate();
+    if (ImGui::CollapsingHeader("Point Light"))
+    {
+        auto &pointLight = mEcs.getComponent<light::PointLight>(mPointLight);
+        auto &position = mEcs.getComponent<Position>(mPointLight);
+        ImGui::DragFloat3("Position", glm::value_ptr(position.value), 0.1f);
+        ImGui::DragFloat3("Color", glm::value_ptr(pointLight.intensity), 0.1f);
+        ImGui::DragFloat("Distance", &pointLight.distance, 0.1f);
+        ImGui::DragFloat("Power", &pointLight.power, 0.1f);
+    }
 }

@@ -34,9 +34,9 @@ Core::Core(const glm::ivec2 &resolution)
 Core::~Core()
 {
     mScene.reset();
-    glfwTerminate();
     ImGui_ImplGlfw_Shutdown();
     ImGui_ImplOpenGL3_Shutdown();
+    glfwTerminate();
 }
 
 void Core::run()

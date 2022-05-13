@@ -33,5 +33,8 @@ protected:
         load::model<PhongVertex, BlinnPhongMaterial>(
             path::resources() + "models/thick-floor/ThickFloor.obj") };
     
+    Model<PhongVertex, BlinnPhongMaterial> mCircle { primitives::triangleFanCircle<PhongVertex, BlinnPhongMaterial>(20) };
+    
     Entity mBanana;
+    Entity mPointLight;
 };

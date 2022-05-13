@@ -44,6 +44,10 @@ protected:
     
     glm::vec3       mPosition           { 0.f, 0.f, 3.f };
     glm::quat       mRotation           { glm::vec3(0.f) };
+public:
+    const glm::quat &getRotation() const;
+
+protected:
     glm::dvec2      mPanAngles          { 0.f };
     
     float           mSpeed              { 10.f };

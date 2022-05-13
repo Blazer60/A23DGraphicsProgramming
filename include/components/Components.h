@@ -26,3 +26,8 @@ struct Rotator
     float       height          { 0.f };
     glm::vec3   originalHeight  { 0.f };
 };
+
+struct Position
+{
+    glm::vec3 value { 0.f };
+};
