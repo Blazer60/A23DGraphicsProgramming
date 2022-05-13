@@ -34,16 +34,17 @@ protected:
 
 protected:
     // Order of declaration matters here.
-    const glm::ivec2         mResolution    { 1920, 1080 };
-    const std::string_view   mWindowTitle   { "3D Graphics Pipeline" };
-    GLFWwindow              *mWindow        { nullptr };  // Must be declared after resolution and title.
+    const glm::ivec2         mResolution        { 1920, 1080 };
+    const std::string_view   mWindowTitle       { "3D Graphics Pipeline" };
+    GLFWwindow              *mWindow            { nullptr };  // Must be declared after resolution and title.
     
     std::unique_ptr<Scene>   mScene;
     
     ImGuiIO                 *mGuiIo;
     
-    bool                     mIsRunning     { true };
-    const unsigned int       mMaxLoopCount  { 10 };
+    bool                     mIsRunning         { true };
+    const unsigned int       mMaxLoopCount      { 10 };
+    const bool               mEnableDebugging   { false };
 };
 
 

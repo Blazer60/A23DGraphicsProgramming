@@ -72,10 +72,15 @@ bool Core::initGlfw()
     if (!glfwInit())
         return false;
     
+    glfwSetErrorCallback([](int errorCode, const char *description) {
+       debug::log(description);  // The program will bail out after this.
+    });
+    
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);  // Version of opengl you want to use
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);  // For debugging
+    if (mEnableDebugging)
+        glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
     
     mWindow = glfwCreateWindow(mResolution.x, mResolution.y, mWindowTitle.data(), nullptr, nullptr);
     if (!mWindow)
@@ -104,16 +109,19 @@ bool Core::initOpenGl()
         return false;
     
     // Debug Messaging.
-    glEnable(GL_DEBUG_OUTPUT);
-    glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-    glDebugMessageCallback(debug::openglCallBack, nullptr);
-
-    debug::log(glGetString(GL_VERSION), debug::severity::Notification);
+    if (mEnableDebugging)
+    {
+        glEnable(GL_DEBUG_OUTPUT);
+        glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+        glDebugMessageCallback(debug::openglCallBack, nullptr);
     
-    int flags;
-    glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
-    if (!(flags & GL_CONTEXT_FLAG_DEBUG_BIT))
-        return false;
+        int flags { 0 };  // Check to see if OpenGL debug context was set up correctly.
+        glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
+        if (!(flags & GL_CONTEXT_FLAG_DEBUG_BIT))
+            return false;
+    }
+    
+    debug::log(glGetString(GL_VERSION), debug::severity::Notification);
     
     // Blending texture data / enabling lerping.
     glEnable(GL_BLEND);
