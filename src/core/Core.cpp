@@ -169,30 +169,33 @@ void Core::updateImgui()
     glBindVertexArray(0);
     ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
     
+    enum class Level { None, Impulse, Octree, Platforms, Dynamic, Ode, Rotation, Testing };
+    static Level type = Level::None;
+    
     if (ImGui::BeginMainMenuBar())
     {
         if (ImGui::BeginMenu("Scenes"))
         {
             if (ImGui::MenuItem("Impulse Demo"))
-                mScene = std::make_unique<ImpulseScene>();
+                type = Level::Impulse;
             
             if (ImGui::MenuItem("Octree Demo"))
-                mScene = std::make_unique<OctreeDemoScene>();
+                type = Level::Octree;
                 
             if (ImGui::MenuItem("Platforms Demo"))
-                mScene = std::make_unique<PlatformDemoScene>();
+                type = Level::Platforms;
             
             if (ImGui::MenuItem("Dynamic Impulse Demo"))
-                mScene = std::make_unique<DynamicImpulseDemoScene>();
+                type = Level::Dynamic;
     
             if (ImGui::MenuItem("ODE Demo"))
-                mScene = std::make_unique<OdeDemoScene>();
+                type = Level::Ode;
             
             if (ImGui::MenuItem("Rotation Demo"))
-                mScene = std::make_unique<RotationDemoScene>();
+                type = Level::Rotation;
             
             if (ImGui::MenuItem("Testing Scene"))
-                mScene = std::make_unique<TestingScene>();
+                type = Level::Testing;
                 
             ImGui::EndMenu();
         }
@@ -222,4 +225,32 @@ void Core::updateImgui()
         ImGui::RenderPlatformWindowsDefault();
         glfwMakeContextCurrent(backup_current_context);
     }
+    
+    switch (type)
+    {
+        case Level::None:
+            break;
+        case Level::Impulse:
+            mScene = std::make_unique<ImpulseScene>();
+            break;
+        case Level::Octree:
+            mScene = std::make_unique<OctreeDemoScene>();
+            break;
+        case Level::Platforms:
+            mScene = std::make_unique<PlatformDemoScene>();
+            break;
+        case Level::Dynamic:
+            mScene = std::make_unique<DynamicImpulseDemoScene>();
+            break;
+        case Level::Ode:
+            mScene = std::make_unique<OdeDemoScene>();
+            break;
+        case Level::Rotation:
+            mScene = std::make_unique<RotationDemoScene>();
+            break;
+        case Level::Testing:
+            mScene = std::make_unique<TestingScene>();
+            break;
+    }
+    type = Level::None;
 }
