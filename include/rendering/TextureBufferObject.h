@@ -18,7 +18,7 @@
  */
 class TextureBufferObject
 {
-    friend class FrameBufferObject;
+    friend class FramebufferObject;
 public:
     explicit TextureBufferObject(const glm::ivec2 &size);
     

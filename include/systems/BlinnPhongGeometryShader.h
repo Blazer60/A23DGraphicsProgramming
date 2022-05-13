@@ -17,6 +17,7 @@
 #include "DirectionalLight.h"
 #include "Shader.h"
 #include "FilePaths.h"
+#include "FramebufferObject.h"
 
 /**
  * A Blinn-Phong Shader the writes to the Geometry buffer rather than the main buffer.
@@ -27,13 +28,14 @@ class BlinnPhongGeometryShader
     : public ecs::BaseSystem<RenderInformation, std::shared_ptr<BasicUniforms>, BlinnPhongMaterial>
 {
 public:
-    explicit BlinnPhongGeometryShader(std::shared_ptr<MainCamera> camera);
+    BlinnPhongGeometryShader(std::shared_ptr<MainCamera> camera, std::shared_ptr<FramebufferObject> framebuffer);
     
     void onUpdate() override;
 
 protected:
     Shader mShader { path::shaders() + "/blinn-phong/BlinnPhong.vert", path::shaders() + "/blinn-phong/BlinnPhongGeometry.frag" };
     std::shared_ptr<MainCamera> mCamera;
+    std::shared_ptr<FramebufferObject> mFrameBufferObject;
 };
 
 

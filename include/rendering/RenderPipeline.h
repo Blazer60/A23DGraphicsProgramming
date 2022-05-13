@@ -8,7 +8,7 @@
 #pragma once
 
 #include "Pch.h"
-#include "FrameBufferObject.h"
+#include "FramebufferObject.h"
 #include "TextureBufferObject.h"
 #include "glm.hpp"
 
@@ -28,18 +28,18 @@ public:
     
     glm::ivec2 mSize { 1920, 1080 };
     
-    std::shared_ptr<FrameBufferObject> mGeometry;
+    std::shared_ptr<FramebufferObject> mGeometry;
 
     std::shared_ptr<TextureBufferObject> mPosition;
     std::shared_ptr<TextureBufferObject> mNormal;
     std::shared_ptr<TextureBufferObject> mAlbedo;
 
-    std::shared_ptr<FrameBufferObject> mLightAccumulator;
+    std::shared_ptr<FramebufferObject> mLightAccumulator;
     
     std::shared_ptr<TextureBufferObject> mDiffuse;
     std::shared_ptr<TextureBufferObject> mSpecular;
     
-    std::shared_ptr<FrameBufferObject> mOutput;
+    std::shared_ptr<FramebufferObject> mOutput;
     
     std::shared_ptr<TextureBufferObject> mTarget;
     

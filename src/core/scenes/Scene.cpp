@@ -9,7 +9,6 @@
 #include "Ecs.h"
 #include "BasicUniformUpdaterSystem.h"
 #include "RotatorSystem.h"
-#include "TextureBinderSystem.h"
 #include "MaterialComponents.h"
 #include "ModelLoader.h"
 #include "CollisionDetection.h"
@@ -22,7 +21,7 @@ Scene::Scene()
     mEcs.createSystem<RotatorSystem>();
 }
 
-Entity Scene::createPhongModel(const glm::vec3 position, Model<PhongVertex, BlinnPhongMaterial> &meshes)
+Entity Scene::createPhongModel(const glm::vec3 position, const Model<PhongVertex, BlinnPhongMaterial> &meshes)
 {
     // Our transform uniforms that will be distributed to every child in the hierarchy.
     auto transformUniforms = std::make_shared<BasicUniforms>();
@@ -35,12 +34,10 @@ Entity Scene::createPhongModel(const glm::vec3 position, Model<PhongVertex, Blin
     mEcs.add(parent, Transform { position } );
     mEcs.add(parent, transformUniforms);
     
-    for (auto &mesh : meshes)
+    for (const auto &mesh : meshes)
     {
         Entity modelSlot = mEcs.create();
         mEcs.add(model, modelSlot);
-        
-        mesh.renderInformation.fbo = mRenderer.geometryFboName;
         
         mEcs.add(modelSlot, mRenderer.geometryTag, mesh.renderInformation);
         mEcs.add(modelSlot, mesh.material);

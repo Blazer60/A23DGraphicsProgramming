@@ -7,14 +7,15 @@
 
 #include "BlinnPhongGeometryShader.h"
 
-BlinnPhongGeometryShader::BlinnPhongGeometryShader(std::shared_ptr<MainCamera> camera)
-    : mCamera(std::move(camera))
+BlinnPhongGeometryShader::BlinnPhongGeometryShader(
+    std::shared_ptr<MainCamera> camera, std::shared_ptr<FramebufferObject> framebuffer)
+    :
+    mCamera(std::move(camera)), mFrameBufferObject(std::move(framebuffer))
 {
     mEntities.forEach([this](
         const RenderInformation &renderCoreElements,
         const std::shared_ptr<BasicUniforms> &uniforms,
         const BlinnPhongMaterial &material) {
-        glBindFramebuffer(GL_FRAMEBUFFER, renderCoreElements.fbo);
         glBindVertexArray(renderCoreElements.vao);
         glBindTextureUnit(0, material.diffuseTextureId);
         
@@ -31,4 +32,5 @@ BlinnPhongGeometryShader::BlinnPhongGeometryShader(std::shared_ptr<MainCamera> c
 void BlinnPhongGeometryShader::onUpdate()
 {
     mShader.bind();
+    mFrameBufferObject->bind();
 }

@@ -16,12 +16,12 @@
  * @author Ryan Purse
  * @date 14/03/2022
  */
-class FrameBufferObject
+class FramebufferObject
 {
 public:
-    explicit FrameBufferObject(const glm::ivec2 &size);
-    FrameBufferObject(const glm::ivec2 &size, GLenum sourceBlendFunction, GLenum destinationBlendFunction);
-    ~FrameBufferObject();
+    explicit FramebufferObject(const glm::ivec2 &size);
+    FramebufferObject(const glm::ivec2 &size, GLenum sourceBlendFunction, GLenum destinationBlendFunction);
+    ~FramebufferObject();
     
     void attach(std::shared_ptr<TextureBufferObject> &textureBufferObject, int bindPoint);
     void attach(const TextureBufferObject &textureBufferObject, int bindPoint);

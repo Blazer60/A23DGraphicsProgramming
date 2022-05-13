@@ -16,7 +16,6 @@
 struct RenderInformation
 {
     unsigned int    vao      { 0 };
-    unsigned int    fbo      { 0 };
     int             eboCount { 0 };
     // Matrix Uniforms are not included since they need to be updated every frame.
 };

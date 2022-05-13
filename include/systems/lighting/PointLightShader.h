@@ -12,7 +12,7 @@
 #include "BaseSystem.h"
 #include "LightingComponents.h"
 #include "Shader.h"
-#include "FrameBufferObject.h"
+#include "FramebufferObject.h"
 #include "FilePaths.h"
 #include "MainCamera.h"
 
@@ -27,7 +27,7 @@ class PointLightShader
 public:
     PointLightShader(
         std::shared_ptr<MainCamera> camera,
-        std::shared_ptr<FrameBufferObject> lightAccumulationBuffer,
+        std::shared_ptr<FramebufferObject> lightAccumulationBuffer,
         std::shared_ptr<TextureBufferObject> positions,
         std::shared_ptr<TextureBufferObject> normals,
         std::shared_ptr<TextureBufferObject> albedo);
@@ -49,7 +49,7 @@ protected:
     int             mEboCount   { 0 };
     
     std::shared_ptr<MainCamera>          mCamera;
-    std::shared_ptr<FrameBufferObject>   mLightAccumulationBuffer;
+    std::shared_ptr<FramebufferObject>   mLightAccumulationBuffer;
     
     std::shared_ptr<TextureBufferObject> mPositions;
     std::shared_ptr<TextureBufferObject> mNormals;

@@ -11,8 +11,6 @@
 BoundingVolumeVisual::BoundingVolumeVisual(std::shared_ptr<MainCamera> camera, const unsigned int geometryBufferId) :
     mCamera(std::move(camera)), mFbo(geometryBufferId)
 {
-    mSphere.renderInformation.fbo = geometryBufferId;
-    mBox.renderInformation.fbo = geometryBufferId;
     mEntities.forEach([this](
         std::shared_ptr<BoundingVolume> &boundingVolume,
         std::shared_ptr<BasicUniforms> &basicUniforms)

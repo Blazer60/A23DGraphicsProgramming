@@ -8,11 +8,11 @@
 #include "DeferredLightShader.h"
 #include "Vertices.h"
 #include "Primitives.h"
-#include "FrameBufferObject.h"
+#include "FramebufferObject.h"
 
 DeferredLightShader::DeferredLightShader(
     std::shared_ptr<MainCamera> camera,
-    std::shared_ptr<FrameBufferObject> output, std::shared_ptr<TextureBufferObject> diffuse,
+    std::shared_ptr<FramebufferObject> output, std::shared_ptr<TextureBufferObject> diffuse,
     std::shared_ptr<TextureBufferObject> specular, std::shared_ptr<TextureBufferObject> albedo)
     :
     mCamera(std::move(camera)),

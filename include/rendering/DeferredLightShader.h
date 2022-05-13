@@ -13,6 +13,8 @@
 #include "TextureBufferObject.h"
 #include "MainCamera.h"
 
+class FramebufferObject;
+
 /**
  * Gets both the diffuse and specular and creates the final image before post-processing.
  * @author Ryan Purse
@@ -21,9 +23,10 @@
 class DeferredLightShader
 {
 public:
-    DeferredLightShader(std::shared_ptr<MainCamera> camera, std::shared_ptr<FrameBufferObject> output,
-                        std::shared_ptr<TextureBufferObject> diffuse, std::shared_ptr<TextureBufferObject> specular,
-                        std::shared_ptr<TextureBufferObject> albedo);
+    DeferredLightShader(
+        std::shared_ptr<MainCamera> camera,
+        std::shared_ptr<FramebufferObject> output, std::shared_ptr<TextureBufferObject> diffuse,
+        std::shared_ptr<TextureBufferObject> specular, std::shared_ptr<TextureBufferObject> albedo);
     
     void render();
     
@@ -35,7 +38,7 @@ protected:
     int          mEboCount { 0 };
     
     std::shared_ptr<MainCamera>          mCamera;
-    std::shared_ptr<FrameBufferObject>   mOutput;
+    std::shared_ptr<FramebufferObject>   mOutput;
     std::shared_ptr<TextureBufferObject> mDiffuse;
     std::shared_ptr<TextureBufferObject> mSpecular;
     std::shared_ptr<TextureBufferObject> mAlbedo;

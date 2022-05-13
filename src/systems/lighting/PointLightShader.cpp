@@ -10,7 +10,7 @@
 
 PointLightShader::PointLightShader(
     std::shared_ptr<MainCamera> camera,
-    std::shared_ptr<FrameBufferObject> lightAccumulationBuffer,
+    std::shared_ptr<FramebufferObject> lightAccumulationBuffer,
     std::shared_ptr<TextureBufferObject> positions,
     std::shared_ptr<TextureBufferObject> normals,
     std::shared_ptr<TextureBufferObject> albedo)

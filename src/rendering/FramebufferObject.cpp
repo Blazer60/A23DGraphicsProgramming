@@ -5,10 +5,10 @@
  */
 
 
-#include "rendering/FrameBufferObject.h"
+#include "rendering/FramebufferObject.h"
 #include "gtc/type_ptr.hpp"
 
-FrameBufferObject::FrameBufferObject(const glm::ivec2 &size)
+FramebufferObject::FramebufferObject(const glm::ivec2 &size)
     : mSize(size), mRenderBufferObject(size)
 {
     glCreateFramebuffers(1, &mFboName);
@@ -19,7 +19,7 @@ FrameBufferObject::FrameBufferObject(const glm::ivec2 &size)
     validate();
 }
 
-FrameBufferObject::FrameBufferObject(
+FramebufferObject::FramebufferObject(
     const glm::ivec2 &size, GLenum sourceBlendFunction, GLenum destinationBlendFunction) :
     mSize(size), mRenderBufferObject(size),
     mSourceBlend(sourceBlendFunction), mDestinationBlend(destinationBlendFunction)
@@ -32,13 +32,13 @@ FrameBufferObject::FrameBufferObject(
     validate();
 }
 
-FrameBufferObject::~FrameBufferObject()
+FramebufferObject::~FramebufferObject()
 {
     glDeleteFramebuffers(1, &mFboName);
     mFboName = 0;
 }
 
-void FrameBufferObject::attach(std::shared_ptr<TextureBufferObject> &textureBufferObject, int bindPoint)
+void FramebufferObject::attach(std::shared_ptr<TextureBufferObject> &textureBufferObject, int bindPoint)
 {
     textureBufferObject->reattach = [&textureBufferObject, bindPoint, this]() {
         detach(bindPoint);
@@ -53,7 +53,7 @@ void FrameBufferObject::attach(std::shared_ptr<TextureBufferObject> &textureBuff
     glNamedFramebufferDrawBuffers(mFboName, mAttachments.size(), &mAttachments[0]);
 }
 
-void FrameBufferObject::attach(const TextureBufferObject &textureBufferObject, int bindPoint)
+void FramebufferObject::attach(const TextureBufferObject &textureBufferObject, int bindPoint)
 {
     // textureBufferObject->changeSize(mSize);
     glNamedFramebufferTexture(mFboName, GL_COLOR_ATTACHMENT0 + bindPoint, textureBufferObject.mName, 0);
@@ -63,7 +63,7 @@ void FrameBufferObject::attach(const TextureBufferObject &textureBufferObject, i
     glNamedFramebufferDrawBuffers(mFboName, mAttachments.size(), &mAttachments[0]);
 }
 
-void FrameBufferObject::detach(int bindPoint)
+void FramebufferObject::detach(int bindPoint)
 {
     glNamedFramebufferTexture(mFboName, GL_COLOR_ATTACHMENT0 + bindPoint, 0, 0);
     validate();
@@ -77,14 +77,14 @@ void FrameBufferObject::detach(int bindPoint)
     glNamedFramebufferDrawBuffers(mFboName, mAttachments.size(), target);
 }
 
-void FrameBufferObject::validate()
+void FramebufferObject::validate()
 {
     const unsigned int fboStatus = glCheckNamedFramebufferStatus(mFboName, GL_FRAMEBUFFER);
     if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
         debug::log("Framebuffer error of: " + std::to_string(fboStatus), debug::severity::Major);
 }
 
-void FrameBufferObject::clear()
+void FramebufferObject::clear()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, mFboName);
     for (int i = 0; i < mTextures.size(); ++i)
@@ -96,13 +96,14 @@ void FrameBufferObject::clear()
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-unsigned int FrameBufferObject::getFboName() const
+unsigned int FramebufferObject::getFboName() const
 {
     return mFboName;
 }
 
-void FrameBufferObject::bind() const
+void FramebufferObject::bind() const
 {
-    glBindFramebuffer(GL_FRAMEBUFFER, mFboName);
     glBlendFunc(mSourceBlend, mDestinationBlend);
+    glDepthFunc(GL_LESS);
+    glBindFramebuffer(GL_FRAMEBUFFER, mFboName);
 }

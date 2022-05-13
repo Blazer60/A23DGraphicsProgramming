@@ -28,7 +28,7 @@ Core::Core(const glm::ivec2 &resolution)
         return;
     }
     
-    mScene = std::make_unique<RotationDemoScene>();  // Scenes must be made after the initialisation of underlying architectures.
+    mScene = std::make_unique<OctreeDemoScene>();  // Scenes must be made after the initialisation of underlying architectures.
 }
 
 Core::~Core()
@@ -104,9 +104,9 @@ bool Core::initOpenGl()
         return false;
     
     // Debug Messaging.
-    // glEnable(GL_DEBUG_OUTPUT);
-    // glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-    // glDebugMessageCallback(debug::openglCallBack, nullptr);
+    glEnable(GL_DEBUG_OUTPUT);
+    glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+    glDebugMessageCallback(debug::openglCallBack, nullptr);
 
     debug::log(glGetString(GL_VERSION), debug::severity::Notification);
     

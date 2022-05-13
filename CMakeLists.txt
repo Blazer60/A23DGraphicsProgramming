@@ -77,12 +77,8 @@ add_executable(${PROJECT_NAME}
         src/helpers/Timers.cpp                                  include/helpers/Timers.h
         src/helpers/FilePaths.cpp                               include/helpers/FilePaths.h
 
-        src/systems/BasicShaderSystem.cpp                       include/systems/BasicShaderSystem.h
         src/systems/BasicUniformUpdaterSystem.cpp               include/systems/BasicUniformUpdaterSystem.h
         src/systems/RotatorSystem.cpp                           include/systems/RotatorSystem.h
-        src/systems/UvShaderSystem.cpp                          include/systems/UvShaderSystem.h
-        src/systems/TextureBinderSystem.cpp                     include/systems/TextureBinderSystem.h
-        src/systems/BlinnPhongShaderSystem.cpp                  include/systems/BlinnPhongShaderSystem.h
         src/systems/BlinnPhongGeometryShader.cpp                include/systems/BlinnPhongGeometryShader.h
         src/systems/lighting/DirectionalLightShaderSystem.cpp   include/systems/lighting/DirectionalLightShaderSystem.h
         src/systems/lighting/PointLightShader.cpp               include/systems/lighting/PointLightShader.h
@@ -97,7 +93,7 @@ add_executable(${PROJECT_NAME}
         src/components/render-components/Mesh.cpp               include/components/render-components/Mesh.h
 
         src/rendering/TextureBufferObject.cpp                   include/rendering/TextureBufferObject.h
-        src/rendering/FrameBufferObject.cpp                     include/rendering/FrameBufferObject.h
+        src/rendering/FramebufferObject.cpp include/rendering/FramebufferObject.h
         src/rendering/RenderBufferObject.cpp                    include/rendering/RenderBufferObject.h
         src/rendering/RenderPipeline.cpp                        include/rendering/RenderPipeline.h
         src/rendering/DeferredLightShader.cpp                   include/rendering/DeferredLightShader.h
@@ -113,7 +109,12 @@ add_executable(${PROJECT_NAME}
         include/physics/octree/Tree.h
         src/core/scenes/TestingScene.cpp src/core/scenes/TestingScene.h
         src/physics/TreeBuilder.cpp include/physics/TreeBuilder.h
-        src/core/scenes/ImpulseScene.cpp src/core/scenes/ImpulseScene.h src/core/scenes/OctreeDemoScene.cpp src/core/scenes/OctreeDemoScene.h src/core/scenes/PlatformDemoScene.cpp src/core/scenes/PlatformDemoScene.h src/core/scenes/DynamicImpulseDemoScene.cpp src/core/scenes/DynamicImpulseDemoScene.h src/core/scenes/OdeDemoScene.cpp src/core/scenes/OdeDemoScene.h src/core/scenes/RotationDemoScene.cpp src/core/scenes/RotationDemoScene.h)
+        src/core/scenes/ImpulseScene.cpp src/core/scenes/ImpulseScene.h
+        src/core/scenes/OctreeDemoScene.cpp src/core/scenes/OctreeDemoScene.h
+        src/core/scenes/PlatformDemoScene.cpp src/core/scenes/PlatformDemoScene.h
+        src/core/scenes/DynamicImpulseDemoScene.cpp src/core/scenes/DynamicImpulseDemoScene.h
+        src/core/scenes/OdeDemoScene.cpp src/core/scenes/OdeDemoScene.h
+        src/core/scenes/RotationDemoScene.cpp src/core/scenes/RotationDemoScene.h)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
 # Project Includes

@@ -6,7 +6,6 @@
 
 
 #include "Renderer.h"
-#include "BasicShaderSystem.h"
 #include "BlinnPhongGeometryShader.h"
 #include "DirectionalLightShaderSystem.h"
 #include "PointLightShader.h"
@@ -21,7 +20,7 @@ Renderer::Renderer(std::shared_ptr<MainCamera> camera, ecs::Core &EntityComponen
         mRenderPipeline.mDiffuse, mRenderPipeline.mSpecular,
         mRenderPipeline.mAlbedo)
 {
-    mEcs.createSystem<BlinnPhongGeometryShader> ({ geometryTag },   mCamera);
+    mEcs.createSystem<BlinnPhongGeometryShader> ({ geometryTag }, mCamera, mRenderPipeline.mGeometry);
     mEcs.createSystem<DirectionalLightShaderSystem>(
         mCamera, mRenderPipeline.mLightAccumulator,
         mRenderPipeline.mPosition, mRenderPipeline.mNormal,
@@ -37,11 +36,11 @@ Renderer::Renderer(std::shared_ptr<MainCamera> camera, ecs::Core &EntityComponen
 
 void Renderer::clear()
 {
-    // todo: Blending doesn't work?
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);  // todo: Make the geometry shader take in the geometry buffer.
     mRenderPipeline.mGeometry->clear();
     mRenderPipeline.mLightAccumulator->clear();
     mRenderPipeline.mOutput->clear();
+    
+    mRenderPipeline.mGeometry->bind();  // For safety as this is typically the first buffer drawn to.
 }
 
 void Renderer::update()
