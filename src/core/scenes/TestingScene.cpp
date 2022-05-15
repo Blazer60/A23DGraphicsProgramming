@@ -30,6 +30,8 @@ TestingScene::TestingScene()
     //     glm::vec3(0.f, 1.f, 1.f)
     // });
     
+    createPhongModel(glm::vec3(4.f, 5.f, 0.f), mStar);
+    
     mPointLight = mEcs.create();
     mEcs.add(mPointLight, light::PointLight());
     mEcs.add(mPointLight, Position { glm::vec3(0.f, 4.f, 0.f) });

@@ -19,7 +19,8 @@ Renderer::Renderer(std::shared_ptr<MainCamera> camera, ecs::Core &EntityComponen
         camera, mRenderPipeline.mOutput,
         mRenderPipeline.mDiffuse, mRenderPipeline.mSpecular,
         mRenderPipeline.mAlbedo),
-    mPreFilterShader(mRenderPipeline.mPreFilter, mRenderPipeline.mTarget)
+    mPreFilterShader(mRenderPipeline.mDownSample, mRenderPipeline.mLightTarget),
+    mMipViewerShader(mRenderPipeline.mDownSampleTextures)
 {
     mEcs.createSystem<BlinnPhongGeometryShader> ({ geometryTag }, mCamera, mRenderPipeline.mGeometry);
     mEcs.createSystem<DirectionalLightShaderSystem>(
@@ -40,10 +41,11 @@ void Renderer::clear()
     mRenderPipeline.mGeometry->clear();
     mRenderPipeline.mLightAccumulator->clear();
     mRenderPipeline.mOutput->clear();
-    mRenderPipeline.mPreFilter->clear();
     mRenderPipeline.mDownSample->clear();
     mRenderPipeline.mUpSample->clear();
     mRenderPipeline.mComposite->clear();
+    
+    mMipViewerShader.clear();
     
     mRenderPipeline.mGeometry->bind();  // For safety as this is typically the first buffer drawn to.
 }
@@ -52,11 +54,14 @@ void Renderer::update()
 {
     mDeferredLightingShader.render();
     mPreFilterShader.render();
+    
+    mMipViewerShader.render();
 }
 
 void Renderer::imguiUpdate()
 {
     mRenderPipeline.imguiUpdate();
+    mMipViewerShader.imguiUpdate();
 }
 
 void Renderer::drawBox(const glm::mat4 &modelMatrix, const glm::vec3 &halfSize)

@@ -18,6 +18,7 @@
 #include "MaterialComponents.h"
 #include "ModelLoader.h"
 #include "PreFilterShader.h"
+#include "MipViewerShader.h"
 
 /**
  * Sets up the rendering pipeline for a single scene. Used to setup deferred rendering and deferred lighting.
@@ -49,10 +50,11 @@ public:
     const Component phongTag    { mEcs.create<RenderInformation>() };
     const Component geometryTag { mEcs.create<RenderInformation>() };
     
-    std::shared_ptr<MainCamera>             mCamera;  // Must be declared first. Other object rely on this being set.
-    RenderPipeline                          mRenderPipeline;
-    DeferredLightShader                     mDeferredLightingShader;
-    PreFilterShader                         mPreFilterShader;
+    std::shared_ptr<MainCamera> mCamera;  // Must be declared first. Other object rely on this being set.
+    RenderPipeline              mRenderPipeline;
+    DeferredLightShader         mDeferredLightingShader;
+    PreFilterShader             mPreFilterShader;
+    MipViewerShader             mMipViewerShader;
     
     // Debug Helpers
     Mesh<UvVertex, NoMaterial> mBox { load::model<UvVertex, NoMaterial>(path::resources() + "models/physics/Box.obj")[0] };

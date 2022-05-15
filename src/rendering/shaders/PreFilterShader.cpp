@@ -17,7 +17,7 @@ PreFilterShader::PreFilterShader(
     std::shared_ptr<FramebufferObject> preFilter,
     std::shared_ptr<TextureBufferObject> inputTexture)
     :
-    PostProcessShader(path::shaders() + "/ScreenQuadV2.vert", path::shaders() + "/post-processing/pre-filter/PreFilter.frag"),
+    PostProcessShader(path::shaders() + "/ScreenOverlay.vert", path::shaders() + "/post-processing/pre-filter/PreFilter.frag"),
     mPreFilter(std::move(preFilter)),
     mInputTexture(std::move(inputTexture))
 {
@@ -28,4 +28,7 @@ void PreFilterShader::onRender()
     mPreFilter->bind();
     set("u_mvp_matrix", glm::mat4(1.f));
     set("u_light_key_threshold", glm::vec3(1.f));
+    
+    glBindTextureUnit(0, mInputTexture->getName());
+    set("u_texture", 0);
 }

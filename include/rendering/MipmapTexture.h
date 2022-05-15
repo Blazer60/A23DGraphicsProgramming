@@ -22,7 +22,4 @@ public:
     explicit MipmapTexture(const glm::ivec2 &size);
     
     MipmapTexture(const glm::ivec2 &size, GLenum format, const std::string &debugName);
-
-protected:
-    void init2();
 };

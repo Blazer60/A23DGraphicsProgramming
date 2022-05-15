@@ -16,5 +16,4 @@ void main()
     const vec3 ambient = 0.2f * albedo;
 
     o_colour = ambient + diffuse + specular;
-    o_colour = clamp(o_colour, 0.f, 1.f);
 }

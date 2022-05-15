@@ -26,20 +26,20 @@ public:
      * @see <a href="https://www.khronos.org/opengl/wiki/Image_Format">Image Formatting</a>
      * @param format - The OpenGL format with the syntax GL_(components)(size)[type].
      */
-    TextureBufferObject(const glm::ivec2 &size, GLenum format, std::string debugName="");
+    TextureBufferObject(
+        const glm::ivec2 &size, GLenum format,
+        GLenum minMagFilter, std::string debugName="");
     
     virtual ~TextureBufferObject();
     
-    void imguiUpdate(bool *show);
-    
-    void changeSize(const glm::ivec2 &size);
+    void imguiUpdate(bool *show, bool fill);
     
     void setClearColour(const glm::vec4 &clearColour);
     
     unsigned int getName() const;
-    
+    const glm::ivec2 &getSize() const;
 protected:
-    void init();
+    void init(GLenum minMagFilter);
     void deInit();
     
     std::function<void()> reattach  { [](){} };

@@ -12,22 +12,20 @@ RenderPipeline::RenderPipeline() :
     mGeometry(std::make_shared<FramebufferObject>(mSize, GL_ONE, GL_ZERO, GL_LESS)),
     mLightAccumulator(std::make_shared<FramebufferObject>(mSize, GL_ONE, GL_ONE, GL_ALWAYS)),
     mOutput(std::make_shared<FramebufferObject>(mSize, GL_ONE, GL_ONE, GL_ALWAYS)),
-    mPreFilter(std::make_shared<FramebufferObject>(mSize / 2, GL_ONE, GL_ONE, GL_ALWAYS)),
-    mDownSample(std::make_shared<FramebufferObject>(mSize / 2, GL_ONE, GL_ONE, GL_ALWAYS)),  // The sizes might be wrong?
+    mDownSample(std::make_shared<FramebufferObject>(mSize / 2, GL_ONE, GL_ONE, GL_ALWAYS)),
     mUpSample(std::make_shared<FramebufferObject>(mSize / 2, GL_ONE, GL_ONE, GL_ALWAYS)),
     mComposite(std::make_shared<FramebufferObject>(mSize, GL_ONE, GL_ONE, GL_ALWAYS)),
     
-    mPosition(  std::make_shared<TextureBufferObject>(mSize, GL_RGB16F,       "Position")),
-    mNormal(    std::make_shared<TextureBufferObject>(mSize, GL_RGB16_SNORM,  "Normals")),
-    mAlbedo(    std::make_shared<TextureBufferObject>(mSize, GL_RGB16,        "Albedo")),
-    mDiffuse(   std::make_shared<TextureBufferObject>(mSize, GL_RGB16,        "Diffuse")),
-    mSpecular(  std::make_shared<TextureBufferObject>(mSize, GL_RGB16,        "Specular")),
-    mTarget(    std::make_shared<TextureBufferObject>(mSize, GL_RGB16,        "Light Target")),
+    mPosition(  std::make_shared<TextureBufferObject>(mSize, GL_RGB16F,      GL_NEAREST, "Position")),
+    mNormal(    std::make_shared<TextureBufferObject>(mSize, GL_RGB16_SNORM, GL_NEAREST, "Normals")),
+    mAlbedo(    std::make_shared<TextureBufferObject>(mSize, GL_RGB16F,      GL_NEAREST, "Albedo")),
+    mDiffuse(   std::make_shared<TextureBufferObject>(mSize, GL_RGB16F,      GL_NEAREST, "Diffuse")),
+    mSpecular(  std::make_shared<TextureBufferObject>(mSize, GL_RGB16F,      GL_NEAREST, "Specular")),
+    mLightTarget(std::make_shared<TextureBufferObject>(mSize, GL_RGB16F, GL_NEAREST, "Light Target")),
     
-    mLightKeyThreshold(     std::make_shared<TextureBufferObject>(  mSize / 2,  GL_RGB16, "Light-key Threshold")),
-    mDownSampleTextures(    std::make_shared<MipmapTexture>(        mSize / 2,  GL_RGB16, "Down Sample")),
-    mUpSampleTextures(      std::make_shared<MipmapTexture>(        mSize / 2,  GL_RGB16, "Up Sample")),
-    mPostProcess(           std::make_shared<TextureBufferObject>(  mSize,      GL_RGB16, "Post Process"))
+    mDownSampleTextures(    std::make_shared<MipmapTexture>(        mSize / 2,  GL_RGB16F, "Down Sample")),
+    mUpSampleTextures(      std::make_shared<MipmapTexture>(        mSize / 2,  GL_RGB16F, "Up Sample")),
+    mPostProcess(           std::make_shared<TextureBufferObject>(  mSize,      GL_RGB16F, GL_NEAREST, "Post Process"))
 {
     mGeometry->attach(mPosition, 0);
     mGeometry->attach(mNormal, 1);
@@ -36,9 +34,7 @@ RenderPipeline::RenderPipeline() :
     mLightAccumulator->attach(mDiffuse, 0);
     mLightAccumulator->attach(mSpecular, 1);
     
-    mOutput->attach(mTarget, 0);
-    
-    mPreFilter->attach(mLightKeyThreshold, 0);
+    mOutput->attach(mLightTarget, 0);
     
     mDownSample->attach(mDownSampleTextures, 0);
     
@@ -50,19 +46,23 @@ RenderPipeline::RenderPipeline() :
 void RenderPipeline::imguiUpdate()
 {
     if (mShowPositionBuffer)
-        mPosition->imguiUpdate(&mShowPositionBuffer);
+        mPosition->imguiUpdate(&mShowPositionBuffer, true);
     if (mShowNormalBuffer)
-        mNormal->imguiUpdate(&mShowNormalBuffer);
+        mNormal->imguiUpdate(&mShowNormalBuffer, true);
     if (mShowAlbedoBuffer)
-        mAlbedo->imguiUpdate(&mShowAlbedoBuffer);
+        mAlbedo->imguiUpdate(&mShowAlbedoBuffer, true);
     if (mShowDiffuseBuffer)
-        mDiffuse->imguiUpdate(&mShowDiffuseBuffer);
+        mDiffuse->imguiUpdate(&mShowDiffuseBuffer, true);
     if (mShowSpecularBuffer)
-        mSpecular->imguiUpdate(&mShowSpecularBuffer);
-    if (mShowTargetBuffer)
-        mTarget->imguiUpdate(&mShowTargetBuffer);
-    if (mShowLightKeyBuffer)
-        mLightKeyThreshold->imguiUpdate(&mShowLightKeyBuffer);
+        mSpecular->imguiUpdate(&mShowSpecularBuffer, true);
+    if (mShowLightTargetBuffer)
+        mLightTarget->imguiUpdate(&mShowLightTargetBuffer, true);
+    if (mShowDownSampleBuffers)
+        mDownSampleTextures->imguiUpdate(&mShowDownSampleBuffers, true);
+    if (mShowUpSampleBuffers)
+        mUpSampleTextures->imguiUpdate(&mShowUpSampleBuffers, true);
+    if (mShowPostProcessBuffer)
+        mPostProcess->imguiUpdate(&mShowPostProcessBuffer, true);
 }
 
 void RenderPipeline::imguiMenuUpdate()
@@ -79,10 +79,14 @@ void RenderPipeline::imguiMenuUpdate()
             mShowDiffuseBuffer = true;
         if (ImGui::MenuItem("Show Specular Buffer"))
             mShowSpecularBuffer = true;
-        if (ImGui::MenuItem("Show Target Buffer"))
-            mShowTargetBuffer = true;
-        if (ImGui::MenuItem("Show Light Key Buffer"))
-            mShowLightKeyBuffer = true;
+        if (ImGui::MenuItem("Show Light Target Buffer"))
+            mShowLightTargetBuffer = true;
+        if (ImGui::MenuItem("Show Down Sample Buffer"))
+            mShowDownSampleBuffers = true;
+        if (ImGui::MenuItem("Show Up Sample Buffer"))
+            mShowUpSampleBuffers = true;
+        if (ImGui::MenuItem("Show Post Process Buffer"))
+            mShowPostProcessBuffer = true;
         ImGui::EndMenu();
     }
 }

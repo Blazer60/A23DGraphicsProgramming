@@ -9,6 +9,5 @@ out layout(location = 0) vec3 o_output;
 
 void main()
 {
-    o_output = vec3(texture(u_texture, v_uvs));
-    o_output = vec3(v_uvs.xy, 0.f);
+    o_output = vec3(texture(u_texture, v_uvs)) - u_light_key_threshold;
 }

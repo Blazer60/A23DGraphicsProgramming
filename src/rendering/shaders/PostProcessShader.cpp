@@ -14,7 +14,7 @@ PostProcessShader::PostProcessShader(
     const std::filesystem::path &fragmentPath)
     : Shader(vertexPath, fragmentPath)
 {
-    const auto mesh = primitives::triangleFanCircle<UvVertex, NoMaterial>(20)[0];
+    const auto mesh = primitives::plane<UvVertex>()[0];
     mVao      = mesh.renderInformation.vao;
     mEboCount = mesh.renderInformation.eboCount;
     mEbo      = mesh.ebo;

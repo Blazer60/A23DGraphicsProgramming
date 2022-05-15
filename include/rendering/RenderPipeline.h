@@ -40,10 +40,7 @@ public:
     std::shared_ptr<TextureBufferObject> mSpecular;
     
     std::shared_ptr<FramebufferObject> mOutput;
-    std::shared_ptr<TextureBufferObject> mTarget;
-    
-    std::shared_ptr<FramebufferObject> mPreFilter;
-    std::shared_ptr<TextureBufferObject> mLightKeyThreshold;
+    std::shared_ptr<TextureBufferObject> mLightTarget;
     
     std::shared_ptr<FramebufferObject> mDownSample;
     std::shared_ptr<MipmapTexture> mDownSampleTextures;
@@ -59,8 +56,10 @@ public:
     bool mShowAlbedoBuffer      { false };
     bool mShowDiffuseBuffer     { false };
     bool mShowSpecularBuffer    { false };
-    bool mShowTargetBuffer      { true  };
-    bool mShowLightKeyBuffer    { true  };
+    bool mShowLightTargetBuffer      { true  };
+    bool mShowDownSampleBuffers { true  };
+    bool mShowUpSampleBuffers   { false };
+    bool mShowPostProcessBuffer { false };
 };
 
 

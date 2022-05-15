@@ -40,7 +40,7 @@ protected:
     void bind();
     
     Shader mShader {
-        path::shaders() + "/ScreenQuad.vert",
+        path::shaders() + "/ScreenOverlay.vert",
         path::shaders() + "/lighting/DirectionalLighting.frag"
     };
     
