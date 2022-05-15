@@ -53,7 +53,6 @@ public:
 protected:
     Entity createPhongModel(const glm::vec3 position, const Model<PhongVertex, BlinnPhongMaterial> &meshes);
     
-    glm::ivec2                  mScreenSize         { 1920, 1080 };  // Must be at the top.
     ecs::Core                   mEcs                { ecs::initFlag::AutoInitialise };
     std::shared_ptr<MainCamera> mMainCamera         { std::make_shared<MainCamera>(glm::vec3(0.f, 10.f, 15.f)) };
     Renderer                    mRenderer           { mMainCamera, mEcs };

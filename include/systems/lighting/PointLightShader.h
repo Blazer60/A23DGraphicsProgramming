@@ -40,8 +40,8 @@ protected:
     void bind();
     
     Shader mShader {
-        path::resources() + "shaders/lighting/Lighting.vert",
-        path::resources() + "shaders/lighting/PointLighting.frag"
+        path::shaders() + "/ScreenQuad.vert",
+        path::shaders() + "/lighting/PointLighting.frag"
     };
     
     unsigned int    mVao        { 0 };

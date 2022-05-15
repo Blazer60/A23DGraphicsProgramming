@@ -17,6 +17,7 @@
 #include "Mesh.h"
 #include "MaterialComponents.h"
 #include "ModelLoader.h"
+#include "PreFilterShader.h"
 
 /**
  * Sets up the rendering pipeline for a single scene. Used to setup deferred rendering and deferred lighting.
@@ -49,9 +50,9 @@ public:
     const Component geometryTag { mEcs.create<RenderInformation>() };
     
     std::shared_ptr<MainCamera>             mCamera;  // Must be declared first. Other object rely on this being set.
-    glm::ivec2                              mScreenSize { 1920, 1080 };
     RenderPipeline                          mRenderPipeline;
     DeferredLightShader                     mDeferredLightingShader;
+    PreFilterShader                         mPreFilterShader;
     
     // Debug Helpers
     Mesh<UvVertex, NoMaterial> mBox { load::model<UvVertex, NoMaterial>(path::resources() + "models/physics/Box.obj")[0] };

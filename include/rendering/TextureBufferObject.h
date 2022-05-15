@@ -28,7 +28,7 @@ public:
      */
     TextureBufferObject(const glm::ivec2 &size, GLenum format, std::string debugName="");
     
-    ~TextureBufferObject();
+    virtual ~TextureBufferObject();
     
     void imguiUpdate(bool *show);
     

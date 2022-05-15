@@ -40,29 +40,22 @@ FramebufferObject::~FramebufferObject()
     mFboName = 0;
 }
 
-void FramebufferObject::attach(std::shared_ptr<TextureBufferObject> &textureBufferObject, int bindPoint)
+void FramebufferObject::attach(std::shared_ptr<TextureBufferObject> textureBufferObject, int bindPoint, int mipLevel)
 {
-    textureBufferObject->reattach = [&textureBufferObject, bindPoint, this]() {
+    textureBufferObject->reattach = [&textureBufferObject, bindPoint, mipLevel, this]() {
         detach(bindPoint);
-        attach(textureBufferObject, bindPoint);
+        attach(textureBufferObject, bindPoint, mipLevel);
     };
-    // textureBufferObject->changeSize(mSize);
-    glNamedFramebufferTexture(mFboName, GL_COLOR_ATTACHMENT0 + bindPoint, textureBufferObject->mName, 0);
-    validate();
     
-    mTextures.push_back(textureBufferObject);
+    if (textureBufferObject->mSize != mSize)
+        debug::log("The attached texture MUST be the same size!", debug::severity::Major);
+    
+    glNamedFramebufferTexture(mFboName, GL_COLOR_ATTACHMENT0 + bindPoint, textureBufferObject->mName, mipLevel);
+    
+    mTextures.push_back(std::move(textureBufferObject));
     mAttachments.emplace_back(GL_COLOR_ATTACHMENT0 + bindPoint);
     glNamedFramebufferDrawBuffers(mFboName, mAttachments.size(), &mAttachments[0]);
-}
-
-void FramebufferObject::attach(const TextureBufferObject &textureBufferObject, int bindPoint)
-{
-    // textureBufferObject->changeSize(mSize);
-    glNamedFramebufferTexture(mFboName, GL_COLOR_ATTACHMENT0 + bindPoint, textureBufferObject.mName, 0);
     validate();
-    
-    mAttachments.emplace_back(GL_COLOR_ATTACHMENT0 + bindPoint);
-    glNamedFramebufferDrawBuffers(mFboName, mAttachments.size(), &mAttachments[0]);
 }
 
 void FramebufferObject::detach(int bindPoint)
@@ -107,5 +100,6 @@ void FramebufferObject::bind() const
 {
     glBlendFunc(mSourceBlend, mDestinationBlend);
     glDepthFunc(mDepthFunction);
+    glViewport(0, 0, mSize.x, mSize.y);  // Properly sets up the NDC for this framebuffer.
     glBindFramebuffer(GL_FRAMEBUFFER, mFboName);
 }

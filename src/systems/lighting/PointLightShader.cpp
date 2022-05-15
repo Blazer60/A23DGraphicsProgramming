@@ -32,7 +32,7 @@ PointLightShader::PointLightShader(
         const glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.f), glm::vec3(pointLight.distance));
         const glm::mat4 mvp = mCamera->getVpMatrix() * positionMatrix * scaleMatrix;
         
-        mShader.set("u_model_matrix", mCamera->getVpMatrix() * positionMatrix * scaleMatrix);
+        mShader.set("u_mvp_matrix", mCamera->getVpMatrix() * positionMatrix * scaleMatrix);
         mShader.set("u_light_position",  position.value);
         mShader.set("u_light_intensity", pointLight.intensity);
         mShader.set("u_light_distance",  pointLight.distance);
@@ -69,6 +69,6 @@ void PointLightShader::bind()
     mShader.set("u_normals",   1);
     mShader.set("u_albedo",    2);
     
-    mShader.set("u_model_matrix", glm::mat4(1.f));
+    mShader.set("u_mvp_matrix", glm::mat4(1.f));
     mShader.set("u_camera_position_ws", mCamera->getPosition());
 }

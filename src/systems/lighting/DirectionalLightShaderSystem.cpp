@@ -60,6 +60,6 @@ void DirectionalLightShaderSystem::bind()
     mShader.set("u_normals",   1);
     mShader.set("u_albedo",    2);
     
-    mShader.set("u_model_matrix", glm::mat4(1.f));
+    mShader.set("u_mvp_matrix", glm::mat4(1.f));
     mShader.set("u_camera_position_ws", mCamera->getPosition());
 }

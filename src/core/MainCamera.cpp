@@ -9,39 +9,20 @@
 #include "glfw3.h"
 #include "Timers.h"
 #include "imgui.h"
+#include "WindowHelpers.h"
 
 MainCamera::MainCamera()
     : mWindow(glfwGetCurrentContext())
 {
-    glm::ivec2 size;
-    glfwGetWindowSize(mWindow, &size.x, &size.y);
-    
-    const glm::vec2 fSize { size };
-    
-    mProjectionMatrix = glm::perspective(mFovY, fSize.x / fSize.y, mNearClip, mFarClip);
-    
-    // glfwSetMouseButtonCallback(mWindow, [](GLFWwindow *window, int button, int action, int mods){
-    //     if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
-    //     {
-    //         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    //         glfwSetCursorPos(window, 0.0, 0.0);
-    //     }
-    //     else if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE)
-    //     {
-    //         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-    //     }
-    // });
+    const glm::vec2 size = glm::ivec2(window::bufferSize());
+    mProjectionMatrix = glm::perspective(mFovY, size.x / size.y, mNearClip, mFarClip);
 }
 
 MainCamera::MainCamera(const glm::vec3 &position)
     : mWindow(glfwGetCurrentContext()), mPosition(position)
 {
-    glm::ivec2 size;
-    glfwGetWindowSize(mWindow, &size.x, &size.y);
-    
-    const glm::vec2 fSize { size };
-    
-    mProjectionMatrix = glm::perspective(mFovY, fSize.x / fSize.y, mNearClip, mFarClip);
+    const glm::vec2 size = glm::ivec2(window::bufferSize());
+    mProjectionMatrix = glm::perspective(mFovY, size.x / size.y, mNearClip, mFarClip);
 }
 
 void MainCamera::update()

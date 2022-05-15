@@ -35,8 +35,8 @@ public:
     
     ~FramebufferObject();
     
-    void attach(std::shared_ptr<TextureBufferObject> &textureBufferObject, int bindPoint);
-    void attach(const TextureBufferObject &textureBufferObject, int bindPoint);
+    void attach(std::shared_ptr<TextureBufferObject> textureBufferObject, int bindPoint, int mipLevel = 0);
+    
     void detach(int bindPoint);
     void clear();
     void bind() const;

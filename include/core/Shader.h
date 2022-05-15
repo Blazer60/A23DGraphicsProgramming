@@ -19,7 +19,7 @@ class Shader
 {
 public:
     Shader(const std::filesystem::path &vertexPath, const std::filesystem::path &fragmentPath);
-    ~Shader();
+    virtual ~Shader();
     
     void bind() const;
     static void unbind();

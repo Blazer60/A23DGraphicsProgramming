@@ -18,8 +18,10 @@
 #include "scenes/DynamicImpulseDemoScene.h"
 #include "scenes/OdeDemoScene.h"
 #include "scenes/RotationDemoScene.h"
+#include "WindowHelpers.h"
 
 Core::Core(const glm::ivec2 &resolution)
+    : mResolution(resolution)
 {
     if (!(initGlfw() && initOpenGl() && initImGui()))
     {
@@ -27,7 +29,7 @@ Core::Core(const glm::ivec2 &resolution)
         debug::log("Unable to initialise everything.", debug::severity::Warning);
         return;
     }
-    
+    window::setBufferSize(resolution);
     mScene = std::make_unique<TestingScene>();  // Scenes must be made after the initialisation of underlying architectures.
 }
 

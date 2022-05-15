@@ -31,7 +31,7 @@ public:
     void render();
     
 protected:
-    Shader mShader { path::resources() + "shaders/lighting/Lighting.vert", path::resources() + "shaders/lighting/Output.frag" };
+    Shader mShader { path::shaders() + "ScreenQuad.vert", path::resources() + "shaders/lighting/Output.frag" };
     unsigned int mVao { 0 };
     unsigned int mEbo { 0 };
     unsigned int mVbo { 0 };

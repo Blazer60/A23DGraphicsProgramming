@@ -18,7 +18,8 @@ Renderer::Renderer(std::shared_ptr<MainCamera> camera, ecs::Core &EntityComponen
     mDeferredLightingShader(
         camera, mRenderPipeline.mOutput,
         mRenderPipeline.mDiffuse, mRenderPipeline.mSpecular,
-        mRenderPipeline.mAlbedo)
+        mRenderPipeline.mAlbedo),
+    mPreFilterShader(mRenderPipeline.mPreFilter, mRenderPipeline.mTarget)
 {
     mEcs.createSystem<BlinnPhongGeometryShader> ({ geometryTag }, mCamera, mRenderPipeline.mGeometry);
     mEcs.createSystem<DirectionalLightShaderSystem>(
@@ -39,6 +40,10 @@ void Renderer::clear()
     mRenderPipeline.mGeometry->clear();
     mRenderPipeline.mLightAccumulator->clear();
     mRenderPipeline.mOutput->clear();
+    mRenderPipeline.mPreFilter->clear();
+    mRenderPipeline.mDownSample->clear();
+    mRenderPipeline.mUpSample->clear();
+    mRenderPipeline.mComposite->clear();
     
     mRenderPipeline.mGeometry->bind();  // For safety as this is typically the first buffer drawn to.
 }
@@ -46,6 +51,7 @@ void Renderer::clear()
 void Renderer::update()
 {
     mDeferredLightingShader.render();
+    mPreFilterShader.render();
 }
 
 void Renderer::imguiUpdate()
