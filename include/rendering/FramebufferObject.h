@@ -42,7 +42,8 @@ public:
     void bind() const;
     
     unsigned int getFboName() const;
-
+    
+    const glm::ivec2 &getSize() const;
 protected:
     void validate();
     

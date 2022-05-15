@@ -21,7 +21,7 @@ void MipViewerShader::init()
 {
     mSize = mOriginalSize / static_cast<int>(glm::pow(2.f, mLevel));
     mFramebufferObject = std::make_unique<FramebufferObject>(mSize, GL_ONE, GL_ONE, GL_ALWAYS);
-    mOutputTexture = std::make_shared<TextureBufferObject>(mSize, GL_RGB16, GL_LINEAR, "Mip Viewer");
+    mOutputTexture = std::make_shared<TextureBufferObject>(mSize, GL_RGB16, GL_LINEAR, 1, "Mip Viewer");
     mFramebufferObject->attach(mOutputTexture, 0);
 }
 
@@ -49,7 +49,7 @@ void MipViewerShader::imguiUpdate()
     
     ImGui::Begin("Mip Settings");
     auto temp = mLevel;
-    ImGui::SliderInt("Mip Level", &mLevel, 0, 13);
+    ImGui::SliderInt("Mip Level", &mLevel, 0, 7);
     if (temp != mLevel)
         init();
     ImGui::Checkbox("Fill?", &mFill);

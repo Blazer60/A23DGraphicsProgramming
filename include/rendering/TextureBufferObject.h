@@ -27,8 +27,7 @@ public:
      * @param format - The OpenGL format with the syntax GL_(components)(size)[type].
      */
     TextureBufferObject(
-        const glm::ivec2 &size, GLenum format,
-        GLenum minMagFilter, std::string debugName="");
+        const glm::ivec2 &size, GLenum format, GLenum minMagFilter, const int layers=1, std::string debugName="");
     
     virtual ~TextureBufferObject();
     
@@ -39,7 +38,7 @@ public:
     unsigned int getName() const;
     const glm::ivec2 &getSize() const;
 protected:
-    void init(GLenum minMagFilter);
+    void init(GLenum minMagFilter, const int layers);
     void deInit();
     
     std::function<void()> reattach  { [](){} };

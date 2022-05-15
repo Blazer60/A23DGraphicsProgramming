@@ -19,8 +19,8 @@ Renderer::Renderer(std::shared_ptr<MainCamera> camera, ecs::Core &EntityComponen
         camera, mRenderPipeline.mOutput,
         mRenderPipeline.mDiffuse, mRenderPipeline.mSpecular,
         mRenderPipeline.mAlbedo),
-    mPreFilterShader(mRenderPipeline.mDownSample, mRenderPipeline.mLightTarget),
-    mMipViewerShader(mRenderPipeline.mDownSampleTextures)
+    mPreFilterShader(mRenderPipeline.mDownSampleBuffers[0], mRenderPipeline.mLightTarget),
+    mMipViewerShader(mRenderPipeline.mDownSampleTexture)
 {
     mEcs.createSystem<BlinnPhongGeometryShader> ({ geometryTag }, mCamera, mRenderPipeline.mGeometry);
     mEcs.createSystem<DirectionalLightShaderSystem>(
@@ -41,7 +41,9 @@ void Renderer::clear()
     mRenderPipeline.mGeometry->clear();
     mRenderPipeline.mLightAccumulator->clear();
     mRenderPipeline.mOutput->clear();
-    mRenderPipeline.mDownSample->clear();
+    for (const auto &item : mRenderPipeline.mDownSampleBuffers)
+        item->clear();
+    
     mRenderPipeline.mUpSample->clear();
     mRenderPipeline.mComposite->clear();
     
@@ -54,6 +56,12 @@ void Renderer::update()
 {
     mDeferredLightingShader.render();
     mPreFilterShader.render();
+    auto *inputTexture = mRenderPipeline.mDownSampleTexture.get();
+    for (int i = 1; i < mRenderPipeline.mDownSampleBuffers.size(); ++i)
+    {
+        auto *output = mRenderPipeline.mDownSampleBuffers[i].get();
+        mBloomShader.downSample(inputTexture, i - 1, output);
+    }
     
     mMipViewerShader.render();
 }

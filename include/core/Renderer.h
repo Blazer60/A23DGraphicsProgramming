@@ -19,6 +19,7 @@
 #include "ModelLoader.h"
 #include "PreFilterShader.h"
 #include "MipViewerShader.h"
+#include "BloomShader.h"
 
 /**
  * Sets up the rendering pipeline for a single scene. Used to setup deferred rendering and deferred lighting.
@@ -55,6 +56,7 @@ public:
     DeferredLightShader         mDeferredLightingShader;
     PreFilterShader             mPreFilterShader;
     MipViewerShader             mMipViewerShader;
+    BloomShader                 mBloomShader;
     
     // Debug Helpers
     Mesh<UvVertex, NoMaterial> mBox { load::model<UvVertex, NoMaterial>(path::resources() + "models/physics/Box.obj")[0] };

@@ -12,20 +12,19 @@ RenderPipeline::RenderPipeline() :
     mGeometry(std::make_shared<FramebufferObject>(mSize, GL_ONE, GL_ZERO, GL_LESS)),
     mLightAccumulator(std::make_shared<FramebufferObject>(mSize, GL_ONE, GL_ONE, GL_ALWAYS)),
     mOutput(std::make_shared<FramebufferObject>(mSize, GL_ONE, GL_ONE, GL_ALWAYS)),
-    mDownSample(std::make_shared<FramebufferObject>(mSize / 2, GL_ONE, GL_ONE, GL_ALWAYS)),
     mUpSample(std::make_shared<FramebufferObject>(mSize / 2, GL_ONE, GL_ONE, GL_ALWAYS)),
     mComposite(std::make_shared<FramebufferObject>(mSize, GL_ONE, GL_ONE, GL_ALWAYS)),
     
-    mPosition(  std::make_shared<TextureBufferObject>(mSize, GL_RGB16F,      GL_NEAREST, "Position")),
-    mNormal(    std::make_shared<TextureBufferObject>(mSize, GL_RGB16_SNORM, GL_NEAREST, "Normals")),
-    mAlbedo(    std::make_shared<TextureBufferObject>(mSize, GL_RGB16F,      GL_NEAREST, "Albedo")),
-    mDiffuse(   std::make_shared<TextureBufferObject>(mSize, GL_RGB16F,      GL_NEAREST, "Diffuse")),
-    mSpecular(  std::make_shared<TextureBufferObject>(mSize, GL_RGB16F,      GL_NEAREST, "Specular")),
-    mLightTarget(std::make_shared<TextureBufferObject>(mSize, GL_RGB16F, GL_NEAREST, "Light Target")),
+    mPosition(  std::make_shared<TextureBufferObject>(mSize, GL_RGB16F,      GL_NEAREST, 1, "Position")),
+    mNormal(    std::make_shared<TextureBufferObject>(mSize, GL_RGB16_SNORM, GL_NEAREST, 1, "Normals")),
+    mAlbedo(    std::make_shared<TextureBufferObject>(mSize, GL_RGB16F,      GL_NEAREST, 1, "Albedo")),
+    mDiffuse(   std::make_shared<TextureBufferObject>(mSize, GL_RGB16F,      GL_NEAREST, 1, "Diffuse")),
+    mSpecular(  std::make_shared<TextureBufferObject>(mSize, GL_RGB16F,      GL_NEAREST, 1, "Specular")),
+    mLightTarget(std::make_shared<TextureBufferObject>(mSize, GL_RGB16F, GL_NEAREST,     1, "Light Target")),
     
-    mDownSampleTextures(    std::make_shared<MipmapTexture>(        mSize / 2,  GL_RGB16F, "Down Sample")),
-    mUpSampleTextures(      std::make_shared<MipmapTexture>(        mSize / 2,  GL_RGB16F, "Up Sample")),
-    mPostProcess(           std::make_shared<TextureBufferObject>(  mSize,      GL_RGB16F, GL_NEAREST, "Post Process"))
+    mDownSampleTexture(std::make_shared<MipmapTexture>(mSize / 2, GL_RGB16F, mMipmapLevels, "Down Sample")),
+    mUpSampleTextures(      std::make_shared<MipmapTexture>(        mSize / 2,  GL_RGB16F, mMipmapLevels, "Up Sample")),
+    mPostProcess(           std::make_shared<TextureBufferObject>(  mSize,      GL_RGB16F, GL_NEAREST, 1, "Post Process"))
 {
     mGeometry->attach(mPosition, 0);
     mGeometry->attach(mNormal, 1);
@@ -36,7 +35,13 @@ RenderPipeline::RenderPipeline() :
     
     mOutput->attach(mLightTarget, 0);
     
-    mDownSample->attach(mDownSampleTextures, 0);
+    for (int i = 0; i < mMipmapLevels; ++i)
+    {
+        glm::ivec2 size = glm::ivec2(static_cast<glm::vec2>(mSize / 2) / static_cast<float>(glm::pow(2.f, i)));
+        auto framebuffer = std::make_shared<FramebufferObject>(size, GL_ONE, GL_ONE, GL_ALWAYS);
+        framebuffer->attach(mDownSampleTexture, 0, i);
+        mDownSampleBuffers.push_back(framebuffer);
+    }
     
     mUpSample->attach(mUpSampleTextures, 0);
     
@@ -58,7 +63,7 @@ void RenderPipeline::imguiUpdate()
     if (mShowLightTargetBuffer)
         mLightTarget->imguiUpdate(&mShowLightTargetBuffer, true);
     if (mShowDownSampleBuffers)
-        mDownSampleTextures->imguiUpdate(&mShowDownSampleBuffers, true);
+        mDownSampleTexture->imguiUpdate(&mShowDownSampleBuffers, true);
     if (mShowUpSampleBuffers)
         mUpSampleTextures->imguiUpdate(&mShowUpSampleBuffers, true);
     if (mShowPostProcessBuffer)

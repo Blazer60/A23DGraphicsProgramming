@@ -47,8 +47,8 @@ void FramebufferObject::attach(std::shared_ptr<TextureBufferObject> textureBuffe
         attach(textureBufferObject, bindPoint, mipLevel);
     };
     
-    if (textureBufferObject->mSize != mSize)
-        debug::log("The attached texture MUST be the same size!", debug::severity::Major);
+    // if (textureBufferObject->mSize != mSize)
+    //     debug::log("The attached texture MUST be the same size!", debug::severity::Major);
     
     glNamedFramebufferTexture(mFboName, GL_COLOR_ATTACHMENT0 + bindPoint, textureBufferObject->mName, mipLevel);
     
@@ -75,6 +75,10 @@ void FramebufferObject::detach(int bindPoint)
 void FramebufferObject::validate()
 {
     const unsigned int fboStatus = glCheckNamedFramebufferStatus(mFboName, GL_FRAMEBUFFER);
+    if (GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT == 36054)
+    {
+    
+    }
     if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
         debug::log("Framebuffer error of: " + std::to_string(fboStatus), debug::severity::Major);
 }
@@ -102,4 +106,9 @@ void FramebufferObject::bind() const
     glDepthFunc(mDepthFunction);
     glViewport(0, 0, mSize.x, mSize.y);  // Properly sets up the NDC for this framebuffer.
     glBindFramebuffer(GL_FRAMEBUFFER, mFboName);
+}
+
+const glm::ivec2 &FramebufferObject::getSize() const
+{
+    return mSize;
 }

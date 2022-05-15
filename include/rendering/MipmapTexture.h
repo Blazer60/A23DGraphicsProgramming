@@ -21,5 +21,5 @@ class MipmapTexture
 public:
     explicit MipmapTexture(const glm::ivec2 &size);
     
-    MipmapTexture(const glm::ivec2 &size, GLenum format, const std::string &debugName);
+    MipmapTexture(const glm::ivec2 &size, GLenum format, const int layers=8, const std::string &debugName="");
 };

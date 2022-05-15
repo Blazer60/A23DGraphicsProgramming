@@ -29,6 +29,7 @@ public:
     void imguiMenuUpdate();
     
     glm::ivec2 mSize { window::bufferSize() };
+    const int mMipmapLevels { 8 };  // Must be before frame and texture buffer creation.
     
     std::shared_ptr<FramebufferObject> mGeometry;
     std::shared_ptr<TextureBufferObject> mPosition;
@@ -42,8 +43,8 @@ public:
     std::shared_ptr<FramebufferObject> mOutput;
     std::shared_ptr<TextureBufferObject> mLightTarget;
     
-    std::shared_ptr<FramebufferObject> mDownSample;
-    std::shared_ptr<MipmapTexture> mDownSampleTextures;
+    std::vector<std::shared_ptr<FramebufferObject>> mDownSampleBuffers;
+    std::shared_ptr<MipmapTexture> mDownSampleTexture;
     
     std::shared_ptr<FramebufferObject> mUpSample;
     std::shared_ptr<MipmapTexture> mUpSampleTextures;
@@ -56,7 +57,7 @@ public:
     bool mShowAlbedoBuffer      { false };
     bool mShowDiffuseBuffer     { false };
     bool mShowSpecularBuffer    { false };
-    bool mShowLightTargetBuffer      { true  };
+    bool mShowLightTargetBuffer { true  };
     bool mShowDownSampleBuffers { true  };
     bool mShowUpSampleBuffers   { false };
     bool mShowPostProcessBuffer { false };
