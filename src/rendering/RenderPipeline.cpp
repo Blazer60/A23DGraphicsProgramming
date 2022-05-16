@@ -23,7 +23,7 @@ RenderPipeline::RenderPipeline() :
     
     mDownSampleTexture(std::make_shared<MipmapTexture>(mSize / 2, GL_RGB16F, mMipmapLevels, "Down Sample")),
     mUpSampleTexture(std::make_shared<MipmapTexture>(mSize, GL_RGB16F, mMipmapLevels, "Up Sample")),
-    mPostProcess(std::make_shared<TextureBufferObject>(mSize, GL_RGB16F, GL_NEAREST, GL_NEAREST, 1, "Post Process"))
+    mPostProcess(std::make_shared<TextureBufferObject>(mSize, GL_RGB16, GL_NEAREST, GL_NEAREST, 1, "Post Process"))
 {
     mGeometry->attach(mPosition, 0);
     mGeometry->attach(mNormal, 1);

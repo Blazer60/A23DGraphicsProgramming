@@ -29,11 +29,14 @@ public:
         TextureBufferObject *lastUpSample, const int upSampleMipLevel, TextureBufferObject *downSample,
         const int downSampleMipLevel, FramebufferObject *output);
     
+    void composite(TextureBufferObject *original, TextureBufferObject *bloom, FramebufferObject *output);
+    
     void imGuiUpdate();
     
 protected:
     Shader mDownSample { path::shaders() + "ScreenOverlay.vert", path::shaders() + "post-processing/BloomDownSample.frag" };
     Shader mUpSample   { path::shaders() + "ScreenOverlay.vert", path::shaders() + "post-processing/BloomUpSample.frag"  };
+    Shader mComposite  { path::shaders() + "ScreenOverlay.vert", path::shaders() + "post-processing/BloomComposite.frag" };
     
     float mBloomScale { 1.f };
     

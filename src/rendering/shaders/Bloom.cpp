@@ -75,3 +75,20 @@ void Bloom::imGuiUpdate()
 {
     ImGui::DragFloat("Bloom Radius", &mBloomScale, 0.01f);
 }
+
+void Bloom::composite(TextureBufferObject *original, TextureBufferObject *bloom, FramebufferObject *output)
+{
+    mComposite.bind();
+    glBindVertexArray(mVao);
+    output->bind();
+    
+    mComposite.set("u_mvp_matrix", glm::mat4(1.f));
+    
+    glBindTextureUnit(0, original->getName());
+    glBindTextureUnit(1, bloom->getName());
+    
+    mComposite.set("u_original", 0);
+    mComposite.set("u_bloom", 1);
+    
+    glDrawElements(GL_TRIANGLES, mEboCount, GL_UNSIGNED_INT, 0);
+}

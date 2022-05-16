@@ -60,7 +60,7 @@ public:
     bool mShowLightTargetBuffer { true  };
     bool mShowDownSampleBuffers { true  };
     bool mShowUpSampleBuffers   { false };
-    bool mShowPostProcessBuffer { false };
+    bool mShowPostProcessBuffer { true };
 };
 
 

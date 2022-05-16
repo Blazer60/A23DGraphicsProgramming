@@ -79,6 +79,9 @@ void Renderer::update()
         mBloomShader.upSample(upSampleTexture, i + 1, downSampleTexture, i - 1, output);
     }
     
+    auto *original = mRenderPipeline.mLightTarget.get();
+    mBloomShader.composite(original, upSampleTexture, mRenderPipeline.mComposite.get());
+    
     mDownSamplingMipViewerShader.render();
     mUpSamplingMipViewerShader.render();
 }
