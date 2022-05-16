@@ -20,7 +20,8 @@ Renderer::Renderer(std::shared_ptr<MainCamera> camera, ecs::Core &EntityComponen
         mRenderPipeline.mDiffuse, mRenderPipeline.mSpecular,
         mRenderPipeline.mAlbedo),
     mPreFilterShader(mRenderPipeline.mDownSampleBuffers[0], mRenderPipeline.mLightTarget),
-    mMipViewerShader(mRenderPipeline.mDownSampleTexture)
+    mDownSamplingMipViewerShader(mRenderPipeline.mDownSampleTexture, "Down Sampling"),
+    mUpSamplingMipViewerShader(mRenderPipeline.mUpSampleTexture, "Up Sampling")
 {
     mEcs.createSystem<BlinnPhongGeometryShader> ({ geometryTag }, mCamera, mRenderPipeline.mGeometry);
     mEcs.createSystem<DirectionalLightShaderSystem>(
@@ -44,10 +45,13 @@ void Renderer::clear()
     for (const auto &item : mRenderPipeline.mDownSampleBuffers)
         item->clear();
     
-    mRenderPipeline.mUpSample->clear();
+    for (const auto &item : mRenderPipeline.mUpSampleBuffers)
+        item->clear();
+    
     mRenderPipeline.mComposite->clear();
     
-    mMipViewerShader.clear();
+    mDownSamplingMipViewerShader.clear();
+    mUpSamplingMipViewerShader.clear();
     
     mRenderPipeline.mGeometry->bind();  // For safety as this is typically the first buffer drawn to.
 }
@@ -56,20 +60,35 @@ void Renderer::update()
 {
     mDeferredLightingShader.render();
     mPreFilterShader.render();
-    auto *inputTexture = mRenderPipeline.mDownSampleTexture.get();
+    auto *downSampleTexture = mRenderPipeline.mDownSampleTexture.get();
     for (int i = 1; i < mRenderPipeline.mDownSampleBuffers.size(); ++i)
     {
         auto *output = mRenderPipeline.mDownSampleBuffers[i].get();
-        mBloomShader.downSample(inputTexture, i - 1, output);
+        mBloomShader.downSample(downSampleTexture, i - 1, output);
     }
     
-    mMipViewerShader.render();
+    auto *upSampleTexture = mRenderPipeline.mUpSampleTexture.get();
+    
+    const auto count = mRenderPipeline.mUpSampleBuffers.size();
+    mBloomShader.upSample(
+        downSampleTexture, count - 1, downSampleTexture, count - 2, mRenderPipeline.mUpSampleBuffers[count - 1].get());
+    
+    for (int i = count - 2; i > 0; --i)
+    {
+        auto *output = mRenderPipeline.mUpSampleBuffers[i].get();
+        mBloomShader.upSample(upSampleTexture, i + 1, downSampleTexture, i - 1, output);
+    }
+    
+    mDownSamplingMipViewerShader.render();
+    mUpSamplingMipViewerShader.render();
 }
 
 void Renderer::imguiUpdate()
 {
     mRenderPipeline.imguiUpdate();
-    mMipViewerShader.imguiUpdate();
+    mDownSamplingMipViewerShader.imguiUpdate();
+    mUpSamplingMipViewerShader.imguiUpdate();
+    mBloomShader.imGuiUpdate();
 }
 
 void Renderer::drawBox(const glm::mat4 &modelMatrix, const glm::vec3 &halfSize)

@@ -9,9 +9,9 @@
 #include "FilePaths.h"
 #include "imgui.h"
 
-MipViewerShader::MipViewerShader(std::shared_ptr<TextureBufferObject> inputTexture)
+MipViewerShader::MipViewerShader(std::shared_ptr<TextureBufferObject> inputTexture, std::string_view debugName)
     : PostProcessShader(path::shaders()  + "ScreenOverlay.vert", path::shaders() + "post-processing/MipView.frag"),
-    mInputTexture(std::move(inputTexture))
+    mInputTexture(std::move(inputTexture)), mDebugName(debugName)
 {
     mOriginalSize = mInputTexture->getSize();
     init();
@@ -21,7 +21,7 @@ void MipViewerShader::init()
 {
     mSize = mOriginalSize / static_cast<int>(glm::pow(2.f, mLevel));
     mFramebufferObject = std::make_unique<FramebufferObject>(mSize, GL_ONE, GL_ONE, GL_ALWAYS);
-    mOutputTexture = std::make_shared<TextureBufferObject>(mSize, GL_RGB16, GL_LINEAR, 1, "Mip Viewer");
+    mOutputTexture = std::make_shared<TextureBufferObject>(mSize, GL_RGB16, GL_LINEAR, GL_LINEAR, 1, mDebugName + " Mip Viewer");
     mFramebufferObject->attach(mOutputTexture, 0);
 }
 
@@ -47,12 +47,16 @@ void MipViewerShader::imguiUpdate()
     if (mShowOutput)
         mOutputTexture->imguiUpdate(&mShowOutput, mFill);
     
-    ImGui::Begin("Mip Settings");
+    ImGui::PushID(mDebugName.c_str());
+    ImGui::Begin(std::string(mDebugName + " Mip Settings").c_str());
+    
     auto temp = mLevel;
     ImGui::SliderInt("Mip Level", &mLevel, 0, 7);
     if (temp != mLevel)
         init();
     ImGui::Checkbox("Fill?", &mFill);
+    ImGui::Text("%i, %i", mSize.x, mSize.y);
     
     ImGui::End();
+    ImGui::PopID();
 }

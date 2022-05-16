@@ -20,7 +20,7 @@ class MipViewerShader
     : public PostProcessShader
 {
 public:
-    explicit MipViewerShader(std::shared_ptr<TextureBufferObject> inputTexture);
+    MipViewerShader(std::shared_ptr<TextureBufferObject> inputTexture, std::string_view debugName);
     
     void clear();
     void imguiUpdate();
@@ -30,6 +30,7 @@ protected:
     glm::ivec2 mOriginalSize;
     glm::ivec2 mSize { 960, 540 };
     int mLevel { 0 };
+    std::string mDebugName { "" };
     
     std::unique_ptr<FramebufferObject> mFramebufferObject;
     

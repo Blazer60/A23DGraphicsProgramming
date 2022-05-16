@@ -11,15 +11,16 @@
 TextureBufferObject::TextureBufferObject(const glm::ivec2 &size)
     : mSize(size)
 {
-    init(GL_NEAREST, 1);
+    init(GL_NEAREST, GL_LINEAR, 1);
 }
 
 TextureBufferObject::TextureBufferObject(
-    const glm::ivec2 &size, GLenum format, GLenum minMagFilter, const int layers, std::string debugName)
+    const glm::ivec2 &size, GLenum format, GLenum minFilter, GLenum magFilter, const int layers,
+    std::string debugName)
     :
     mSize(size), mFormat(format), mDebugName(std::move(debugName))
 {
-    init(minMagFilter, layers);
+    init(minFilter, magFilter, layers);
 }
 
 TextureBufferObject::~TextureBufferObject()
@@ -27,11 +28,11 @@ TextureBufferObject::~TextureBufferObject()
     deInit();
 }
 
-void TextureBufferObject::init(GLenum minMagFilter, const int layers)
+void TextureBufferObject::init(GLenum minFilter, GLenum magFilter, const int layers)
 {
     glCreateTextures(GL_TEXTURE_2D, 1, &mName);
-    glTextureParameteri(mName, GL_TEXTURE_MIN_FILTER, minMagFilter);
-    glTextureParameteri(mName, GL_TEXTURE_MAG_FILTER, minMagFilter);
+    glTextureParameteri(mName, GL_TEXTURE_MIN_FILTER, minFilter);
+    glTextureParameteri(mName, GL_TEXTURE_MAG_FILTER, magFilter);
     glTextureParameteri(mName, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTextureParameteri(mName, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTextureStorage2D(mName, layers, mFormat, mSize.x, mSize.y);

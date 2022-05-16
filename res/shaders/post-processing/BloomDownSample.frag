@@ -47,5 +47,5 @@ vec3 down_filter_13_tap(vec2 uv, vec2 texel_size)
 void main()
 {
     vec2 texel_size = 1.f / u_mip_size;
-    o_output = down_filter_13_tap(v_uvs, texel_size);
+    o_output = max(down_filter_13_tap(v_uvs, texel_size), vec3(0.f));
 }

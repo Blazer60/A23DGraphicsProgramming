@@ -19,7 +19,7 @@
 #include "ModelLoader.h"
 #include "PreFilterShader.h"
 #include "MipViewerShader.h"
-#include "BloomShader.h"
+#include "Bloom.h"
 
 /**
  * Sets up the rendering pipeline for a single scene. Used to setup deferred rendering and deferred lighting.
@@ -38,7 +38,7 @@ public:
     
     void drawBox(const glm::mat4 &modelMatrix, const glm::vec3 &halfSize);
     
-    unsigned int geometryFboName   { 0 };
+    unsigned int geometryFboName { 0 };
     
 protected:
     // NOTE: Order of declaration matters here.
@@ -55,8 +55,9 @@ public:
     RenderPipeline              mRenderPipeline;
     DeferredLightShader         mDeferredLightingShader;
     PreFilterShader             mPreFilterShader;
-    MipViewerShader             mMipViewerShader;
-    BloomShader                 mBloomShader;
+    MipViewerShader             mDownSamplingMipViewerShader;
+    MipViewerShader             mUpSamplingMipViewerShader;
+    Bloom                 mBloomShader;
     
     // Debug Helpers
     Mesh<UvVertex, NoMaterial> mBox { load::model<UvVertex, NoMaterial>(path::resources() + "models/physics/Box.obj")[0] };

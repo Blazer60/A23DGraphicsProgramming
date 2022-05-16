@@ -114,7 +114,7 @@ add_executable(${PROJECT_NAME}
         src/core/scenes/PlatformDemoScene.cpp src/core/scenes/PlatformDemoScene.h
         src/core/scenes/DynamicImpulseDemoScene.cpp src/core/scenes/DynamicImpulseDemoScene.h
         src/core/scenes/OdeDemoScene.cpp src/core/scenes/OdeDemoScene.h
-        src/core/scenes/RotationDemoScene.cpp src/core/scenes/RotationDemoScene.h src/rendering/MipmapTexture.cpp include/rendering/MipmapTexture.h src/rendering/shaders/PreFilterShader.cpp include/rendering/shaders/PreFilterShader.h src/rendering/shaders/PostProcessShader.cpp include/rendering/shaders/PostProcessShader.h src/helpers/WindowHelpers.cpp include/helpers/WindowHelpers.h src/rendering/shaders/MipViewerShader.cpp include/rendering/shaders/MipViewerShader.h src/rendering/shaders/BloomShader.cpp include/rendering/shaders/BloomShader.h)
+        src/core/scenes/RotationDemoScene.cpp src/core/scenes/RotationDemoScene.h src/rendering/MipmapTexture.cpp include/rendering/MipmapTexture.h src/rendering/shaders/PreFilterShader.cpp include/rendering/shaders/PreFilterShader.h src/rendering/shaders/PostProcessShader.cpp include/rendering/shaders/PostProcessShader.h src/helpers/WindowHelpers.cpp include/helpers/WindowHelpers.h src/rendering/shaders/MipViewerShader.cpp include/rendering/shaders/MipViewerShader.h src/rendering/shaders/Bloom.cpp include/rendering/shaders/Bloom.h)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
 # Project Includes

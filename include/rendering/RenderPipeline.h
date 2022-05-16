@@ -46,8 +46,8 @@ public:
     std::vector<std::shared_ptr<FramebufferObject>> mDownSampleBuffers;
     std::shared_ptr<MipmapTexture> mDownSampleTexture;
     
-    std::shared_ptr<FramebufferObject> mUpSample;
-    std::shared_ptr<MipmapTexture> mUpSampleTextures;
+    std::vector<std::shared_ptr<FramebufferObject>> mUpSampleBuffers;
+    std::shared_ptr<MipmapTexture> mUpSampleTexture;
     
     std::shared_ptr<FramebufferObject> mComposite;
     std::shared_ptr<TextureBufferObject> mPostProcess;
