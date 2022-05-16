@@ -26,21 +26,6 @@ Shader::Shader(const std::filesystem::path &vertexPath, const std::filesystem::p
     glDeleteShader(fs);
 }
 
-// Shader::Shader(std::string_view vertexPath, std::string_view fragmentPath)
-// {
-//     mId = glCreateProgram();
-//     unsigned int vs = compile(GL_VERTEX_SHADER, vertexPath);
-//     unsigned int fs = compile(GL_FRAGMENT_SHADER, fragmentPath);
-//
-//     glAttachShader(mId, vs);
-//     glAttachShader(mId, fs);
-//     glLinkProgram(mId);
-//     glValidateProgram(mId);
-//
-//     glDeleteShader(vs);
-//     glDeleteShader(fs);
-// }
-
 Shader::~Shader()
 {
     glDeleteProgram(mId);

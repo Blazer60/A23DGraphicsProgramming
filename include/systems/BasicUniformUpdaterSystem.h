@@ -18,7 +18,7 @@
  * @date 14/02/2022
  */
 class BasicUniformUpdaterSystem
-        : public ecs::BaseSystem<std::shared_ptr<BasicUniforms>, Transform>
+        : public ecs::BaseSystem<std::shared_ptr<ModelMatrix>, Transform>
 {
 public:
     BasicUniformUpdaterSystem();

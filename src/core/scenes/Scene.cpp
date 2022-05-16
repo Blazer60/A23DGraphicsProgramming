@@ -24,7 +24,7 @@ Scene::Scene()
 Entity Scene::createPhongModel(const glm::vec3 position, const Model<PhongVertex, BlinnPhongMaterial> &meshes)
 {
     // Our transform uniforms that will be distributed to every child in the hierarchy.
-    auto transformUniforms = std::make_shared<BasicUniforms>();
+    auto transformUniforms = std::make_shared<ModelMatrix>();
     
     Entity parent    = mEcs.create();
     Entity model     = mEcs.create();  // Just contains model slots for hierarchical purity.

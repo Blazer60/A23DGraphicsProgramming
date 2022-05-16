@@ -5,7 +5,7 @@
  */
 
 
-#include "systems/lighting/DirectionalLightShaderSystem.h"
+#include "DirectionalLightShaderSystem.h"
 #include "Vertices.h"
 #include "Primitives.h"
 

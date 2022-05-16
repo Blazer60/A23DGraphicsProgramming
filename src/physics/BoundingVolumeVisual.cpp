@@ -13,12 +13,12 @@ BoundingVolumeVisual::BoundingVolumeVisual(std::shared_ptr<MainCamera> camera, c
 {
     mEntities.forEach([this](
         std::shared_ptr<BoundingVolume> &boundingVolume,
-        std::shared_ptr<BasicUniforms> &basicUniforms)
+        std::shared_ptr<ModelMatrix> &basicUniforms)
     {
         if (const auto sphere = std::dynamic_pointer_cast<BoundingSphere>(boundingVolume))
-            drawSphere(*sphere, basicUniforms->modelMat);
+            drawSphere(*sphere, basicUniforms->value);
         else if (const auto box = std::dynamic_pointer_cast<BoundingBox>(boundingVolume))
-            drawBox(*box, basicUniforms->modelMat);
+            drawBox(*box, basicUniforms->value);
     });
     scheduleFor(ecs::Render);
 }

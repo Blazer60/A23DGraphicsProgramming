@@ -16,13 +16,14 @@
 #include "FilePaths.h"
 #include "Shader.h"
 #include "MainCamera.h"
+#include "Components.h"
 
 /**
  * @author Ryan Purse
  * @date 20/04/2022
  */
 class BoundingVolumeVisual
-    : public ecs::BaseSystem<std::shared_ptr<BoundingVolume>, std::shared_ptr<BasicUniforms>>
+    : public ecs::BaseSystem<std::shared_ptr<BoundingVolume>, std::shared_ptr<ModelMatrix>>
 {
 public:
     BoundingVolumeVisual(std::shared_ptr<MainCamera> camera, const unsigned int geometryBufferId);

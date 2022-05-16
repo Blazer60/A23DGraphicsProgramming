@@ -21,7 +21,7 @@ class CollisionEntity;
  * @date 06/05/2022
  */
 class TreeBuilder
-    : public ecs::BaseSystem<std::shared_ptr<BoundingVolume>, std::shared_ptr<BasicUniforms>, Velocity>
+    : public ecs::BaseSystem<std::shared_ptr<BoundingVolume>, std::shared_ptr<ModelMatrix>, Velocity>
 {
 public:
     explicit TreeBuilder(std::shared_ptr<octree::Tree<CollisionEntity>> tree);

@@ -13,6 +13,7 @@
 #include "BoundingVolumes.h"
 #include "UniformComponents.h"
 #include "Physics.h"
+#include "Components.h"
 
 struct HitRecord
 {
@@ -32,7 +33,7 @@ struct HitRecord
 struct CollisionEntity
 {
     std::shared_ptr<BoundingVolume> boundingVolume;
-    std::shared_ptr<BasicUniforms>  basicUniforms;
+    std::shared_ptr<ModelMatrix>  basicUniforms;
     Velocity                        velocity;
 };
 

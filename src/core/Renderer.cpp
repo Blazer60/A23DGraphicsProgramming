@@ -10,77 +10,111 @@
 #include "DirectionalLightShaderSystem.h"
 #include "PointLightShader.h"
 #include "BoundingVolumeVisual.h"
+#include "imgui.h"
 
 
 Renderer::Renderer(std::shared_ptr<MainCamera> camera, ecs::Core &EntityComponentSystem) :
     mCamera(std::move(camera)),
     mEcs(EntityComponentSystem),
-    mDeferredLightingShader(
-        camera, mRenderPipeline.mOutput,
-        mRenderPipeline.mDiffuse, mRenderPipeline.mSpecular,
-        mRenderPipeline.mAlbedo),
-    mPreFilterShader(mRenderPipeline.mDownSampleBuffers[0], mRenderPipeline.mLightTarget),
-    mDownSamplingMipViewerShader(mRenderPipeline.mDownSampleTexture, "Down Sampling"),
-    mUpSamplingMipViewerShader(mRenderPipeline.mUpSampleTexture, "Up Sampling")
+    mGeometry(std::make_shared<FramebufferObject>(mSize, GL_ONE, GL_ZERO, GL_LESS)),
+    mLightAccumulator(std::make_shared<FramebufferObject>(mSize, GL_ONE, GL_ONE, GL_ALWAYS)),
+    mOutput(std::make_shared<FramebufferObject>(mSize, GL_ONE, GL_ONE, GL_ALWAYS)),
+    mComposite(std::make_shared<FramebufferObject>(mSize, GL_ONE, GL_ONE, GL_ALWAYS)),
+
+    mPosition(  std::make_shared<TextureBufferObject>(mSize, GL_RGB16F,      GL_NEAREST, GL_NEAREST, 1, "Position")),
+    mNormal(    std::make_shared<TextureBufferObject>(mSize, GL_RGB16_SNORM, GL_NEAREST, GL_NEAREST, 1, "Normals")),
+    mAlbedo(    std::make_shared<TextureBufferObject>(mSize, GL_RGB16F,      GL_NEAREST, GL_NEAREST, 1, "Albedo")),
+    mDiffuse(   std::make_shared<TextureBufferObject>(mSize, GL_RGB16F,      GL_NEAREST, GL_NEAREST, 1, "Diffuse")),
+    mSpecular(  std::make_shared<TextureBufferObject>(mSize, GL_RGB16F,      GL_NEAREST, GL_NEAREST, 1, "Specular")),
+    mLightTarget(std::make_shared<TextureBufferObject>(mSize, GL_RGB16F,     GL_NEAREST, GL_NEAREST, 1, "Light Target")),
+
+    mDownSampleTexture(std::make_shared<MipmapTexture>(mSize / 2, GL_RGB16F, mMipmapLevels, "Down Sample")),
+    mUpSampleTexture(std::make_shared<MipmapTexture>(mSize, GL_RGB16F, mMipmapLevels, "Up Sample")),
+    mPostProcess(std::make_shared<TextureBufferObject>(mSize, GL_RGB16, GL_NEAREST, GL_NEAREST, 1, "Post Process")),
+    mDeferredLightingShader(camera, mOutput, mDiffuse, mSpecular, mAlbedo),
+    mDownSamplingMipViewerShader(mDownSampleTexture, "Down Sampling"),
+    mUpSamplingMipViewerShader(mUpSampleTexture, "Up Sampling")
 {
-    mEcs.createSystem<BlinnPhongGeometryShader> ({ geometryTag }, mCamera, mRenderPipeline.mGeometry);
-    mEcs.createSystem<DirectionalLightShaderSystem>(
-        mCamera, mRenderPipeline.mLightAccumulator,
-        mRenderPipeline.mPosition, mRenderPipeline.mNormal,
-        mRenderPipeline.mAlbedo);
-    mEcs.createSystem<PointLightShader>(
-        mCamera, mRenderPipeline.mLightAccumulator,
-        mRenderPipeline.mPosition, mRenderPipeline.mNormal,
-        mRenderPipeline.mAlbedo);
+    mGeometry->attach(mPosition, 0);
+    mGeometry->attach(mNormal, 1);
+    mGeometry->attach(mAlbedo, 2);
     
-    geometryFboName = mRenderPipeline.mGeometry->getFboName();
-    // mEcs.createSystem<BoundingVolumeVisual>(mCamera, geometryFboName);
+    mLightAccumulator->attach(mDiffuse, 0);
+    mLightAccumulator->attach(mSpecular, 1);
+    
+    mOutput->attach(mLightTarget, 0);
+    
+    for (int i = 0; i < mMipmapLevels; ++i)
+    {
+        glm::ivec2 size = glm::ivec2((mSize / 2) / static_cast<int>(glm::pow(2, i)));
+        auto framebuffer = std::make_shared<FramebufferObject>(size, GL_ONE, GL_ONE, GL_ALWAYS);
+        framebuffer->attach(mDownSampleTexture, 0, i);
+        mDownSampleBuffers.push_back(framebuffer);
+    }
+    
+    for (int i = 0; i < mMipmapLevels; ++i)
+    {
+        glm::ivec2 size = glm::ivec2(mSize / static_cast<int>(glm::pow(2, i)));
+        auto framebuffer = std::make_shared<FramebufferObject>(size, GL_ONE, GL_ONE, GL_ALWAYS);
+        framebuffer->attach(mUpSampleTexture, 0, i);
+        mUpSampleBuffers.push_back(framebuffer);
+    }
+    
+    mComposite->attach(mPostProcess, 0);
+    
+    mEcs.createSystem<BlinnPhongGeometryShader> ({ geometryTag }, mCamera, mGeometry);
+    mEcs.createSystem<DirectionalLightShaderSystem>(mCamera, mLightAccumulator, mPosition, mNormal, mAlbedo);
+    mEcs.createSystem<PointLightShader>(mCamera, mLightAccumulator, mPosition, mNormal, mAlbedo);
+    
+    mGeometry->getFboName();
 }
 
 void Renderer::clear()
 {
-    mRenderPipeline.mGeometry->clear();
-    mRenderPipeline.mLightAccumulator->clear();
-    mRenderPipeline.mOutput->clear();
-    for (const auto &item : mRenderPipeline.mDownSampleBuffers)
+    mGeometry->clear();
+    mLightAccumulator->clear();
+    mOutput->clear();
+    for (const auto &item : mDownSampleBuffers)
         item->clear();
     
-    for (const auto &item : mRenderPipeline.mUpSampleBuffers)
+    for (const auto &item : mUpSampleBuffers)
         item->clear();
     
-    mRenderPipeline.mComposite->clear();
+    mComposite->clear();
     
     mDownSamplingMipViewerShader.clear();
     mUpSamplingMipViewerShader.clear();
     
-    mRenderPipeline.mGeometry->bind();  // For safety as this is typically the first buffer drawn to.
+    mGeometry->bind();  // For safety as this is typically the first buffer drawn to.
 }
 
 void Renderer::update()
 {
     mDeferredLightingShader.render();
-    mPreFilterShader.render();
-    auto *downSampleTexture = mRenderPipeline.mDownSampleTexture.get();
-    for (int i = 1; i < mRenderPipeline.mDownSampleBuffers.size(); ++i)
+    
+    mBloomShader.preFilter(mLightTarget.get(), mDownSampleBuffers[0].get());
+    
+    auto *downSampleTexture = mDownSampleTexture.get();
+    for (int i = 1; i < mDownSampleBuffers.size(); ++i)
     {
-        auto *output = mRenderPipeline.mDownSampleBuffers[i].get();
+        auto *output = mDownSampleBuffers[i].get();
         mBloomShader.downSample(downSampleTexture, i - 1, output);
     }
     
-    auto *upSampleTexture = mRenderPipeline.mUpSampleTexture.get();
+    auto *upSampleTexture = mUpSampleTexture.get();
     
-    const auto count = mRenderPipeline.mUpSampleBuffers.size();
+    const auto count = mUpSampleBuffers.size();
     mBloomShader.upSample(
-        downSampleTexture, count - 1, downSampleTexture, count - 2, mRenderPipeline.mUpSampleBuffers[count - 1].get());
+        downSampleTexture, count - 1, downSampleTexture, count - 2, mUpSampleBuffers[count - 1].get());
     
     for (int i = count - 2; i > 0; --i)
     {
-        auto *output = mRenderPipeline.mUpSampleBuffers[i].get();
+        auto *output = mUpSampleBuffers[i].get();
         mBloomShader.upSample(upSampleTexture, i + 1, downSampleTexture, i - 1, output);
     }
     
-    auto *original = mRenderPipeline.mLightTarget.get();
-    mBloomShader.composite(original, upSampleTexture, mRenderPipeline.mComposite.get());
+    auto *original = mLightTarget.get();
+    mBloomShader.composite(original, upSampleTexture, mComposite.get());
     
     mDownSamplingMipViewerShader.render();
     mUpSamplingMipViewerShader.render();
@@ -88,7 +122,25 @@ void Renderer::update()
 
 void Renderer::imguiUpdate()
 {
-    mRenderPipeline.imguiUpdate();
+    if (mShow.positionTexture)
+        mPosition->imguiUpdate(&mShow.positionTexture, true);
+    if (mShow.normalTexture)
+        mNormal->imguiUpdate(&mShow.normalTexture, true);
+    if (mShow.albedoTexture)
+        mAlbedo->imguiUpdate(&mShow.albedoTexture, true);
+    if (mShow.diffuseTexture)
+        mDiffuse->imguiUpdate(&mShow.diffuseTexture, true);
+    if (mShow.specularTexture)
+        mSpecular->imguiUpdate(&mShow.specularTexture, true);
+    if (mShow.lightTargetTexture)
+        mLightTarget->imguiUpdate(&mShow.lightTargetTexture, true);
+    if (mShow.downSampleTextures)
+        mDownSampleTexture->imguiUpdate(&mShow.downSampleTextures, true);
+    if (mShow.upSampleTextures)
+        mUpSampleTexture->imguiUpdate(&mShow.upSampleTextures, true);
+    if (mShow.postProcessTexture)
+        mPostProcess->imguiUpdate(&mShow.postProcessTexture, true);
+    
     mDownSamplingMipViewerShader.imguiUpdate();
     mUpSamplingMipViewerShader.imguiUpdate();
     mBloomShader.imGuiUpdate();
@@ -97,7 +149,7 @@ void Renderer::imguiUpdate()
 void Renderer::drawBox(const glm::mat4 &modelMatrix, const glm::vec3 &halfSize)
 {
     mBoxShader.bind();
-    glBindFramebuffer(GL_FRAMEBUFFER, geometryFboName);
+    mGeometry->bind();
     glBindVertexArray(mBox.renderInformation.vao);
     
     mBoxShader.set("u_mvp", mCamera->getVpMatrix() * modelMatrix);
@@ -110,5 +162,27 @@ void Renderer::drawBox(const glm::mat4 &modelMatrix, const glm::vec3 &halfSize)
 
 void Renderer::imguiMenuUpdate()
 {
-    mRenderPipeline.imguiMenuUpdate();
+    
+    if (ImGui::BeginMenu("Viewports"))
+    {
+        if (ImGui::MenuItem("Show Position Buffer"))
+            mShow.positionTexture = true;
+        if (ImGui::MenuItem("Show Normal Buffer"))
+            mShow.normalTexture = true;
+        if (ImGui::MenuItem("Show Albedo Buffer"))
+            mShow.albedoTexture = true;
+        if (ImGui::MenuItem("Show Diffuse Buffer"))
+            mShow.diffuseTexture = true;
+        if (ImGui::MenuItem("Show Specular Buffer"))
+            mShow.specularTexture = true;
+        if (ImGui::MenuItem("Show Light Target Buffer"))
+            mShow.lightTargetTexture = true;
+        if (ImGui::MenuItem("Show Down Sample Buffer"))
+            mShow.downSampleTextures = true;
+        if (ImGui::MenuItem("Show Up Sample Buffer"))
+            mShow.upSampleTextures = true;
+        if (ImGui::MenuItem("Show Post Process Buffer"))
+            mShow.postProcessTexture = true;
+        ImGui::EndMenu();
+    }
 }

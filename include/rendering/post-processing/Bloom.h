@@ -24,7 +24,10 @@ public:
     Bloom();
     ~Bloom();
     
+    void preFilter(TextureBufferObject *input, FramebufferObject *output);
+    
     void downSample(TextureBufferObject *input, const int mipLevel, FramebufferObject *output);
+    
     void upSample(
         TextureBufferObject *lastUpSample, const int upSampleMipLevel, TextureBufferObject *downSample,
         const int downSampleMipLevel, FramebufferObject *output);
@@ -34,11 +37,14 @@ public:
     void imGuiUpdate();
     
 protected:
+    Shader mPreFilter  { path::shaders() + "ScreenOverlay.vert", path::shaders() + "post-processing/pre-filter/PreFilter.frag" };
     Shader mDownSample { path::shaders() + "ScreenOverlay.vert", path::shaders() + "post-processing/BloomDownSample.frag" };
     Shader mUpSample   { path::shaders() + "ScreenOverlay.vert", path::shaders() + "post-processing/BloomUpSample.frag"  };
     Shader mComposite  { path::shaders() + "ScreenOverlay.vert", path::shaders() + "post-processing/BloomComposite.frag" };
     
+    glm::vec3 mBloomThreshold { 1.f };
     float mBloomScale { 1.f };
+    float mExposure { 1.f };
     
     unsigned int mVao { 0 };
     unsigned int mEbo { 0 };

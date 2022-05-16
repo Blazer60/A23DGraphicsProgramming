@@ -22,12 +22,12 @@ class Renderer;
  * @date 20/04/2022
  */
 class CollisionDetection
-    : public ecs::BaseSystem<std::shared_ptr<BoundingVolume>, std::shared_ptr<BasicUniforms>, Velocity>
+    : public ecs::BaseSystem<std::shared_ptr<BoundingVolume>, std::shared_ptr<ModelMatrix>, Velocity>
 {
     struct BoundedCollisionEntity
     {
         std::shared_ptr<BoundingVolume> boundingVolume;
-        std::shared_ptr<BasicUniforms>  basicUniforms;
+        std::shared_ptr<ModelMatrix>  basicUniforms;
         Velocity                        velocity;
         octree::AABB                    bounds;
     };
@@ -52,11 +52,11 @@ public:
     
 protected:
     void traverseTree(
-        std::shared_ptr<BoundingSphere> lhsEntity, std::shared_ptr<BasicUniforms> &uniforms,
+        std::shared_ptr<BoundingSphere> lhsEntity, std::shared_ptr<ModelMatrix> &uniforms,
         const Velocity &velocity, octree::AABB bounds);
     
     void traverseTree(
-        std::shared_ptr<BoundingBox> lhsEntity, std::shared_ptr<BasicUniforms> &uniforms,
+        std::shared_ptr<BoundingBox> lhsEntity, std::shared_ptr<ModelMatrix> &uniforms,
         const Velocity &velocity, octree::AABB bounds);
     
     std::vector<BoundedCollisionEntity> mCollisionEntities;

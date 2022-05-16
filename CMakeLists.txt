@@ -61,60 +61,65 @@ add_executable(${PROJECT_NAME}
         include/components/render-components/MaterialComponents.h
         include/components/render-components/LightingComponents.h
         include/components/Components.h
-
-        src/Main.cpp
-        include/Pch.h
+        src/components/render-components/Mesh.cpp               include/components/render-components/Mesh.h
 
         src/core/Core.cpp                                       src/core/Core.h
-        src/core/scenes/Scene.cpp src/core/scenes/Scene.h
         src/core/Shader.cpp                                     include/core/Shader.h
         src/core/DebugLogger.cpp                                include/core/DebugLogger.h
         src/core/MainCamera.cpp                                 include/core/MainCamera.h
-        src/core/PostProcessingShader.cpp                       include/core/PostProcessingShader.h
-        src/core/Renderer.cpp include/core/Renderer.h
+        src/core/Renderer.cpp                                   include/core/Renderer.h
+
+        src/core/scenes/Scene.cpp                               src/core/scenes/Scene.h
+        src/core/scenes/TestingScene.cpp                        src/core/scenes/TestingScene.h
+        src/core/scenes/ImpulseScene.cpp                        src/core/scenes/ImpulseScene.h
+        src/core/scenes/OctreeDemoScene.cpp                     src/core/scenes/OctreeDemoScene.h
+        src/core/scenes/PlatformDemoScene.cpp                   src/core/scenes/PlatformDemoScene.h
+        src/core/scenes/DynamicImpulseDemoScene.cpp             src/core/scenes/DynamicImpulseDemoScene.h
+        src/core/scenes/OdeDemoScene.cpp                        src/core/scenes/OdeDemoScene.h
+        src/core/scenes/RotationDemoScene.cpp                   src/core/scenes/RotationDemoScene.h
 
         src/helpers/Primitives.cpp                              include/helpers/Primitives.h
         src/helpers/Timers.cpp                                  include/helpers/Timers.h
         src/helpers/FilePaths.cpp                               include/helpers/FilePaths.h
-
-        src/systems/BasicUniformUpdaterSystem.cpp               include/systems/BasicUniformUpdaterSystem.h
-        src/systems/RotatorSystem.cpp                           include/systems/RotatorSystem.h
-        src/systems/BlinnPhongGeometryShader.cpp                include/systems/BlinnPhongGeometryShader.h
-        src/systems/lighting/DirectionalLightShaderSystem.cpp   include/systems/lighting/DirectionalLightShaderSystem.h
-        src/systems/lighting/PointLightShader.cpp               include/systems/lighting/PointLightShader.h
+        src/helpers/WindowHelpers.cpp                           include/helpers/WindowHelpers.h
 
         src/loader/CommonLoader.cpp                             include/loader/CommonLoader.h
         src/loader/MaterialLoader.cpp                           include/loader/MaterialLoader.h
         src/loader/ModelLoader.cpp                              include/loader/ModelLoader.h
         src/loader/RawMesh.cpp                                  include/loader/RawMesh.h
         src/loader/TextureLoader.cpp                            include/loader/TextureLoader.h
-
-        src/lighting/DirectionalLight.cpp                       include/lighting/DirectionalLight.h
-        src/components/render-components/Mesh.cpp               include/components/render-components/Mesh.h
-
-        src/rendering/TextureBufferObject.cpp                   include/rendering/TextureBufferObject.h
-        src/rendering/FramebufferObject.cpp include/rendering/FramebufferObject.h
-        src/rendering/RenderBufferObject.cpp                    include/rendering/RenderBufferObject.h
-        src/rendering/RenderPipeline.cpp                        include/rendering/RenderPipeline.h
-        src/rendering/DeferredLightShader.cpp                   include/rendering/DeferredLightShader.h
-        include/physics/components/Physics.h
-        src/physics/PhysicsSystems.cpp include/physics/PhysicsSystems.h
         include/helpers/Callback.h
-        src/physics/PhysicsHelpers.cpp include/physics/PhysicsHelpers.h
-        src/physics/CollisionDetection.cpp include/physics/CollisionDetection.h
-        src/components/BoundingVolumes.cpp include/physics/components/BoundingVolumes.h
-        src/physics/BoundingVolumeVisual.cpp include/physics/BoundingVolumeVisual.h
-        src/physics/CollisionResponse.cpp include/physics/CollisionResponse.h include/physics/octree/Node.h
-        src/physics/octree/OctreeHelpers.cpp include/physics/octree/OctreeHelpers.h
+
+        include/physics/components/Physics.h
+        include/physics/octree/Node.h
         include/physics/octree/Tree.h
-        src/core/scenes/TestingScene.cpp src/core/scenes/TestingScene.h
-        src/physics/TreeBuilder.cpp include/physics/TreeBuilder.h
-        src/core/scenes/ImpulseScene.cpp src/core/scenes/ImpulseScene.h
-        src/core/scenes/OctreeDemoScene.cpp src/core/scenes/OctreeDemoScene.h
-        src/core/scenes/PlatformDemoScene.cpp src/core/scenes/PlatformDemoScene.h
-        src/core/scenes/DynamicImpulseDemoScene.cpp src/core/scenes/DynamicImpulseDemoScene.h
-        src/core/scenes/OdeDemoScene.cpp src/core/scenes/OdeDemoScene.h
-        src/core/scenes/RotationDemoScene.cpp src/core/scenes/RotationDemoScene.h src/rendering/MipmapTexture.cpp include/rendering/MipmapTexture.h src/rendering/shaders/PreFilterShader.cpp include/rendering/shaders/PreFilterShader.h src/rendering/shaders/PostProcessShader.cpp include/rendering/shaders/PostProcessShader.h src/helpers/WindowHelpers.cpp include/helpers/WindowHelpers.h src/rendering/shaders/MipViewerShader.cpp include/rendering/shaders/MipViewerShader.h src/rendering/shaders/Bloom.cpp include/rendering/shaders/Bloom.h)
+        src/physics/PhysicsSystems.cpp                          include/physics/PhysicsSystems.h
+        src/physics/PhysicsHelpers.cpp                          include/physics/PhysicsHelpers.h
+        src/physics/CollisionDetection.cpp                      include/physics/CollisionDetection.h
+        src/components/BoundingVolumes.cpp                      include/physics/components/BoundingVolumes.h
+        src/physics/BoundingVolumeVisual.cpp                    include/physics/BoundingVolumeVisual.h
+        src/physics/CollisionResponse.cpp                       include/physics/CollisionResponse.h
+        src/physics/octree/OctreeHelpers.cpp                    include/physics/octree/OctreeHelpers.h
+        src/physics/TreeBuilder.cpp                             include/physics/TreeBuilder.h
+
+        src/rendering/lighting/DirectionalLightShaderSystem.cpp include/rendering/lighting/DirectionalLightShaderSystem.h
+        src/rendering/lighting/PointLightShader.cpp             include/rendering/lighting/PointLightShader.h
+        src/rendering/TextureBufferObject.cpp                   include/rendering/TextureBufferObject.h
+        src/rendering/FramebufferObject.cpp                     include/rendering/FramebufferObject.h
+        src/rendering/RenderBufferObject.cpp                    include/rendering/RenderBufferObject.h
+        src/rendering/lighting/DeferredLightShader.cpp          include/rendering/lighting/DeferredLightShader.h
+        src/rendering/MipmapTexture.cpp                         include/rendering/MipmapTexture.h
+        src/rendering/post-processing/PostProcessShader.cpp     include/rendering/post-processing/PostProcessShader.h
+        src/rendering/post-processing/MipViewerShader.cpp       include/rendering/post-processing/MipViewerShader.h
+        src/rendering/post-processing/Bloom.cpp                 include/rendering/post-processing/Bloom.h
+        src/rendering/BlinnPhongGeometryShader.cpp              include/rendering/BlinnPhongGeometryShader.h
+
+        src/systems/BasicUniformUpdaterSystem.cpp               include/systems/BasicUniformUpdaterSystem.h
+        src/systems/RotatorSystem.cpp                           include/systems/RotatorSystem.h
+
+        src/Main.cpp
+        include/Pch.h
+        )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
 # Project Includes
@@ -126,7 +131,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC
         include/systems/physics include/octree
         include/physics     include/physics/components
         include/physics/octree
-        include/rendering/shaders
+        include/rendering/post-processing
+        include/rendering/lighting
 
 # ECS Includes
         entity-component-system                 entity-component-system/include

@@ -5,7 +5,7 @@
  */
 
 
-#include "systems/lighting/PointLightShader.h"
+#include "PointLightShader.h"
 #include "Primitives.h"
 
 PointLightShader::PointLightShader(

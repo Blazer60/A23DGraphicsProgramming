@@ -14,10 +14,10 @@
 #include "UniformComponents.h"
 #include "MaterialComponents.h"
 #include "MainCamera.h"
-#include "DirectionalLight.h"
 #include "Shader.h"
 #include "FilePaths.h"
 #include "FramebufferObject.h"
+#include "Components.h"
 
 /**
  * A Blinn-Phong Shader the writes to the Geometry buffer rather than the main buffer.
@@ -25,7 +25,7 @@
  * @date 21/03/2022
  */
 class BlinnPhongGeometryShader
-    : public ecs::BaseSystem<RenderInformation, std::shared_ptr<BasicUniforms>, BlinnPhongMaterial>
+    : public ecs::BaseSystem<RenderInformation, std::shared_ptr<ModelMatrix>, BlinnPhongMaterial>
 {
 public:
     BlinnPhongGeometryShader(std::shared_ptr<MainCamera> camera, std::shared_ptr<FramebufferObject> framebuffer);

@@ -11,6 +11,14 @@
 #include "glm.hpp"
 #include "detail/type_quat.hpp"
 
+/**
+ * @brief Contains a single model matrix that can be updated every frame.
+ */
+struct ModelMatrix
+{
+    glm::mat4 value { 1.f };
+};
+
 /** Holds the position, orientation and scale of an object. Note: this should be split to improve cache miss optimisation. */
 struct Transform
 {

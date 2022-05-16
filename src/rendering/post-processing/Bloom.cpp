@@ -27,6 +27,20 @@ Bloom::~Bloom()
     glDeleteBuffers(1, &mVbo);
 }
 
+void Bloom::preFilter(TextureBufferObject *input, FramebufferObject *output)
+{
+    mPreFilter.bind();
+    glBindVertexArray(mVao);
+    output->bind();
+    
+    mPreFilter.set("u_mvp_matrix", glm::mat4(1.f));
+    mPreFilter.set("u_light_key_threshold", mBloomThreshold);
+    glBindTextureUnit(0, input->getName());
+    mPreFilter.set("u_texture", 0);
+    
+    glDrawElements(GL_TRIANGLES, mEboCount, GL_UNSIGNED_INT, 0);
+}
+
 void Bloom::downSample(TextureBufferObject *input, const int mipLevel, FramebufferObject *output)
 {
     mDownSample.bind();
@@ -74,6 +88,7 @@ void Bloom::upSample(
 void Bloom::imGuiUpdate()
 {
     ImGui::DragFloat("Bloom Radius", &mBloomScale, 0.01f);
+    ImGui::DragFloat("Exposure", &mExposure, 0.01f);
 }
 
 void Bloom::composite(TextureBufferObject *original, TextureBufferObject *bloom, FramebufferObject *output)
@@ -89,6 +104,7 @@ void Bloom::composite(TextureBufferObject *original, TextureBufferObject *bloom,
     
     mComposite.set("u_original", 0);
     mComposite.set("u_bloom", 1);
+    mComposite.set("u_exposure", mExposure);
     
     glDrawElements(GL_TRIANGLES, mEboCount, GL_UNSIGNED_INT, 0);
 }

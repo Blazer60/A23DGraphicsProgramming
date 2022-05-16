@@ -12,12 +12,9 @@
 #include "MainCamera.h"
 #include "Common.h"
 #include "FramebufferObject.h"
-#include "PostProcessingShader.h"
 #include "FilePaths.h"
-#include "DirectionalLight.h"
 #include "ModelLoader.h"
 #include "TextureBufferObject.h"
-#include "RenderPipeline.h"
 #include "DeferredLightShader.h"
 
 #include "Renderer.h"

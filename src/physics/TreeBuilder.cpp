@@ -14,10 +14,10 @@ TreeBuilder::TreeBuilder(std::shared_ptr<octree::Tree<CollisionEntity>> tree)
 {
     mEntities.forEach([this](
         std::shared_ptr<BoundingVolume> &boundingVolume,
-        std::shared_ptr<BasicUniforms> &basicUniforms,
+        std::shared_ptr<ModelMatrix> &basicUniforms,
         const Velocity &velocity)
     {
-        const glm::vec3 center = basicUniforms->modelMat * glm::vec4(velocity.value * timers::fixedTime<float>(), 1.f);
+        const glm::vec3 center = basicUniforms->value * glm::vec4(velocity.value * timers::fixedTime<float>(), 1.f);
         if (auto sphere = std::dynamic_pointer_cast<BoundingSphere>(boundingVolume))
         {
             const glm::vec3 axisAlignedHalfSize = glm::vec3(sphere->radius);
@@ -27,7 +27,7 @@ TreeBuilder::TreeBuilder(std::shared_ptr<octree::Tree<CollisionEntity>> tree)
         }
         if (auto box = std::dynamic_pointer_cast<BoundingBox>(boundingVolume))
         {
-            auto points = physics::boxToVertex(basicUniforms->modelMat, box->halfSize);
+            auto points = physics::boxToVertex(basicUniforms->value, box->halfSize);
             glm::vec3 max = glm::vec3(0.f);
         
             for (auto &point : points)
