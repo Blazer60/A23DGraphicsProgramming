@@ -109,8 +109,7 @@ add_executable(${PROJECT_NAME}
         src/rendering/RenderBufferObject.cpp                    include/rendering/RenderBufferObject.h
         src/rendering/lighting/DeferredLightShader.cpp          include/rendering/lighting/DeferredLightShader.h
         src/rendering/MipmapTexture.cpp                         include/rendering/MipmapTexture.h
-        src/rendering/post-processing/PostProcessShader.cpp     include/rendering/post-processing/PostProcessShader.h
-        src/rendering/post-processing/MipViewerShader.cpp       include/rendering/post-processing/MipViewerShader.h
+        src/helpers/MipViewer.cpp include/helpers/MipViewer.h
         src/rendering/post-processing/Bloom.cpp                 include/rendering/post-processing/Bloom.h
         src/rendering/BlinnPhongGeometryShader.cpp              include/rendering/BlinnPhongGeometryShader.h
 
@@ -119,7 +118,7 @@ add_executable(${PROJECT_NAME}
 
         src/Main.cpp
         include/Pch.h
-        src/rendering/EmissivePbrGeometryShader.cpp include/rendering/EmissivePbrGeometryShader.h src/loader/ModelDestroyer.cpp include/loader/ModelDestroyer.h)
+        src/rendering/EmissivePbrGeometryShader.cpp include/rendering/EmissivePbrGeometryShader.h src/loader/ModelDestroyer.cpp include/loader/ModelDestroyer.h src/helpers/TextureViewer.cpp include/helpers/TextureViewer.h)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
 # Project Includes

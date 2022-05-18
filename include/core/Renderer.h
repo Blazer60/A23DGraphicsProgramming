@@ -15,10 +15,11 @@
 #include "Mesh.h"
 #include "MaterialComponents.h"
 #include "ModelLoader.h"
-#include "MipViewerShader.h"
+#include "MipViewer.h"
 #include "Bloom.h"
 #include "WindowHelpers.h"
 #include "MipmapTexture.h"
+#include "TextureViewer.h"
 
 struct ViewSettings
 {
@@ -32,6 +33,8 @@ struct ViewSettings
     bool downSampleTextures { true  };
     bool upSampleTextures   { false };
     bool postProcessTexture { true };
+    bool downSampleMip      { true };
+    bool upSampleMip        { true };
 };
 
 /**
@@ -88,8 +91,9 @@ protected:
     ViewSettings mShow;
     
     DeferredLightShader         mDeferredLightingShader;
-    MipViewerShader             mDownSamplingMipViewerShader;
-    MipViewerShader             mUpSamplingMipViewerShader;
+    MipViewer             mDownSamplingMipViewerShader;
+    MipViewer             mUpSamplingMipViewerShader;
+    TextureViewer               mViewer;
     Bloom                       mBloomShader;
     
     // Debug Helpers

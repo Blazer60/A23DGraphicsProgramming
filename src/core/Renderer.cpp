@@ -126,29 +126,19 @@ void Renderer::update()
 
 void Renderer::imguiUpdate()
 {
-    if (mShow.positionTexture)
-        mPosition->imguiUpdate(&mShow.positionTexture, true);
-    if (mShow.normalTexture)
-        mNormal->imguiUpdate(&mShow.normalTexture, true);
-    if (mShow.albedoTexture)
-        mAlbedo->imguiUpdate(&mShow.albedoTexture, true);
-    if (mShow.emissiveTexture)
-        mEmissive->imguiUpdate(&mShow.emissiveTexture, true);
-    if (mShow.diffuseTexture)
-        mDiffuse->imguiUpdate(&mShow.diffuseTexture, true);
-    if (mShow.specularTexture)
-        mSpecular->imguiUpdate(&mShow.specularTexture, true);
-    if (mShow.lightTargetTexture)
-        mLightTarget->imguiUpdate(&mShow.lightTargetTexture, true);
-    if (mShow.downSampleTextures)
-        mDownSampleTexture->imguiUpdate(&mShow.downSampleTextures, true);
-    if (mShow.upSampleTextures)
-        mUpSampleTexture->imguiUpdate(&mShow.upSampleTextures, true);
-    if (mShow.postProcessTexture)
-        mPostProcess->imguiUpdate(&mShow.postProcessTexture, true);
+    mViewer.imGuiUpdate("Position Buffer", mPosition.get(), &mShow.positionTexture);
+    mViewer.imGuiUpdate("Normal Buffer", mNormal.get(), &mShow.normalTexture);
+    mViewer.imGuiUpdate("Albedo Buffer", mAlbedo.get(), &mShow.albedoTexture);
+    mViewer.imGuiUpdate("Emissive Buffer", mEmissive.get(), &mShow.emissiveTexture);
+    mViewer.imGuiUpdate("Diffuse Buffer", mDiffuse.get(), &mShow.diffuseTexture);
+    mViewer.imGuiUpdate("Specular Buffer", mSpecular.get(), &mShow.specularTexture);
+    mViewer.imGuiUpdate("Light Target Buffer", mLightTarget.get(), &mShow.lightTargetTexture);
+    mViewer.imGuiUpdate("Down Sample Buffer", mDownSampleTexture.get(), &mShow.downSampleTextures);
+    mViewer.imGuiUpdate("Up Sample Buffer", mUpSampleTexture.get(), &mShow.upSampleTextures);
+    mViewer.imGuiUpdate("Final Texture Buffer", mPostProcess.get(), &mShow.postProcessTexture);
     
-    mDownSamplingMipViewerShader.imguiUpdate();
-    mUpSamplingMipViewerShader.imguiUpdate();
+    mDownSamplingMipViewerShader.imguiUpdate(&mShow.downSampleMip);
+    mUpSamplingMipViewerShader.imguiUpdate(&mShow.upSampleMip);
     mBloomShader.imGuiUpdate();
 }
 
@@ -191,6 +181,10 @@ void Renderer::imguiMenuUpdate()
             mShow.upSampleTextures = true;
         if (ImGui::MenuItem("Show Post Process Buffer"))
             mShow.postProcessTexture = true;
+        if (ImGui::MenuItem("Show Down Sample Mips"))
+            mShow.downSampleMip = true;
+        if (ImGui::MenuItem("Show Up Sample Mips"))
+            mShow.upSampleMip = true;
         ImGui::EndMenu();
     }
 }
