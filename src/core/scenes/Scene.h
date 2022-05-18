@@ -48,7 +48,8 @@ public:
     virtual void onImguiMenuUpdate();
 
 protected:
-    Entity createPhongModel(const glm::vec3 position, const Model<PhongVertex, BlinnPhongMaterial> &meshes);
+    Entity createModel(const glm::vec3 position, const Model<PhongVertex, BlinnPhongMaterial> &meshes);
+    Entity createModel(const glm::vec3 &position, const Model<PhongVertex, EmissivePbrMaterial> &meshes);
     
     ecs::Core                   mEcs                { ecs::initFlag::AutoInitialise };
     std::shared_ptr<MainCamera> mMainCamera         { std::make_shared<MainCamera>(glm::vec3(0.f, 10.f, 15.f)) };

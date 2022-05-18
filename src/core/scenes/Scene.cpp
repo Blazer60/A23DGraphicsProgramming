@@ -7,7 +7,7 @@
 
 #include "Scene.h"
 #include "Ecs.h"
-#include "BasicUniformUpdaterSystem.h"
+#include "ModelMatrixUpdater.h"
 #include "RotatorSystem.h"
 #include "MaterialComponents.h"
 #include "ModelLoader.h"
@@ -17,11 +17,11 @@
 Scene::Scene()
 {
     // Creation order of systems still matters.
-    mEcs.createSystem<BasicUniformUpdaterSystem>();
+    mEcs.createSystem<ModelMatrixUpdater>();
     mEcs.createSystem<RotatorSystem>();
 }
 
-Entity Scene::createPhongModel(const glm::vec3 position, const Model<PhongVertex, BlinnPhongMaterial> &meshes)
+Entity Scene::createModel(const glm::vec3 position, const Model<PhongVertex, BlinnPhongMaterial> &meshes)
 {
     // Our transform uniforms that will be distributed to every child in the hierarchy.
     auto transformUniforms = std::make_shared<ModelMatrix>();
@@ -40,6 +40,32 @@ Entity Scene::createPhongModel(const glm::vec3 position, const Model<PhongVertex
         mEcs.add(model, modelSlot);
         
         mEcs.add(modelSlot, mRenderer.geometryTag, mesh.renderInformation);
+        mEcs.add(modelSlot, mesh.material);
+        mEcs.add(modelSlot, transformUniforms);
+    }
+    
+    return parent;
+}
+
+Entity Scene::createModel(const glm::vec3 &position, const Model<PhongVertex, EmissivePbrMaterial> &meshes)
+{
+    // Our transform uniforms that will be distributed to every child in the hierarchy.
+    auto transformUniforms = std::make_shared<ModelMatrix>();
+    
+    Entity parent    = mEcs.create();
+    Entity model     = mEcs.create();  // Just contains model slots for hierarchical purity.
+    
+    // The parent only needs a transform, uniforms for the transform and a model child entity.
+    mEcs.add(parent, model);
+    mEcs.add(parent, Transform { position } );
+    mEcs.add(parent, transformUniforms);
+    
+    for (const auto &mesh : meshes)
+    {
+        Entity modelSlot = mEcs.create();
+        mEcs.add(model, modelSlot);
+        
+        mEcs.add(modelSlot, mRenderer.emissiveTag, mesh.renderInformation);
         mEcs.add(modelSlot, mesh.material);
         mEcs.add(modelSlot, transformUniforms);
     }

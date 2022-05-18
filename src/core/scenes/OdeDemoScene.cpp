@@ -23,7 +23,7 @@ OdeDemoScene::OdeDemoScene()
     setupBall(mYellowBall,  mRkNTag,    glm::vec3( 6.f, 5.f, 0.f), mYellowSphere);
     
     
-    Entity floor = createPhongModel(glm::vec3(0.f), mFloor);
+    Entity floor = createModel(glm::vec3(0.f), mFloor);
     std::shared_ptr<BoundingVolume> floorHitBox = std::make_shared<BoundingBox>(floor, glm::vec3(50.f, 0.1f, 50.f));
     mEcs.add(floor, Velocity { glm::vec3(0.f, 0.0f, 0.f) });
     mEcs.add(floor, floorHitBox);
@@ -114,7 +114,7 @@ void OdeDemoScene::setupBall(
     Model<PhongVertex, BlinnPhongMaterial> &model)
 {
     // We can't use collision response factories as they set up components using the default channels.
-    ball = createPhongModel(position, model);
+    ball = createModel(position, model);
     mEcs.add(ball, type, DynamicObject { glm::vec3(0.f), 100.f });
     mEcs.add(ball, Velocity());
     mEcs.add(ball, PhysicsMaterial { 0.9f });

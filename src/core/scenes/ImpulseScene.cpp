@@ -17,23 +17,23 @@
 
 ImpulseScene::ImpulseScene()
 {
-    mRedBall = createPhongModel(glm::vec3(-6.f, 5.f, 0.f), mRedSphere);
+    mRedBall = createModel(glm::vec3(-6.f, 5.f, 0.f), mRedSphere);
     mCollisionResponse.makePhysicsObject(mRedBall, glm::vec3(0.f, 0.f, 0.f), 100.f, 0.2f);
     mCollisionResponse.makeBoundingSphere(mRedBall, true, 1.f);
     
-    mGreenBall = createPhongModel(glm::vec3(-2.f, 5.f, 0.f), mGreenSphere);
+    mGreenBall = createModel(glm::vec3(-2.f, 5.f, 0.f), mGreenSphere);
     mCollisionResponse.makePhysicsObject(mGreenBall, glm::vec3(0.f, 0.f, 0.f), 100.f, 0.4f);
     mCollisionResponse.makeBoundingSphere(mGreenBall, true, 1.f);
     
-    mBlueBall = createPhongModel(glm::vec3(2.f, 5.f, 0.f), mBlueSphere);
+    mBlueBall = createModel(glm::vec3(2.f, 5.f, 0.f), mBlueSphere);
     mCollisionResponse.makePhysicsObject(mBlueBall, glm::vec3(0.f, 0.f, 0.f), 100.f, 0.6f);
     mCollisionResponse.makeBoundingSphere(mBlueBall, true, 1.f);
     
-    mYellowBall = createPhongModel(glm::vec3(6.f, 5.f, 0.f), mYellowSphere);
+    mYellowBall = createModel(glm::vec3(6.f, 5.f, 0.f), mYellowSphere);
     mCollisionResponse.makePhysicsObject(mYellowBall, glm::vec3(0.f, 0.f, 0.f), 100.f, 0.8f);
     mCollisionResponse.makeBoundingSphere(mYellowBall, true, 1.f);
     
-    Entity floor = createPhongModel(glm::vec3(0.f), mFloor);
+    Entity floor = createModel(glm::vec3(0.f), mFloor);
     std::shared_ptr<BoundingVolume> floorHitBox = std::make_shared<BoundingBox>(floor, glm::vec3(50.f, 0.1f, 50.f));
     mEcs.add(floor, Velocity { glm::vec3(0.f, 0.0f, 0.f) });
     mEcs.add(floor, floorHitBox);

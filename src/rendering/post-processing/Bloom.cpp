@@ -10,6 +10,7 @@
 #include "Primitives.h"
 #include "FilePaths.h"
 #include "imgui.h"
+#include "gtc/type_ptr.hpp"
 
 Bloom::Bloom()
 {
@@ -87,6 +88,7 @@ void Bloom::upSample(
 
 void Bloom::imGuiUpdate()
 {
+    ImGui::DragFloat3("Bloom Threshold", glm::value_ptr(mBloomThreshold), 0.01f);
     ImGui::DragFloat("Bloom Radius", &mBloomScale, 0.01f);
     ImGui::DragFloat("Exposure", &mExposure, 0.01f);
 }

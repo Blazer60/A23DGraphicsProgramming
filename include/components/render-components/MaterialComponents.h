@@ -39,8 +39,9 @@ struct MtlMaterial
     glm::vec3       kS      { 0.f };
     unsigned int    d       { 1 };
     unsigned int    illum   { 2 };
-    std::string     MapKd   { "" };
-    std::string     MapNs   { "" };
+    std::string     mapKd   { "" };
+    std::string     mapKe   { "" };
+    std::string     mapNs   { "" };
 };
 
 /**
@@ -65,11 +66,31 @@ struct BlinnPhongMaterial
     explicit BlinnPhongMaterial(const MtlMaterial &mtl)
         : ambientColour(mtl.kA), diffuseColour(mtl.kD),
           specularColour(mtl.kS), specularExponent(mtl.nS),
-          diffuseTextureId(load::texture(mtl.MapKd)) {}
+          diffuseTextureId(load::texture(mtl.mapKd)) {}
     
     glm::vec3       ambientColour       { 0.2f };
     glm::vec3       diffuseColour       { 0.8f };
     glm::vec3       specularColour      { 1.f };
     unsigned int    specularExponent    { 10 };
     unsigned int    diffuseTextureId    { 0 };
+};
+
+struct EmissivePbrMaterial
+    : public Material
+{
+    EmissivePbrMaterial() = default;
+    ~EmissivePbrMaterial() = default;
+    
+    explicit EmissivePbrMaterial(const MtlMaterial &mtl) :
+        ambientColour(mtl.kA), diffuseColour(mtl.kD),
+        specularColour(mtl.kS), specularExponent(mtl.nS),
+        diffuseTextureId(load::texture(mtl.mapKd)),
+        emissiveTextureId(load::texture(mtl.mapKe)) {}
+    
+    glm::vec3       ambientColour       { 0.2f };
+    glm::vec3       diffuseColour       { 0.8f };
+    glm::vec3       specularColour      { 1.f };
+    unsigned int    specularExponent    { 10 };
+    unsigned int    diffuseTextureId    { 0 };
+    unsigned int    emissiveTextureId   { 0 };
 };

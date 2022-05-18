@@ -17,19 +17,19 @@
 
 PlatformDemoScene::PlatformDemoScene()
 {
-    mRedBall = createPhongModel(glm::vec3(-13.1f, 14.1f, -0.3f), mRedSphere);
+    mRedBall = createModel(glm::vec3(-13.1f, 14.1f, -0.3f), mRedSphere);
     mCollisionResponse.makePhysicsObject(mRedBall, glm::vec3(0.f, 0.f, 0.f), 100.f, 0.8f);
     mCollisionResponse.makeBoundingSphere(mRedBall, true, 1.f);
     
-    mRamp = createPhongModel(glm::vec3(-10.2f, 7.8f, 0.f), mFloor);
+    mRamp = createModel(glm::vec3(-10.2f, 7.8f, 0.f), mFloor);
     mCollisionResponse.makeBoundingBox(mRamp, false, glm::vec3(10.f, 0.1f, 10.f));
     mEcs.getComponent<Transform>(mRamp).rotation = glm::quat(0.85f, 0.242f, 0.455f, -0.106f);
     
-    mGround = createPhongModel(glm::vec3(-0.4f, 0.2f, 15.1f), mFloor);
+    mGround = createModel(glm::vec3(-0.4f, 0.2f, 15.1f), mFloor);
     mCollisionResponse.makeBoundingBox(mGround, false, glm::vec3(10.f, 0.1f, 10.f));
     mEcs.getComponent<Transform>(mGround).rotation = glm::quat(0.936f, 0.f, 0.353f, 0.f);
     
-    mCrate = createPhongModel(glm::vec3(8.6f, 2.5f, 18.4f), mCrateModel);
+    mCrate = createModel(glm::vec3(8.6f, 2.5f, 18.4f), mCrateModel);
     mCollisionResponse.makeBoundingBox(mCrate, false, glm::vec3(1.f, 1.f, 1.f));
     auto &crateTransform = mEcs.getComponent<Transform>(mCrate);
     crateTransform.rotation = glm::quat(0.406f, 0.f, 0.914f, 0.f);

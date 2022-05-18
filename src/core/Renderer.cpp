@@ -11,6 +11,7 @@
 #include "PointLightShader.h"
 #include "BoundingVolumeVisual.h"
 #include "imgui.h"
+#include "EmissivePbrGeometryShader.h"
 
 
 Renderer::Renderer(std::shared_ptr<MainCamera> camera, ecs::Core &EntityComponentSystem) :
@@ -24,6 +25,7 @@ Renderer::Renderer(std::shared_ptr<MainCamera> camera, ecs::Core &EntityComponen
     mPosition(  std::make_shared<TextureBufferObject>(mSize, GL_RGB16F,      GL_NEAREST, GL_NEAREST, 1, "Position")),
     mNormal(    std::make_shared<TextureBufferObject>(mSize, GL_RGB16_SNORM, GL_NEAREST, GL_NEAREST, 1, "Normals")),
     mAlbedo(    std::make_shared<TextureBufferObject>(mSize, GL_RGB16F,      GL_NEAREST, GL_NEAREST, 1, "Albedo")),
+    mEmissive(    std::make_shared<TextureBufferObject>(mSize, GL_RGB16F,      GL_NEAREST, GL_NEAREST, 1, "Emissive")),
     mDiffuse(   std::make_shared<TextureBufferObject>(mSize, GL_RGB16F,      GL_NEAREST, GL_NEAREST, 1, "Diffuse")),
     mSpecular(  std::make_shared<TextureBufferObject>(mSize, GL_RGB16F,      GL_NEAREST, GL_NEAREST, 1, "Specular")),
     mLightTarget(std::make_shared<TextureBufferObject>(mSize, GL_RGB16F,     GL_NEAREST, GL_NEAREST, 1, "Light Target")),
@@ -31,13 +33,14 @@ Renderer::Renderer(std::shared_ptr<MainCamera> camera, ecs::Core &EntityComponen
     mDownSampleTexture(std::make_shared<MipmapTexture>(mSize / 2, GL_RGB16F, mMipmapLevels, "Down Sample")),
     mUpSampleTexture(std::make_shared<MipmapTexture>(mSize, GL_RGB16F, mMipmapLevels, "Up Sample")),
     mPostProcess(std::make_shared<TextureBufferObject>(mSize, GL_RGB16, GL_NEAREST, GL_NEAREST, 1, "Post Process")),
-    mDeferredLightingShader(camera, mOutput, mDiffuse, mSpecular, mAlbedo),
+    mDeferredLightingShader(camera, mOutput, mDiffuse, mSpecular, mAlbedo, mEmissive),
     mDownSamplingMipViewerShader(mDownSampleTexture, "Down Sampling"),
     mUpSamplingMipViewerShader(mUpSampleTexture, "Up Sampling")
 {
     mGeometry->attach(mPosition, 0);
     mGeometry->attach(mNormal, 1);
     mGeometry->attach(mAlbedo, 2);
+    mGeometry->attach(mEmissive, 3);
     
     mLightAccumulator->attach(mDiffuse, 0);
     mLightAccumulator->attach(mSpecular, 1);
@@ -63,6 +66,7 @@ Renderer::Renderer(std::shared_ptr<MainCamera> camera, ecs::Core &EntityComponen
     mComposite->attach(mPostProcess, 0);
     
     mEcs.createSystem<BlinnPhongGeometryShader> ({ geometryTag }, mCamera, mGeometry);
+    mEcs.createSystem<EmissivePbrGeometryShader> ({ emissiveTag }, mCamera, mGeometry);
     mEcs.createSystem<DirectionalLightShaderSystem>(mCamera, mLightAccumulator, mPosition, mNormal, mAlbedo);
     mEcs.createSystem<PointLightShader>(mCamera, mLightAccumulator, mPosition, mNormal, mAlbedo);
     
@@ -128,6 +132,8 @@ void Renderer::imguiUpdate()
         mNormal->imguiUpdate(&mShow.normalTexture, true);
     if (mShow.albedoTexture)
         mAlbedo->imguiUpdate(&mShow.albedoTexture, true);
+    if (mShow.emissiveTexture)
+        mEmissive->imguiUpdate(&mShow.emissiveTexture, true);
     if (mShow.diffuseTexture)
         mDiffuse->imguiUpdate(&mShow.diffuseTexture, true);
     if (mShow.specularTexture)
@@ -171,6 +177,8 @@ void Renderer::imguiMenuUpdate()
             mShow.normalTexture = true;
         if (ImGui::MenuItem("Show Albedo Buffer"))
             mShow.albedoTexture = true;
+        if (ImGui::MenuItem("Show Emissive Buffer"))
+            mShow.emissiveTexture = true;
         if (ImGui::MenuItem("Show Diffuse Buffer"))
             mShow.diffuseTexture = true;
         if (ImGui::MenuItem("Show Specular Buffer"))

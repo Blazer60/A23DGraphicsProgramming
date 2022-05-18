@@ -38,6 +38,7 @@ protected:
     
     bool mShowOutput { true };
     bool mFill { false };
+    bool mResize { false };
     
     std::shared_ptr<TextureBufferObject> mInputTexture;
 };

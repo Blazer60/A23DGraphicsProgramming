@@ -15,12 +15,12 @@
  * @author Ryan Purse
  * @date 05/05/2022
  */
-class TestingScene
+class BloomSceneDemo
     : public Scene
 {
 public:
-    TestingScene();
-    ~TestingScene() = default;
+    BloomSceneDemo();
+    ~BloomSceneDemo() = default;
     
     void onImguiUpdate() override;
     
@@ -29,8 +29,8 @@ protected:
         load::model<PhongVertex, BlinnPhongMaterial>(
             path::resources() + "models/Bole.obj") };
     
-    Model<PhongVertex, BlinnPhongMaterial> mJapanModel {
-        load::model<PhongVertex, BlinnPhongMaterial>(
+    Model<PhongVertex, EmissivePbrMaterial> mJapanModel {
+        load::model<PhongVertex, EmissivePbrMaterial>(
             path::resources() + "models/japan/Japan.obj") };
     
     Model<PhongVertex, BlinnPhongMaterial> mCircle { primitives::triangleFanCircle<PhongVertex, BlinnPhongMaterial>(20) };

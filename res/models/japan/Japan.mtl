@@ -86,6 +86,7 @@ Ni 1.450000
 d 1.000000
 illum 2
 map_Kd memory.png
+map_Ke memory.png
 
 newmtl Mist
 Ns 225.000000
@@ -119,6 +120,7 @@ Ni 1.450000
 d 1.000000
 illum 2
 map_Kd chinese.png
+map_Ke chinese.png
 
 newmtl Rock
 Ns 225.000000
@@ -152,6 +154,7 @@ Ni 1.450000
 d 1.000000
 illum 2
 map_Kd summer.png
+map_Ke summer.png
 
 newmtl Summer
 Ns 225.000000
@@ -163,6 +166,7 @@ Ni 1.450000
 d 1.000000
 illum 2
 map_Kd yummie.png
+map_Ke yummie.png
 
 newmtl Tree
 Ns 225.000000

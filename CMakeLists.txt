@@ -70,7 +70,7 @@ add_executable(${PROJECT_NAME}
         src/core/Renderer.cpp                                   include/core/Renderer.h
 
         src/core/scenes/Scene.cpp                               src/core/scenes/Scene.h
-        src/core/scenes/TestingScene.cpp                        src/core/scenes/TestingScene.h
+        src/core/scenes/BloomSceneDemo.cpp src/core/scenes/BloomSceneDemo.h
         src/core/scenes/ImpulseScene.cpp                        src/core/scenes/ImpulseScene.h
         src/core/scenes/OctreeDemoScene.cpp                     src/core/scenes/OctreeDemoScene.h
         src/core/scenes/PlatformDemoScene.cpp                   src/core/scenes/PlatformDemoScene.h
@@ -114,12 +114,12 @@ add_executable(${PROJECT_NAME}
         src/rendering/post-processing/Bloom.cpp                 include/rendering/post-processing/Bloom.h
         src/rendering/BlinnPhongGeometryShader.cpp              include/rendering/BlinnPhongGeometryShader.h
 
-        src/systems/BasicUniformUpdaterSystem.cpp               include/systems/BasicUniformUpdaterSystem.h
+        src/systems/ModelMatrixUpdater.cpp include/systems/ModelMatrixUpdater.h
         src/systems/RotatorSystem.cpp                           include/systems/RotatorSystem.h
 
         src/Main.cpp
         include/Pch.h
-        )
+        src/rendering/EmissivePbrGeometryShader.cpp include/rendering/EmissivePbrGeometryShader.h)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
 # Project Includes

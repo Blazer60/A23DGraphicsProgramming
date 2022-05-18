@@ -22,12 +22,12 @@ OctreeDemoScene::OctreeDemoScene()
     for (int i = 0; i < 40; ++i)
     {
         glm::vec3 position = glm::vec3(randomValue(), randomValue(), randomValue());
-        Entity crate = createPhongModel(position, mCrate);
+        Entity crate = createModel(position, mCrate);
         mCollisionResponse.makeBoundingBox(crate, false);
         mEcs.add(crate, Rotator { randomValue(), randomValue(), position });
     }
     
-    Entity floor = createPhongModel(glm::vec3(0.f), mFloor);
+    Entity floor = createModel(glm::vec3(0.f), mFloor);
     std::shared_ptr<BoundingVolume> floorHitBox = std::make_shared<BoundingBox>(floor, glm::vec3(50.f, 0.1f, 50.f));
     mEcs.add(floor, Velocity { glm::vec3(0.f, 0.0f, 0.f) });
     mEcs.add(floor, floorHitBox);

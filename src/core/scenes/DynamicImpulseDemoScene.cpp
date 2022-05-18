@@ -17,12 +17,12 @@
 
 DynamicImpulseDemoScene::DynamicImpulseDemoScene()
 {
-    mRedBall = createPhongModel(glm::vec3(-6.f, 5.f, 0.f), mRedSphere);
+    mRedBall = createModel(glm::vec3(-6.f, 5.f, 0.f), mRedSphere);
     mCollisionResponse.makePhysicsObject(mRedBall, glm::vec3(0.f), 100.f, 0.1f);
     mCollisionResponse.makeBoundingSphere(mRedBall, true, 1.f);
     mEcs.getComponent<DynamicObject>(mRedBall).momentum = glm::vec3(100.f, 0.f, 0.f);
     
-    mGreenBall = createPhongModel(glm::vec3(6.f, 5.f, 0.f), mGreenSphere);
+    mGreenBall = createModel(glm::vec3(6.f, 5.f, 0.f), mGreenSphere);
     mCollisionResponse.makePhysicsObject(mGreenBall, glm::vec3(0.f, 0.f, 0.f), 10.f, 0.1f);
     mCollisionResponse.makeBoundingSphere(mGreenBall, true, 1.f);
     mEcs.getComponent<DynamicObject>(mGreenBall).momentum = glm::vec3(-100.f, 0.f, 0.f);

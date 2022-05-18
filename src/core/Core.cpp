@@ -7,7 +7,7 @@
 
 #include "glew.h"
 #include "Core.h"
-#include "scenes/TestingScene.h"
+#include "scenes/BloomSceneDemo.h"
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 #include "glfw3.h"
@@ -30,7 +30,7 @@ Core::Core(const glm::ivec2 &resolution)
         return;
     }
     window::setBufferSize(resolution);
-    mScene = std::make_unique<TestingScene>();  // Scenes must be made after the initialisation of underlying architectures.
+    mScene = std::make_unique<BloomSceneDemo>();  // Scenes must be made after the initialisation of underlying architectures.
 }
 
 Core::~Core()
@@ -171,7 +171,7 @@ void Core::updateImgui()
     glBindVertexArray(0);
     ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
     
-    enum class Level { None, Impulse, Octree, Platforms, Dynamic, Ode, Rotation, Testing };
+    enum class Level { None, Impulse, Octree, Platforms, Dynamic, Ode, Rotation, Bloom };
     static Level type = Level::None;
     
     if (ImGui::BeginMainMenuBar())
@@ -196,8 +196,8 @@ void Core::updateImgui()
             if (ImGui::MenuItem("Rotation Demo"))
                 type = Level::Rotation;
             
-            if (ImGui::MenuItem("Testing Scene"))
-                type = Level::Testing;
+            if (ImGui::MenuItem("Bloom Scene"))
+                type = Level::Bloom;
                 
             ImGui::EndMenu();
         }
@@ -250,8 +250,8 @@ void Core::updateImgui()
         case Level::Rotation:
             mScene = std::make_unique<RotationDemoScene>();
             break;
-        case Level::Testing:
-            mScene = std::make_unique<TestingScene>();
+        case Level::Bloom:
+            mScene = std::make_unique<BloomSceneDemo>();
             break;
     }
     type = Level::None;

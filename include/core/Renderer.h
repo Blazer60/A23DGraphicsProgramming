@@ -25,6 +25,7 @@ struct ViewSettings
     bool positionTexture    { false };
     bool normalTexture      { false };
     bool albedoTexture      { false };
+    bool emissiveTexture    { false };
     bool diffuseTexture     { false };
     bool specularTexture    { false };
     bool lightTargetTexture { true  };
@@ -58,6 +59,7 @@ protected:
 public:
     // Tags let us know which object should be rendered in which way.
     const Component geometryTag { mEcs.create<RenderInformation>() };
+    const Component emissiveTag { mEcs.create<RenderInformation>() };
     
 protected:
     glm::ivec2 mSize { window::bufferSize() };
@@ -70,6 +72,7 @@ protected:
     std::shared_ptr<TextureBufferObject>                mPosition;
     std::shared_ptr<TextureBufferObject>                mNormal;
     std::shared_ptr<TextureBufferObject>                mAlbedo;
+    std::shared_ptr<TextureBufferObject>                mEmissive;
     std::shared_ptr<FramebufferObject>                  mLightAccumulator;
     std::shared_ptr<TextureBufferObject>                mDiffuse;
     std::shared_ptr<TextureBufferObject>                mSpecular;

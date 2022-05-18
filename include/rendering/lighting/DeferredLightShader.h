@@ -26,7 +26,8 @@ public:
     DeferredLightShader(
         std::shared_ptr<MainCamera> camera,
         std::shared_ptr<FramebufferObject> output, std::shared_ptr<TextureBufferObject> diffuse,
-        std::shared_ptr<TextureBufferObject> specular, std::shared_ptr<TextureBufferObject> albedo);
+        std::shared_ptr<TextureBufferObject> specular, std::shared_ptr<TextureBufferObject> albedo,
+        std::shared_ptr<TextureBufferObject> emissive);
     
     void render();
     
@@ -42,6 +43,7 @@ protected:
     std::shared_ptr<TextureBufferObject> mDiffuse;
     std::shared_ptr<TextureBufferObject> mSpecular;
     std::shared_ptr<TextureBufferObject> mAlbedo;
+    std::shared_ptr<TextureBufferObject> mEmissive;
 };
 
 

@@ -17,7 +17,7 @@
 
 RotationDemoScene::RotationDemoScene()
 {
-    mAlpha  = createPhongModel(glm::vec3(0.f, 5.f, 0.f), mStoneCladding);
+    mAlpha  = createModel(glm::vec3(0.f, 5.f, 0.f), mStoneCladding);
     const float alphaMass = 10.f;
     mCollisionResponse.makePhysicsObject(mAlpha, glm::vec3(0.f, 0.f, 0.f), alphaMass, 0.9f);
     mCollisionResponse.makeBoundingSphere(mAlpha, true, 1.f);
@@ -27,7 +27,7 @@ RotationDemoScene::RotationDemoScene()
     mEcs.add(mAlpha, AngularObject { glm::mat3(2.f / 5.f * alphaMass) });
     mEcs.add(mAlpha, AngularVelocity { });
     
-    Entity floor = createPhongModel(glm::vec3(0.f), mFloor);
+    Entity floor = createModel(glm::vec3(0.f), mFloor);
     std::shared_ptr<BoundingVolume> floorHitBox = std::make_shared<BoundingBox>(floor, glm::vec3(50.f, 0.1f, 50.f));
     mEcs.add(floor, Velocity { glm::vec3(0.f, 0.0f, 0.f) });
     mEcs.add(floor, floorHitBox);

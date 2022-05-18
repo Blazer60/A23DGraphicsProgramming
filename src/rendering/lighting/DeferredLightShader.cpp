@@ -13,11 +13,13 @@
 DeferredLightShader::DeferredLightShader(
     std::shared_ptr<MainCamera> camera,
     std::shared_ptr<FramebufferObject> output, std::shared_ptr<TextureBufferObject> diffuse,
-    std::shared_ptr<TextureBufferObject> specular, std::shared_ptr<TextureBufferObject> albedo)
+    std::shared_ptr<TextureBufferObject> specular, std::shared_ptr<TextureBufferObject> albedo,
+    std::shared_ptr<TextureBufferObject> emissive)
     :
     mCamera(std::move(camera)),
     mOutput(std::move(output)), mDiffuse(std::move(diffuse)),
-    mSpecular(std::move(specular)), mAlbedo(std::move(albedo))
+    mSpecular(std::move(specular)), mAlbedo(std::move(albedo)),
+    mEmissive(std::move(emissive))
 {
     const auto mesh = primitives::plane<UvVertex>()[0];
     mVao      = mesh.renderInformation.vao;
@@ -35,10 +37,12 @@ void DeferredLightShader::render()
     glBindTextureUnit(0, mDiffuse->getName());
     glBindTextureUnit(1, mSpecular->getName());
     glBindTextureUnit(2, mAlbedo->getName());
+    glBindTextureUnit(3, mEmissive->getName());
     
     mShader.set("u_diffuse",  0);
     mShader.set("u_specular", 1);
     mShader.set("u_albedo",   2);
+    mShader.set("u_emissive", 3);
     
     mShader.set("u_mvp_matrix", glm::mat4(1.f));
     // mSphereShader.set("u_camera_position_ws", mCamera->getPosition());
