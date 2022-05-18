@@ -17,20 +17,12 @@
 
 TestingScene::TestingScene()
 {
-    mBanana = createPhongModel(glm::vec3(0.f, 2.f, 0.f), mBananaModel);
+    mBanana = createPhongModel(glm::vec3(0.f, 50.f, 0.f), mBananaModel);
     
-    createPhongModel(glm::vec3(0.f), mFloor);
+    createPhongModel(glm::vec3(0.f, 0.f, 0.f), mJapanModel);
     
     Entity sun = mEcs.create();
     mEcs.add(sun, light::DirectionalLight());
-    
-    // Entity sun2 = mEcs.create();
-    // mEcs.add(sun2, light::DirectionalLight {
-    //     glm::normalize(glm::vec3(1.f, 1.f, 1.f)),
-    //     glm::vec3(0.f, 1.f, 1.f)
-    // });
-    
-    createPhongModel(glm::vec3(4.f, 5.f, 0.f), mStar);
     
     mPointLight = mEcs.create();
     mEcs.add(mPointLight, light::PointLight());

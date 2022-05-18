@@ -15,6 +15,7 @@ namespace load
 {
     unsigned int texture(std::string_view path)
     {
+        stbi_set_flip_vertically_on_load(true);
         if (path == "")
             return 0;
         std::filesystem::path systemPath(path);
@@ -31,7 +32,8 @@ namespace load
         int width;
         int height;
         int colourChannels;
-        unsigned char *bytes = stbi_load(systemPath.string().c_str(), &width, &height, &colourChannels, 0);
+        // Forcing 4 components so that is always aligns with opengl's internal format.
+        unsigned char *bytes = stbi_load(systemPath.string().c_str(), &width, &height, &colourChannels, 4);
     
         glTextureParameteri(textureId, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTextureParameteri(textureId, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -44,20 +46,18 @@ namespace load
         const int yOffSet = 0;
     
         glTextureStorage2D(textureId, levels, GL_RGBA8, width, height);
-    
-        if (colourChannels == 3)
-            glTextureSubImage2D(textureId, lod, xOffSet, yOffSet, width, height, GL_RGB, GL_UNSIGNED_BYTE, bytes);
-        else if (colourChannels == 4)
-            glTextureSubImage2D(textureId, lod, xOffSet, yOffSet, width, height, GL_RGBA, GL_UNSIGNED_BYTE, bytes);
-        else
+        
+        if (colourChannels > 4)
         {
             debug::log("File " + systemPath.string()
                        + " does not contain the correct amount of channels. Cannot generate textures",
                        debug::severity::Warning);
             stbi_image_free(bytes);
+            glDeleteTextures(1, &textureId);
             return 0;
         }
-    
+
+        glTextureSubImage2D(textureId, lod, xOffSet, yOffSet, width, height, GL_RGBA, GL_UNSIGNED_BYTE, bytes);
         glGenerateTextureMipmap(textureId);
     
         stbi_image_free(bytes);
