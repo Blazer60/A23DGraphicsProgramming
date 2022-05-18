@@ -5,7 +5,7 @@
  */
 
 
-#include "rendering/RenderBufferObject.h"
+#include "RenderBufferObject.h"
 
 RenderBufferObject::RenderBufferObject(const glm::ivec2 &size)
     : mSize(size)
@@ -16,13 +16,6 @@ RenderBufferObject::RenderBufferObject(const glm::ivec2 &size)
 RenderBufferObject::~RenderBufferObject()
 {
     deInit();
-}
-
-void RenderBufferObject::changeSize(const glm::ivec2 &size)
-{
-    deInit();
-    mSize = size;
-    init();
 }
 
 void RenderBufferObject::init()

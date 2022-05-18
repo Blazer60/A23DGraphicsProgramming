@@ -32,20 +32,14 @@ void DeferredLightShader::render()
 {
     mShader.bind();
     mOutput->bind();
-    glBindVertexArray(mVao);
     
-    glBindTextureUnit(0, mDiffuse->getName());
-    glBindTextureUnit(1, mSpecular->getName());
-    glBindTextureUnit(2, mAlbedo->getName());
-    glBindTextureUnit(3, mEmissive->getName());
-    
-    mShader.set("u_diffuse",  0);
-    mShader.set("u_specular", 1);
-    mShader.set("u_albedo",   2);
-    mShader.set("u_emissive", 3);
+    mShader.set("u_diffuse",  mDiffuse->getName(),  0);
+    mShader.set("u_specular", mSpecular->getName(), 1);
+    mShader.set("u_albedo",   mAlbedo->getName(),   2);
+    mShader.set("u_emissive", mEmissive->getName(), 3);
     
     mShader.set("u_mvp_matrix", glm::mat4(1.f));
-    // mSphereShader.set("u_camera_position_ws", mCamera->getPosition());
     
+    glBindVertexArray(mVao);
     glDrawElements(GL_TRIANGLES, mEboCount, GL_UNSIGNED_INT, 0);
 }

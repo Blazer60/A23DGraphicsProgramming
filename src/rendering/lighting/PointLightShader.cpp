@@ -59,16 +59,13 @@ void PointLightShader::bind()
 {
     mShader.bind();
     mLightAccumulationBuffer->bind();
-    glBindVertexArray(mVao);
     
-    glBindTextureUnit(0, mPositions->getName());
-    glBindTextureUnit(1, mNormals->getName());
-    glBindTextureUnit(2, mAlbedo->getName());
-    
-    mShader.set("u_positions", 0);
-    mShader.set("u_normals",   1);
-    mShader.set("u_albedo",    2);
+    mShader.set("u_positions", mPositions->getName(), 0);
+    mShader.set("u_normals",   mNormals->getName(),   1);
+    mShader.set("u_albedo",    mAlbedo->getName(),    2);
     
     mShader.set("u_mvp_matrix", glm::mat4(1.f));
     mShader.set("u_camera_position_ws", mCamera->getPosition());
+    
+    glBindVertexArray(mVao);
 }

@@ -42,14 +42,6 @@ FramebufferObject::~FramebufferObject()
 
 void FramebufferObject::attach(std::shared_ptr<TextureBufferObject> textureBufferObject, int bindPoint, int mipLevel)
 {
-    textureBufferObject->reattach = [&textureBufferObject, bindPoint, mipLevel, this]() {
-        detach(bindPoint);
-        attach(textureBufferObject, bindPoint, mipLevel);
-    };
-    
-    // if (textureBufferObject->mSize != mSize)
-    //     debug::log("The attached texture MUST be the same size!", debug::severity::Major);
-    
     glNamedFramebufferTexture(mFboName, GL_COLOR_ATTACHMENT0 + bindPoint, textureBufferObject->mName, mipLevel);
     
     mTextures.push_back(std::move(textureBufferObject));
@@ -75,10 +67,6 @@ void FramebufferObject::detach(int bindPoint)
 void FramebufferObject::validate()
 {
     const unsigned int fboStatus = glCheckNamedFramebufferStatus(mFboName, GL_FRAMEBUFFER);
-    if (GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT == 36054)
-    {
-    
-    }
     if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
         debug::log("Framebuffer error of: " + std::to_string(fboStatus), debug::severity::Major);
 }

@@ -18,6 +18,7 @@
 #include "TextureViewer.h"
 
 /**
+ * Lets you view individual mips within a texture.
  * @author Ryan Purse
  * @date 15/05/2022
  */

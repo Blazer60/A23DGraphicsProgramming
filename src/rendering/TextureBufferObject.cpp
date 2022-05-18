@@ -43,25 +43,6 @@ void TextureBufferObject::deInit()
     glDeleteTextures(1, &mName);
 }
 
-void TextureBufferObject::imguiUpdate(bool *show, bool fill)
-{
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.f, 0.f));
-    if (ImGui::Begin(mDebugName.c_str(), show))
-    {
-        if (fill)
-        {
-            ImVec2 regionSize = ImGui::GetContentRegionAvail();
-            ImGui::Image(reinterpret_cast<void *>(mName), regionSize, ImVec2(0, 1), ImVec2(1, 0));
-        }
-        else
-        {
-            ImGui::Image(reinterpret_cast<void *>(mName), ImVec2(mSize.x, mSize.y), ImVec2(0, 1), ImVec2(1, 0));
-        }
-    }
-    ImGui::End();
-    ImGui::PopStyleVar();
-}
-
 void TextureBufferObject::setClearColour(const glm::vec4 &clearColour)
 {
     mClearColour = clearColour;

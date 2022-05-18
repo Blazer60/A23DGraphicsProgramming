@@ -45,10 +45,10 @@ else()
     add_subdirectory(entity-component-system)
 endif ()
 
-add_subdirectory(vendor/glm)
-add_subdirectory(vendor/glew/build/cmake)
-add_subdirectory(vendor/glfw)
-add_subdirectory(vendor)
+#add_subdirectory(vendor/glm)
+#add_subdirectory(vendor/glew/build/cmake)
+#add_subdirectory(vendor/glfw)
+#add_subdirectory(vendor)
 
 
 add_executable(${PROJECT_NAME}
@@ -70,7 +70,7 @@ add_executable(${PROJECT_NAME}
         src/core/Renderer.cpp                                   include/core/Renderer.h
 
         src/core/scenes/Scene.cpp                               src/core/scenes/Scene.h
-        src/core/scenes/BloomSceneDemo.cpp src/core/scenes/BloomSceneDemo.h
+        src/core/scenes/BloomSceneDemo.cpp                      src/core/scenes/BloomSceneDemo.h
         src/core/scenes/ImpulseScene.cpp                        src/core/scenes/ImpulseScene.h
         src/core/scenes/OctreeDemoScene.cpp                     src/core/scenes/OctreeDemoScene.h
         src/core/scenes/PlatformDemoScene.cpp                   src/core/scenes/PlatformDemoScene.h
@@ -78,17 +78,20 @@ add_executable(${PROJECT_NAME}
         src/core/scenes/OdeDemoScene.cpp                        src/core/scenes/OdeDemoScene.h
         src/core/scenes/RotationDemoScene.cpp                   src/core/scenes/RotationDemoScene.h
 
+        include/helpers/Callback.h
         src/helpers/Primitives.cpp                              include/helpers/Primitives.h
         src/helpers/Timers.cpp                                  include/helpers/Timers.h
         src/helpers/FilePaths.cpp                               include/helpers/FilePaths.h
         src/helpers/WindowHelpers.cpp                           include/helpers/WindowHelpers.h
+        src/helpers/MipViewer.cpp                               include/helpers/MipViewer.h
+        src/helpers/TextureViewer.cpp                           include/helpers/TextureViewer.h
 
         src/loader/CommonLoader.cpp                             include/loader/CommonLoader.h
         src/loader/MaterialLoader.cpp                           include/loader/MaterialLoader.h
         src/loader/ModelLoader.cpp                              include/loader/ModelLoader.h
         src/loader/RawMesh.cpp                                  include/loader/RawMesh.h
         src/loader/TextureLoader.cpp                            include/loader/TextureLoader.h
-        include/helpers/Callback.h
+        src/loader/ModelDestroyer.cpp                           include/loader/ModelDestroyer.h
 
         include/physics/components/Physics.h
         include/physics/octree/Node.h
@@ -109,16 +112,16 @@ add_executable(${PROJECT_NAME}
         src/rendering/RenderBufferObject.cpp                    include/rendering/RenderBufferObject.h
         src/rendering/lighting/DeferredLightShader.cpp          include/rendering/lighting/DeferredLightShader.h
         src/rendering/MipmapTexture.cpp                         include/rendering/MipmapTexture.h
-        src/helpers/MipViewer.cpp include/helpers/MipViewer.h
         src/rendering/post-processing/Bloom.cpp                 include/rendering/post-processing/Bloom.h
         src/rendering/BlinnPhongGeometryShader.cpp              include/rendering/BlinnPhongGeometryShader.h
+        src/rendering/EmissivePbrGeometryShader.cpp             include/rendering/EmissivePbrGeometryShader.h
 
-        src/systems/ModelMatrixUpdater.cpp include/systems/ModelMatrixUpdater.h
+        src/systems/ModelMatrixUpdater.cpp                      include/systems/ModelMatrixUpdater.h
         src/systems/RotatorSystem.cpp                           include/systems/RotatorSystem.h
 
         src/Main.cpp
         include/Pch.h
-        src/rendering/EmissivePbrGeometryShader.cpp include/rendering/EmissivePbrGeometryShader.h src/loader/ModelDestroyer.cpp include/loader/ModelDestroyer.h src/helpers/TextureViewer.cpp include/helpers/TextureViewer.h)
+        )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
 # Project Includes

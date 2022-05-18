@@ -29,16 +29,17 @@ struct ViewSettings
     bool emissiveTexture    { false };
     bool diffuseTexture     { false };
     bool specularTexture    { false };
-    bool lightTargetTexture { true  };
-    bool downSampleTextures { true  };
+    bool lightTargetTexture { false };
+    bool downSampleTextures { false };
     bool upSampleTextures   { false };
-    bool postProcessTexture { true };
-    bool downSampleMip      { true };
-    bool upSampleMip        { true };
+    bool postProcessTexture { true  };
+    bool downSampleMip      { false };
+    bool upSampleMip        { false };
 };
 
 /**
  * Sets up the rendering pipeline for a single scene. Used to setup deferred rendering and deferred lighting.
+ * Also handles Bloom!
  * @author Ryan Purse
  * @date 30/03/2022
  */
@@ -90,11 +91,11 @@ protected:
     
     ViewSettings mShow;
     
-    DeferredLightShader         mDeferredLightingShader;
-    MipViewer             mDownSamplingMipViewerShader;
-    MipViewer             mUpSamplingMipViewerShader;
-    TextureViewer               mViewer;
-    Bloom                       mBloomShader;
+    DeferredLightShader mDeferredLightingShader;
+    MipViewer mDownSamplingMipViewerShader;
+    MipViewer mUpSamplingMipViewerShader;
+    TextureViewer mViewer;
+    Bloom mBloomShader;
     
     // Debug Helpers
     Mesh<UvVertex, NoMaterial> mBox { load::model<UvVertex, NoMaterial>(path::resources() + "models/physics/Box.obj")[0] };

@@ -44,7 +44,7 @@ protected:
     
     bool                     mIsRunning         { true };
     const unsigned int       mMaxLoopCount      { 10 };
-    const bool               mEnableDebugging   { true };
+    const bool               mEnableDebugging   { false };
 };
 
 

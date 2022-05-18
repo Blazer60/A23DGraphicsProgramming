@@ -11,6 +11,8 @@
 #include "TextureBufferObject.h"
 
 /**
+ * Displays a texture via imgui.
+ * todo: This could be static?
  * @author Ryan Purse
  * @date 18/05/2022
  */

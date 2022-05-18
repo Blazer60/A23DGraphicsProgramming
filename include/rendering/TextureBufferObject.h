@@ -32,8 +32,6 @@ public:
     
     virtual ~TextureBufferObject();
     
-    void imguiUpdate(bool *show, bool fill);
-    
     void setClearColour(const glm::vec4 &clearColour);
     
     unsigned int getName() const;
