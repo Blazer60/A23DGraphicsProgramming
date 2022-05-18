@@ -18,6 +18,7 @@ struct Material
 {
     // You should inherit and define your own material from this class.
     Material() = default;
+    virtual ~Material() = default;
     explicit Material(const MtlMaterial &mtl)
     {
         debug::log("Not Implemented! Define your own conversion constructor for MtlMaterial", debug::severity::Fatal);

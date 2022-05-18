@@ -6,14 +6,10 @@
 
 
 #include "BloomSceneDemo.h"
-#include "BoundingVolumes.h"
-#include "Physics.h"
 #include "LightingComponents.h"
-#include "PhysicsSystems.h"
-#include "CollisionDetection.h"
 #include "gtc/type_ptr.hpp"
 #include "imgui.h"
-#include "physics/TreeBuilder.h"
+#include "ModelDestroyer.h"
 
 BloomSceneDemo::BloomSceneDemo()
 {
@@ -27,6 +23,12 @@ BloomSceneDemo::BloomSceneDemo()
     mPointLight = mEcs.create();
     mEcs.add(mPointLight, light::PointLight());
     mEcs.add(mPointLight, Position { glm::vec3(0.f, 4.f, 0.f) });
+}
+
+BloomSceneDemo::~BloomSceneDemo()
+{
+    destroy::model(mBananaModel);
+    destroy::model(mJapanModel);
 }
 
 void BloomSceneDemo::onImguiUpdate()

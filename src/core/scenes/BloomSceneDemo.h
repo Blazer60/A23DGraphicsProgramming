@@ -20,7 +20,7 @@ class BloomSceneDemo
 {
 public:
     BloomSceneDemo();
-    ~BloomSceneDemo() = default;
+    ~BloomSceneDemo();
     
     void onImguiUpdate() override;
     
@@ -32,8 +32,6 @@ protected:
     Model<PhongVertex, EmissivePbrMaterial> mJapanModel {
         load::model<PhongVertex, EmissivePbrMaterial>(
             path::resources() + "models/japan/Japan.obj") };
-    
-    Model<PhongVertex, BlinnPhongMaterial> mCircle { primitives::triangleFanCircle<PhongVertex, BlinnPhongMaterial>(20) };
     
     Entity mBanana;
     Entity mPointLight;

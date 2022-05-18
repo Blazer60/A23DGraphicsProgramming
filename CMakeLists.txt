@@ -119,7 +119,7 @@ add_executable(${PROJECT_NAME}
 
         src/Main.cpp
         include/Pch.h
-        src/rendering/EmissivePbrGeometryShader.cpp include/rendering/EmissivePbrGeometryShader.h)
+        src/rendering/EmissivePbrGeometryShader.cpp include/rendering/EmissivePbrGeometryShader.h src/loader/ModelDestroyer.cpp include/loader/ModelDestroyer.h)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
 # Project Includes

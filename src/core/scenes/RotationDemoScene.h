@@ -21,6 +21,7 @@ class RotationDemoScene
 {
 public:
     RotationDemoScene();
+    ~RotationDemoScene();
     
     void onUpdate() override;
     void onRender() override;

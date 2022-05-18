@@ -21,6 +21,7 @@ class OctreeDemoScene
 {
 public:
     OctreeDemoScene();
+    ~OctreeDemoScene();
     float randomValue();
     
     void onRender() override;

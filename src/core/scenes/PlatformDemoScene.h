@@ -21,6 +21,7 @@ class PlatformDemoScene
 {
 public:
     PlatformDemoScene();
+    ~PlatformDemoScene();
     
     void onUpdate() override;
     void onRender() override;

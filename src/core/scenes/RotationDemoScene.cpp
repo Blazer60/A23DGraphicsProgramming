@@ -12,6 +12,7 @@
 #include "PhysicsSystems.h"
 #include "CollisionDetection.h"
 #include "gtc/type_ptr.hpp"
+#include "ModelDestroyer.h"
 #include "imgui.h"
 #include "physics/TreeBuilder.h"
 
@@ -35,6 +36,12 @@ RotationDemoScene::RotationDemoScene()
     
     Entity sun = mEcs.create();
     mEcs.add(sun, light::DirectionalLight());
+}
+
+RotationDemoScene::~RotationDemoScene()
+{
+    destroy::model(mStoneCladding);
+    destroy::model(mFloor);
 }
 
 void RotationDemoScene::onUpdate()

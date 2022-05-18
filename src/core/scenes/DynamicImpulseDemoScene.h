@@ -21,6 +21,7 @@ class DynamicImpulseDemoScene
 {
 public:
     DynamicImpulseDemoScene();
+    ~DynamicImpulseDemoScene();
     
     void onUpdate() override;
     void onRender() override;

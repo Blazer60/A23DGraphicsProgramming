@@ -12,6 +12,7 @@
 #include "PhysicsSystems.h"
 #include "TreeBuilder.h"
 #include "CollisionDetection.h"
+#include "ModelDestroyer.h"
 #include "imgui.h"
 #include "gtc/type_ptr.hpp"
 
@@ -31,6 +32,15 @@ OdeDemoScene::OdeDemoScene()
     
     Entity sun = mEcs.create();
     mEcs.add(sun, light::DirectionalLight());
+}
+
+OdeDemoScene::~OdeDemoScene()
+{
+    destroy::model(mRedSphere);
+    destroy::model(mGreenSphere);
+    destroy::model(mBlueSphere);
+    destroy::model(mYellowSphere);
+    destroy::model(mFloor);
 }
 
 void OdeDemoScene::onUpdate()

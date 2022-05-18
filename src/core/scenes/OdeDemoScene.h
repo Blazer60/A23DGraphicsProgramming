@@ -21,6 +21,7 @@ class OdeDemoScene
 {
 public:
     OdeDemoScene();
+    ~OdeDemoScene();
     
     void onUpdate() override;
     void onRender() override;

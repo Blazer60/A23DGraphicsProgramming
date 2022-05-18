@@ -12,6 +12,7 @@
 #include "PhysicsSystems.h"
 #include "TreeBuilder.h"
 #include "CollisionDetection.h"
+#include "ModelDestroyer.h"
 #include "imgui.h"
 #include "gtc/type_ptr.hpp"
 
@@ -37,6 +38,13 @@ PlatformDemoScene::PlatformDemoScene()
     
     Entity sun = mEcs.create();
     mEcs.add(sun, light::DirectionalLight());
+}
+
+PlatformDemoScene::~PlatformDemoScene()
+{
+    destroy::model(mRedSphere);
+    destroy::model(mFloor);
+    destroy::model(mCrateModel);
 }
 
 void PlatformDemoScene::onUpdate()

@@ -21,6 +21,7 @@ class ImpulseScene
 {
 public:
     ImpulseScene();
+    ~ImpulseScene();
     
     void onUpdate() override;
     void onRender() override;

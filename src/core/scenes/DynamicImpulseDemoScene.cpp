@@ -12,6 +12,7 @@
 #include "PhysicsSystems.h"
 #include "TreeBuilder.h"
 #include "CollisionDetection.h"
+#include "ModelDestroyer.h"
 #include "imgui.h"
 #include "gtc/type_ptr.hpp"
 
@@ -29,6 +30,12 @@ DynamicImpulseDemoScene::DynamicImpulseDemoScene()
     
     Entity sun = mEcs.create();
     mEcs.add(sun, light::DirectionalLight());
+}
+
+DynamicImpulseDemoScene::~DynamicImpulseDemoScene()
+{
+    destroy::model(mRedSphere);
+    destroy::model(mGreenSphere);
 }
 
 void DynamicImpulseDemoScene::onUpdate()

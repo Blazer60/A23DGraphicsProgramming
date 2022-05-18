@@ -12,6 +12,7 @@
 #include "PhysicsSystems.h"
 #include "TreeBuilder.h"
 #include "CollisionDetection.h"
+#include "ModelDestroyer.h"
 #include "imgui.h"
 #include "gtc/type_ptr.hpp"
 
@@ -38,6 +39,12 @@ OctreeDemoScene::OctreeDemoScene()
     
     mEcs.createSystem<TreeBuilder>(mTree);
     mEcs.createSystem<CollisionDetection>(mRenderer, mTree);
+}
+
+OctreeDemoScene::~OctreeDemoScene()
+{
+    destroy::model(mCrate);
+    destroy::model(mFloor);
 }
 
 float OctreeDemoScene::randomValue()
